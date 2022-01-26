@@ -1,0 +1,96 @@
+{{ block title }} {{ title }} {{ endblock }}
+{{ block content }}
+<link href="{{ static 'nouislider.min.css' }}" rel="stylesheet">
+<script src="{{ static 'nouislider.min.js' }}"> </script>
+<script src="{{ static 'wNumb.min.js' }}"> </script>
+<script src="{{ static 'blockunload.js' }}"></script>
+<div id="blocpage_content" style="visibility:hidden">
+<div id="initial_presentation">
+</div>
+{{ if presentation_tepmplate != '' }} {{ include presentation_tepmplate }} {{ endif }}
+
+    {{ for field in form }}
+	{{ if field.default != -11 }}
+	<!-- <h1>{{ field.type }}, {{ field.__dict__ }}, {{ field.validators }}</h1> -->
+       {{ if not field.short_name in radiotable_rows }}
+	    <input type=hidden name="beforefield_{{field.short_name}}" value=0 id="beforefield_{{field.short_name}}" />
+	    <div id='field_{{field.short_name}}'>
+		{{ if not field.short_name in onlyinfo }}
+			<input type=hidden name="{{field.short_name}}_time" value=0 id="{{field.short_name}}_time" />
+		{{ endif }}
+		<input type=hidden name="{{field.short_name}}_validator" value='{{ field.validators.0 }}' id="{{field.short_name}}_validator" />
+	   {{ endif }}
+		{{ if not field.short_name in radiotable_rows and not field.short_name in singleline }} <h5><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</h5>{{ endif }}
+		{{ if field.short_name in slidervars }}
+			<em>(<span id="sliderhint_{{field.short_name}}">faites bouger le curseur ci-dessous afin de répondre</span>)</em><br><br>
+			<input type=hidden value="" id="sliderinput_{{field.short_name}}" name="{{field.short_name}}" />
+			<input type=hidden name="{{field.type}}" value=0 id="slidershown_{{field.short_name}}" />
+			<div><span id="sliderleft_{{field.short_name}}"></span><div style='width:50%;display:inline-block' id="slider_{{field.short_name}}"></div><span id="sliderright_{{field.short_name}}"></span></div>
+			<br>
+			{{ formfield_errors field.name }}
+			<div class="alert-warning" style="display:none" id="{{field.short_name}}_errormessage"></div>
+		{{ elif field.short_name in radiolines }}
+			<table cellpadding=5 style='text-align:center;vertical-align:middle;'><tr>
+			{{ for choice in field }} <td style='width:{{ radioline_width }}'> {{ choice }} </td> {{ endfor }}
+			</tr><tr>
+			{{ for choice in field }} <td> <span class="replacelinebreaks">{{ choice.label }}</span> </td> {{ endfor }}
+			</tr></table>
+		{{ elif field.short_name in radiotable_headers }}
+			<input type=hidden name="beforefield_{{field.short_name}}" value=0 id="beforefield_{{field.short_name}}" />
+			<div id='field_{{field.short_name}}'>
+			<table class="table" id="table_{{field.short_name}}" cellpadding=2 style='text-align:center;vertical-align:middle;' ><tr>
+			<th scope='row'>
+					&nbsp;
+					<input type=hidden name="{{field.short_name}}_time" value=0 id="{{field.short_name}}_time" />
+					<input type=hidden name="{{field.short_name}}_validator" value='{{ field.validators.0 }}' id="{{field.short_name}}_validator" />   
+			</th>{{ for choice in field }} <td scope='col' style='word-break:break-all;'> {{ choice.label }} </td> {{ endfor }}
+			</tr><tr id="tr_{{field.short_name}}">
+			<th scope='row' style='text-align:left;'><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</th>{{ for choice in field }} <td> <span data-toggle="tooltip" data-html="true" title='{{ choice.label }}'>{{ choice }}</span> </td> {{ endfor }}
+			</tr>
+		{{ elif field.short_name in radiotable_bottoms }}
+			<tr id="tr_{{field.short_name}}">
+			<th scope='row' style='text-align:left;'>
+				<input type=hidden name="{{field.short_name}}_time" value=0 id="{{field.short_name}}_time" />
+				<input type=hidden name="{{field.short_name}}_validator" value='{{ field.validators.0 }}' id="{{field.short_name}}_validator" />   
+				<span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}
+			</th>
+			{{ for choice in field }} <td> <span data-toggle="tooltip" data-html="true" title='{{ choice.label }}'>{{ choice }}</span> </td> {{ endfor }}
+			</tr></table></div>
+		{{ elif field.short_name in radiotable_rows }}
+			<tr id="tr_{{field.short_name}}">
+			<th scope='row' style='text-align:left;'>
+				<input type=hidden name="{{field.short_name}}_time" value=0 id="{{field.short_name}}_time" />
+				<input type=hidden name="{{field.short_name}}_validator" value='{{ field.validators.0 }}' id="{{field.short_name}}_validator" />   
+				<span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}
+			</th>
+			{{ for choice in field }} <td> <span data-toggle="tooltip" data-html="true" title='{{ choice.label }}'>{{ choice }}</span> </td> {{ endfor }}
+			</tr>
+		{{ else }}
+		{{ elif field.short_name in singleline }}
+			<div class="row border-bottom"><div class="col-8"><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</div><div style='display:inline-block' class="col-4" >{{ field }}</div></div>
+		{{ elif field.short_name in onlyinfo }}
+			<input type=hidden value="" name="{{field.short_name}}" />
+		{{ else }}
+			{{ field }}
+		{{ endif }}
+            
+		{{ if not field.short_name in radiotable_rows }} 
+			{{ if not field.short_name in singleline and not field.short_name in onlyinfo }} <br><br> {{ else }} <br> {{ endif }}
+			</div>
+		{{ endif }}
+	{{ endif }}
+    {{ endfor }}
+</div>
+<script>
+var bys = "{{ by }}".split(',');
+var by = parseInt(bys[0]);
+var slidervars="{{ cslidervars }}".split(";");
+var slideropts="{{ cslideropts }}".split(";");
+var allvars="{{ allvars }}".split(';');
+</script>
+<script src="{{ static 'leepquest.js' }}"></script>
+
+	<div class="alert text-center" id="pleasewait">Veuillez patienter...</div>
+    {{ next_button }}
+
+{{ endblock }}

@@ -1,0 +1,10 @@
+./db.sqlite3
+*~
+*.sqlite3
+__temp*
+__pycache__/
+.DS_Store
+*.otreezip
+start_exp
+stop_exp
+reset_db
