@@ -8,8 +8,8 @@ class C(BaseConstants):
     BLOCPAGES="A;B".split(';')
     # BLOCPAGEDATA_IN_PARTICIPANT = True
     TRACK_BLOCPAGE_LOADS = "A;B".split(';')
-    A_LIST = "Quel âge avez-vous ?;Quel est le diplôme le plus élevé que vous avez obtenu ?;Veuillez également répondre à la question suivante :;Quel est votre sexe ou genre sexuel actuel?;Quel est votre pays de naissance?".split(';')
-    A_TYPES = list(map(lambda x : x.split(':'),"slider:int;radio;info;radio;radio".split(';')))
+    A_LIST = "Quel âge avez-vous ?;Quel est le diplôme le plus élevé que vous avez obtenu ?;Veuillez également répondre à la question suivante :;Quel est votre genre ?;Quel est votre pays de naissance?".split(';')
+    A_TYPES = list(map(lambda x : x.split(':'),"slider:int;radio;info;radio;select".split(';')))
     A_OPTS = list(map(lambda x : x.split(':'),"99:18:1:17;Sans diplôme:Certificat d’études primaires:Ancien brevet BEPC:Certificat d’aptitude professionnelle (CAP):Brevet d’enseignement professionnel (BEP):BAC d’enseignement technique et professionnel:BAC d’enseignement général:BAC +2 (DUT, BTS, D\EUG):Diplôme de l’enseignement supérieur (2ème ou 3ème cycles, grande école);;Homme:Femme;France:Etranger".split(';')))
     A_VARS = "age;diplome;a_info_1;genre;pays".split(";")
     A_BY=2
