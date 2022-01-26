@@ -156,9 +156,9 @@ def track_reloads(player: Player, page):
 
 def get_current_blocpage(player: Player):
     if hasattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") and getattr(C,"BLOCPAGEDATA_IN_PARTICIPANT"):
-        return C.BLOCPAGES[player.participant.blocpageindex]
+        return C.BLOCPAGES[player.participant.blocpageindex%len(C.BLOCPAGES)]
     else:
-        return C.BLOCPAGES[player.blocpageindex]
+        return C.BLOCPAGES[player.blocpageindex%len(C.BLOCPAGES)]
 
 def get_blocpage_data(player: Player):
     if hasattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") and getattr(C,"BLOCPAGEDATA_IN_PARTICIPANT"):
@@ -199,6 +199,10 @@ class BlocPage(Page):
     form_model = 'player'
     # form_fields = getattr(C,cbp+'_VARS')+list(map(lambda x : x+'_time', getattr(C,cbp+'_VARS')))+list(map(lambda x : x+'_order', C.B_ASSO_LIST))+["blocD_screen"+str(i+1)+"_time" for i,v in enumerate(getattr(C,cbp+'_BY'))]
     live_method = blocpage_live_method
+    @staticmethod
+    def is_displayed(player):
+        cbp=get_current_blocpage(player)
+        return True #player.round_number == C.NUM_ROUNDS #1
     @staticmethod
     def get_form_fields(player):
         cbp=get_current_blocpage(player)
