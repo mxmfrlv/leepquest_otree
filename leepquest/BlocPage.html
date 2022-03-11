@@ -1,5 +1,6 @@
 {{ block title }} {{ title }} {{ endblock }}
 {{ block content }}
+<link href="{{ static 'leepquest.css' }}" rel="stylesheet">
 <link href="{{ static 'nouislider.min.css' }}" rel="stylesheet">
 <script src="{{ static 'nouislider.min.js' }}"> </script>
 <script src="{{ static 'wNumb.min.js' }}"> </script>
@@ -10,7 +11,7 @@
 {{ if presentation_tepmplate != '' }} {{ include presentation_tepmplate }} {{ endif }}
 
     {{ for field in form }}
-	{{ if field.default != -11 }}
+	{{ if field.default != -11 and field.short_name in all_vars }}
 	<!-- <h1>{{ field.type }}, {{ field.__dict__ }}, {{ field.validators }}</h1> -->
        {{ if not field.short_name in radiotable_rows }}
 	    <input type=hidden name="beforefield_{{field.short_name}}" value=0 id="beforefield_{{field.short_name}}" />
@@ -23,9 +24,9 @@
 		{{ if not field.short_name in radiotable_rows and not field.short_name in singleline }} <h5><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</h5>{{ endif }}
 		{{ if field.short_name in slidervars }}
 			<em>(<span id="sliderhint_{{field.short_name}}">faites bouger le curseur ci-dessous afin de répondre</span>)</em><br><br>
-			<input type=hidden value="" id="sliderinput_{{field.short_name}}" name="{{field.short_name}}" />
+			<input type=hidde id="sliderinput_{{field.short_name}}" name="{{field.short_name}}" {{if 'InputRequired' in field.validators.0.__str__() }} style="display:none" class="form-control" required{{ endif }} value="" />
 			<input type=hidden name="{{field.type}}" value=0 id="slidershown_{{field.short_name}}" />
-			<div><span id="sliderleft_{{field.short_name}}"></span><div style='width:50%;display:inline-block' id="slider_{{field.short_name}}"></div><span id="sliderright_{{field.short_name}}"></span></div>
+			<div style="white-space:nowrap"><span id="sliderleft_{{field.short_name}}"></span><div style='width:50%;display:inline-block' id="slider_{{field.short_name}}"></div><span id="sliderright_{{field.short_name}}"></span></div>
 			<br>
 			{{ formfield_errors field.name }}
 			<div class="alert-warning" style="display:none" id="{{field.short_name}}_errormessage"></div>
@@ -33,17 +34,17 @@
 			<table cellpadding=5 style='text-align:center;vertical-align:middle;'><tr>
 			{{ for choice in field }} <td style='width:{{ radioline_width }}'> {{ choice }} </td> {{ endfor }}
 			</tr><tr>
-			{{ for choice in field }} <td> <span class="replacelinebreaks">{{ choice.label }}</span> </td> {{ endfor }}
+			{{ for choice in field }} <td style='vertical-align:top'> <span class="replacelinebreaks">{{ choice.label }}</span> </td> {{ endfor }}
 			</tr></table>
 		{{ elif field.short_name in radiotable_headers }}
 			<input type=hidden name="beforefield_{{field.short_name}}" value=0 id="beforefield_{{field.short_name}}" />
 			<div id='field_{{field.short_name}}'>
-			<table class="table" id="table_{{field.short_name}}" cellpadding=2 style='text-align:center;vertical-align:middle;' ><tr>
+			<table class="table radiotable" id="table_{{field.short_name}}" cellpadding=2 style='text-align:center;vertical-align:middle;' ><tr>
 			<th scope='row'>
 					&nbsp;
 					<input type=hidden name="{{field.short_name}}_time" value=0 id="{{field.short_name}}_time" />
 					<input type=hidden name="{{field.short_name}}_validator" value='{{ field.validators.0 }}' id="{{field.short_name}}_validator" />   
-			</th>{{ for choice in field }} <td scope='col' style='word-break:break-all;'> {{ choice.label }} </td> {{ endfor }}
+			</th>{{ for choice in field }} <td scope='col'> {{ choice.label }} </td> {{ endfor }}
 			</tr><tr id="tr_{{field.short_name}}">
 			<th scope='row' style='text-align:left;'><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</th>{{ for choice in field }} <td> <span data-toggle="tooltip" data-html="true" title='{{ choice.label }}'>{{ choice }}</span> </td> {{ endfor }}
 			</tr>
@@ -69,9 +70,16 @@
 		{{ elif field.short_name in singleline }}
 			<div class="row border-bottom"><div class="col-8"><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</div><div style='display:inline-block' class="col-4" >{{ field }}</div></div>
 		{{ elif field.short_name in onlyinfo }}
-			<input type=hidden value="" name="{{field.short_name}}" />
+			<input type=hidden value="1" name="{{field.short_name}}" />
 		{{ else }}
+			{{ if field.short_name in suffixvars }}
+				<div class="input-group">
+			{{ endif }}
 			{{ field }}
+			{{ if field.short_name in suffixvars }}
+				<span class="input-group-text">{{ for suff in suffixes }} {{ if suff.var == field.short_name }} {{ suff.val }} {{ endif }} {{ endfor }}</span>
+				</div>
+			{{ endif }}
 		{{ endif }}
             
 		{{ if not field.short_name in radiotable_rows }} 
@@ -90,7 +98,14 @@ var allvars="{{ allvars }}".split(';');
 </script>
 <script src="{{ static 'leepquest.js' }}"></script>
 
-	<div class="alert text-center" id="pleasewait">Veuillez patienter...</div>
-    {{ next_button }}
+<div class="alert position-fixed top-50 start-50 translate-middle" id="pleasewait">Veuillez patienter...</div>
+<table id="control_buttons" style="display:none"><tr><td>
+	<p>
+	<button class='btn btn-primary' disabled style="display:none" name="prev" id="prevbutton" value=1 type="button">Précédent</button>
+	</p>
+	</td><td>
+    {{ next_button }} 
+</td></tr></table>
+<em id="waitnext_text" style="display:none">{{ waitnext_text }}</em>
 
 {{ endblock }}
