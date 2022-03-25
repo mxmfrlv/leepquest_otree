@@ -20,6 +20,30 @@ function bindSliderUpdate(slider,sl,starthidden,cdecimals) {
 		else {
 		 var resultval=values[handle]; if(cdecimals==0) resultval=Math.round(resultval);
 		 $("#sliderinput_"+slidervars[sl]).val(resultval).change();
+		 if(js_vars.fixedsum_sliders !== undefined) {
+			 var my_i=-1; var my_vars=[];
+			 for(var i in js_vars.fixedsum_sliders) {
+				if(i%2 == 0) {
+					var clist=js_vars.fixedsum_sliders[i];
+					if(!$.isArray(clist)) clist=split(',');
+					if(clist.length == 1) clist=clist[0].split(';');
+					if(clist.indexOf(slidervars[sl])>-1) {
+						my_i=i; my_vars=clist; break;
+					}
+				}
+			 }
+			 if(my_i>-1 && js_vars.fixedsum_sliders.length>my_i) {
+				var my_sum=js_vars.fixedsum_sliders[Number(my_i)+1];
+				my_residual=my_sum-resultval;
+				var other_vars=[];
+				for(var h in my_vars) if(my_vars[h]!=slidervars[sl]) other_vars.push(my_vars[h]);
+				if(other_vars.length==1) {
+					var other_slider=document.getElementById("slider_"+other_vars[0]);
+					// console.log(other_slider.noUiSlider.get(),(other_slider.noUiSlider.get()!=my_residual), resultval,my_sum,my_residual,my_i,js_vars.fixedsum_sliders,(Number(my_i)+1),js_vars.fixedsum_sliders[my_i+1]);
+					if(other_slider.noUiSlider.get()!=my_residual) other_slider.noUiSlider.set(my_residual);
+				}
+			 }
+		 }
 		 if(starthidden && !$("#slider_"+slidervars[sl]+" .noUi-handle").is(':visible')) {
 			var appspeed=(sliderbeh=="span")?0:300;
 			$("#slider_"+slidervars[sl]+" .noUi-handle").show(appspeed);
@@ -457,3 +481,21 @@ if(typeof liveSend === 'function') liveSend('load|nscr:0:'+starttime.toString())
 });
 
 
+jQuery.fn.centerHorizontally = function (raw) {
+	if(raw === undefined) raw=false;
+	if(raw) {
+		this.css("position","absolute");
+		// this.css("top", Math.max(0, (($(window).height() - $(this).outerHeight()) / 2) + $(window).scrollTop()) + "px");
+		// console.log("outerWidth:",$(this).outerWidth(),"scrollLeft:",$(window).scrollLeft(),"$(window).width():",$(window).width());
+		this.css("left", Math.max(0, (($(window).width() - $(this).outerWidth()) / 2) + $(window).scrollLeft()) + "px");
+		$( window ).resize(this,function(event){$(event.data).centerHorizontally()});
+	}
+	else {
+		var newdiv = document.createElement("div");
+		$(newdiv).addClass("text-center");
+		$(this).before(newdiv)
+		$(this).attr('align','center')
+		$(newdiv).append($(this));
+	}
+    return this;
+}

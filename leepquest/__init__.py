@@ -241,6 +241,13 @@ def blocpage_live_method(player, data):
         # print('update',data)
 ### blocpage stuff above
 
+def skip_some_blocpage_quests(player, cbp,i,function):
+    if cbp == 'B2' and i > 1 and player.treatment > 3: return True
+    return False
+def make_type_nothing(player, var):
+    if var == "blocB_evaluation" and player.treatment != 2 and player.treatment != 3: return True
+    return False
+    
 # PAGES
 class BlocPage(Page):
     form_model = 'player'
@@ -277,6 +284,7 @@ class BlocPage(Page):
         res = []
         for i in getattr(C,cbp+"_QNUMS"):
             if getattr(C,cbp+"_TYPES")[i-1][0] != "nothing":
+                if skip_some_blocpage_quests(player,cbp,i,"get_form_fields") or make_type_nothing(player,getattr(C,cbp+'_VARS')[i-1]): continue
                 res.append(getattr(C,cbp+"_VARS")[i-1])
                 if getattr(C,cbp+"_TYPES")[i-1][0] != "info": res.append(getattr(C,cbp+"_VARS")[i-1]+'_time')
         if not hasattr(C,cbp+'_NO_SCREEN_TIME') or not getattr(C,cbp+'_NO_SCREEN_TIME'):
@@ -295,6 +303,7 @@ class BlocPage(Page):
         if hasattr(C,"DEBUG") and getattr(C,"DEBUG") : print("before_next_page, cbp is",cbp)
         set_blocpage_data(player,"")
         for i in getattr(C,cbp+"_QNUMS"):
+            if skip_some_blocpage_quests(player,cbp,i,"before_next_page") or make_type_nothing(player,getattr(C,cbp+'_VARS')[i-1]): continue
             if getattr(C,cbp+'_TYPES')[i-1][0]=="radio" or getattr(C,cbp+'_TYPES')[i-1][0]=="hradio" or getattr(C,cbp+'_TYPES')[i-1][0]=="select" or getattr(C,cbp+'_TYPES')[i-1][0]=="radioline" or getattr(C,cbp+'_TYPES')[i-1][0]=="radiotable":
                 if not player.field_maybe_none(getattr(C,cbp+'_VARS')[i-1]) is None:
                     # print(i,getattr(C,cbp+'_VARS')[i-1],getattr(player,getattr(C,cbp+'_VARS')[i-1]));
@@ -328,13 +337,14 @@ class BlocPage(Page):
         if os.path.exists(C.NAME_IN_URL+"/include_"+cbp+".html"): presentation_tepmplate=C.NAME_IN_URL+"/include_"+cbp+".html"
         # print("vars_for_template")
         for i in getattr(C,cbp+"_QNUMS"):
-            if getattr(C,cbp+'_TYPES')[i-1][0]=="slider":
+            if skip_some_blocpage_quests(player,cbp,i,"vars_for_template"): continue
+            if getattr(C,cbp+'_TYPES')[i-1][0]=="info" or getattr(C,cbp+'_TYPES')[i-1][0]=="nothing" or make_type_nothing(player,getattr(C,cbp+'_VARS')[i-1]):
+                onlyinfo.append(getattr(C,cbp+'_VARS')[i-1])
+            elif getattr(C,cbp+'_TYPES')[i-1][0]=="slider":
                 slidervars.append(getattr(C,cbp+'_VARS')[i-1])
                 slideropts.append(str.join(':',getattr(C,cbp+'_OPTS')[i-1]))
-            if getattr(C,cbp+'_TYPES')[i-1][0]=="radioline":
+            elif getattr(C,cbp+'_TYPES')[i-1][0]=="radioline":
                 radiolines.append(getattr(C,cbp+'_VARS')[i-1])
-            if getattr(C,cbp+'_TYPES')[i-1][0]=="info" or getattr(C,cbp+'_TYPES')[i-1][0]=="nothing":
-                onlyinfo.append(getattr(C,cbp+'_VARS')[i-1])
             for h in range(1,len(getattr(C,cbp+'_TYPES')[i-1])):
                 if getattr(C,cbp+'_TYPES')[i-1][h]=="inline":
                     singleline.append(getattr(C,cbp+'_VARS')[i-1])
@@ -354,7 +364,8 @@ class BlocPage(Page):
         mintime_text="Le bouton Suivant apparaîtra très bientôt"
         allvars=[]
         for vi,v in enumerate(getattr(C,cbp+'_VARS')): 
-            if getattr(C,cbp+'_TYPES')[vi][0]=="nothing": allvars.append("__info__");
+            if skip_some_blocpage_quests(player,cbp,vi+1,"vars_for_template"): continue
+            if getattr(C,cbp+'_TYPES')[vi][0]=="nothing" or make_type_nothing(player,v) : allvars.append("__info__");
             else: allvars.append(getattr(C,cbp+'_VARS')[vi])
         res = dict(
             slidervars=slidervars,
@@ -384,6 +395,7 @@ class BlocPage(Page):
         firstrandoms=[]
         randomorders=[]
         shownumbers=[]
+        fixedsum_sliders=[]
         if hasattr(C,cbp+"_RANDOMORDERS"):
            for ovi,ov in enumerate(getattr(C,cbp+"_RANDOMORDERS")):
             firstrandoms.append(ov[0] if isinstance(ov,list) else getattr(C,ov)[0])
@@ -401,6 +413,7 @@ class BlocPage(Page):
             firstrandoms=firstrandoms,
             shownumbers=shownumbers,
             screentime_prefix=cbp+"_",
+            fixedsum_sliders=fixedsum_sliders,
             debug=False,
         )
         if hasattr(C,"TRACK_BLOCPAGE_LOADS") and cbp in C.TRACK_BLOCPAGE_LOADS: res['loadtimevar']=cbp+"_loadtime"
