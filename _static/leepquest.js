@@ -7,6 +7,8 @@ var waitnext_timer_handler;
 var screen_listing=false;
 var starttime;
 
+var prev_button_clicked=false, next_button_clicked=false;
+
 if(window.bys === undefined && by >0) window.bys = Array(allvars.length/by).fill(by);
 // console.log(allvars);
 function bindSliderUpdate(slider,sl,starthidden,cdecimals) {
@@ -84,6 +86,8 @@ function liveRecv(data) {
 			// console.log(js_vars.loadtimevar,":",loadtime,input_loadtime);
 		}
 		starttime=ctime;
+		
+		prev_button_clicked=false; next_button_clicked=false;
 
 	}
 	if(command.toLowerCase() == "ok") {
@@ -268,6 +272,7 @@ if(sliderpresent) {
 
 $(".otree-btn-next").click(function(e,a_sup_param){
 	// console.log("otree-btn-next");
+	prev_button_clicked=false; next_button_clicked=true;
 	if(by>0 && allvars.length>0) {
 		var nanswnow=0, nanswtot=0, bynow=0;
 		var force_prevent_default=false;
@@ -421,6 +426,7 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 });
 
 $("#prevbutton").click(function(e){
+	prev_button_clicked=true; next_button_clicked=false;
 	if(by>0 && allvars.length>0) {
 		if(waitnext_timer_handler!==null && waitnext_timer_handler!==false) {clearTimeout(waitnext_timer_handler); $("#waitnext_text").hide(); $("#control_buttons").show();}
 		var nanswtot=0
