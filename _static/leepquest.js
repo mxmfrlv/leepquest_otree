@@ -246,7 +246,7 @@ if(sliderpresent) {
 		document.getElementById("sliderleft_"+slidervars[sl]).innerHTML=leftright[0].replace(/_/g,"&nbsp;");
 		if(leftright.length>1) document.getElementById("sliderright_"+slidervars[sl]).innerHTML=leftright[1].replace(/_/g,"&nbsp;");
 	}
-	if(starthidden) document.getElementById("sliderhint_"+slidervars[sl]).innerHTML="cliquez sur le champs grisé ci-dessous afin de faire apapraitre un curseur et répondre";
+	if(starthidden) document.getElementById("sliderhint_"+slidervars[sl]).innerHTML="cliquez sur le champ grisé ci-dessous afin de faire apparaître un curseur et répondre";
 	var cdecimals=0; if(cstep>0 && cstep<1) cdecimals=cstep.toString().length-2;
 	sliderbeh='tap'; //starthidden?'snap':'tap';
 	noUiSlider.create(slider, {
@@ -279,6 +279,11 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 		for(i=0; i<varsshown.length; i++) if(varsshown[i]>0 && allvars[i]!="") {
 			bynow++;
 			var iamoptional=document.getElementById(allvars[i]+"_validator") !== null && (document.getElementById(allvars[i]+"_validator").value.replace(/Optional/,"")!=document.getElementById(allvars[i]+"_validator").value);
+			// alert(document.getElementById(allvars[i]+"_errormessage")+","+iamoptional.toString());
+			if(iamoptional && document.getElementById(allvars[i]+"_errormessage") !== null) {
+				if(document.getElementById(allvars[i]+"_errormessage").title == 'required') iamoptional=false;
+				// alert(document.getElementById(allvars[i]+"_errormessage").title+"\r\n"+document.getElementById(allvars[i]+"_errormessage").outerHTML+"\r\n"+$(allvars[i]+"_errormessage").attr("title"));
+			}
 			if(allvars[i]=="__info__") iamoptional=true;
 			// console.log("allvars[i]=",allvars[i], "iamoptional=", iamoptional);
 			var ok_pass=(document.forms[0][allvars[i]] !== undefined || allvars[i]=="__info__") && (iamoptional || (document.forms[0][allvars[i]].value!="" && typeof document.forms[0][allvars[i]].checkValidity !== 'function') || (typeof document.forms[0][allvars[i]].checkValidity === 'function' && document.forms[0][allvars[i]].checkValidity()));
