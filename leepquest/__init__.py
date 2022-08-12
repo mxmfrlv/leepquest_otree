@@ -1,31 +1,70 @@
 from otree.api import *
-import math, random, os
+import math, random, os, pandas
 
 class C(BaseConstants):
     NAME_IN_URL = 'leepquest'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 3
-    BLOCPAGES="A;B".split(';')
     # BLOCPAGEDATA_IN_PARTICIPANT = True
-    TRACK_BLOCPAGE_LOADS = "A;B".split(';')
-    A_LIST = "Quel âge avez-vous ?;Quel est le diplôme le plus élevé que vous avez obtenu ?;Veuillez également répondre à la question suivante :;Quel est votre genre ?;Quel est votre pays de naissance?".split(';')
-    A_TYPES = [x.split(':') for x in "slider:int;radio;info;radio;select".split(';')]
-    A_OPTS = [x.split(':') for x in "99:18:1:17;Sans diplôme:Certificat d’études primaires:Ancien brevet BEPC:Certificat d’aptitude professionnelle (CAP):Brevet d’enseignement professionnel (BEP):BAC d’enseignement technique et professionnel:BAC d’enseignement général:BAC +2 (DUT, BTS, D\EUG):Diplôme de l’enseignement supérieur (2ème ou 3ème cycles, grande école);;Homme:Femme;France:Etranger".split(';')]
-    A_VARS = "age;diplome;a_info_1;genre;pays".split(";")
-    A_BY=2
-    A_BY_INTRO=[""]
-    # A_NO_SCREEN_TIME = True
-    A_TITLE="Questionnaire"
-    B_ASSO_LIST="asso_gibiers;asso_neige;asso_petitsprinces;asso_armeschasse;asso_vehiculesepoque;asso_medecinsdumonde;asso_parachitistes;asso_medecinssansfrontiers;asso_industrienationale;asso_sourds;asso_ceramique;asso_yachtclub".split(";")
-    B_LIST = "Sur une échelle de 1 (pas bénéfiques) à 5 (très bénéfiques), pensez-vous que les Associations Reconnues d’Utilité Publique (ARUP) sont généralement bénéfiques pour la société ?;Association nationale des chasseurs de grands gibiers;Association nationale pour l’étude de la neige et des avalanches ;Association des petits princes;Union nationale des propriétaires d’armes de chasse et de tir;Fédération française des véhicules d’époque;Médecins du monde;Union nationale des parachutistes;Médecins sans frontières;Société d’encouragement pour l’industrie nationale;Fédération nationale des sourds de France;Société française de céramique;Yacht club de France;Je pense que je suis une personne de valeur, au moins égale à n’importe qui d’autre;Je pense que je possède un certain nombre de belles qualités;Tout bien considéré, je suis porté-e à me considérer comme un-e raté-e;Je suis capable de faire les choses aussi bien que la majorité des gens;Je sens peu de raisons d’être fier-e de moi;J’ai une attitude positive vis-à-vis moi-même;Dans l’ensemble, je suis satisfait-e de moi;J’aimerais avoir plus de respect pour moi-même;Parfois je me sens vraiment inutile;Il m’arrive de penser que je suis un-e bon-ne à rien".split(";")
-    B_TYPES = [x.split(':') for x in ["radioline:1-5"]+["checkbox:inline"]*len(B_ASSO_LIST)+"radiotable:first;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable:last".split(';')]
-    B_OPTS = [x.split(':') for x in ["(pas bénéfiques)::::(très bénéfiques)"]+["OUI:NON"]*len(B_ASSO_LIST)+["Tout à fait en désaccord:Plutôt en désaccord:Plutôt en accord:Tout à fait en accord"]*10]
-    B_VARS = ["arup_benefiques"]+B_ASSO_LIST+"self_estim_01;self_estim_02;self_estim_03;self_estim_04;self_estim_05;self_estim_06;self_estim_07;self_estim_08;self_estim_09;self_estim_10".split(";")
-    B_BY = "1;12;10".split(';')
-    B_BY_INTRO = ";Lesquelles de ces associations sont selon vous des Associations Reconnues d’Utilité Publique ?;;Sur une échelle de « 1 » (jamais) à « 5 » (souvent), répondez aux affirmations suivantes :;Pour chacune des caractéristiques ou descriptions suivantes, indiquez à quel point chacune est vraie pour vous.".split(';')
-    B_RANDOMORDERS=["B_ASSO_LIST","self_estim_01;self_estim_02;self_estim_03;self_estim_04;self_estim_05;self_estim_06;self_estim_07;self_estim_08;self_estim_09;self_estim_10".split(';')]
-    B_RANDOMORDERS_SHOWNUMBERS=[True,False]
-    # B_SAME_ORDERS_IN_ALL_ROUNDS=[False]
+    APP_NAME=os.path.basename(os.path.dirname(__file__))
+    LQ_PATH=os.path.join(os.getcwd(),APP_NAME,"leepquest.xlsx")
+    if os.path.exists(LQ_PATH):
+        LQ_XLSX = pandas.ExcelFile(LQ_PATH)
+        BLOCPAGES=[]
+        for sheet in LQ_XLSX.sheet_names:
+            if sheet[0] != '#':
+                BLOCPAGES.append(sheet)
+                sh_df=LQ_XLSX.parse(sheet.upper())
+                for scol in list(sh_df.columns):
+                    if scol[0] != '#':
+                        cvarname=sheet.upper()+'_'+scol.upper()
+                        tempvar=list(sh_df[scol])
+                        ne_found=False
+                        for i, x in reversed(list(enumerate(tempvar))):
+                            # print(i,x)
+                            if i==0 or scol.upper() in ['OPTS']: ne_found=True
+                            if isinstance(x,float) and math.isnan(x):
+                                if not ne_found: del tempvar[i]
+                                else: tempvar[i]=''
+                            else:
+                                ne_found=True
+                        del i,x,ne_found       
+                        tempvar=[str(int(x) if isinstance(x,float) else x) for x in tempvar]
+                        if scol.upper() in ['TYPES','OPTS']:
+                            tempvar=[x.split(':') for x in tempvar]
+                        elif scol.upper() in ['BY', 'TITLE']:
+                            if len(tempvar) == 1: tempvar = tempvar[0]
+                        elif scol.upper() in ['RANDOMORDERS_SHOWNUMBERS', 'SAME_ORDERS_IN_ALL_ROUNDS']:
+                            tempvar=[bool(int(str(x).lower().replace('false','0').replace('true','1'))) for x in tempvar]
+                        elif scol.upper() in ['RANDOMORDERS']:
+                            tempvar=[x.split(';') if ';' in x else sheet.upper()+"_"+x for x,sheet in zip(tempvar,[sheet]*len(tempvar))]
+                        locals()[cvarname]=tempvar
+                        # print(cvarname,tempvar)
+                        del tempvar
+                del scol, sh_df
+        del sheet, LQ_XLSX
+        TRACK_BLOCPAGE_LOADS = BLOCPAGES
+    else:
+        BLOCPAGES="A;B".split(';')
+        TRACK_BLOCPAGE_LOADS = "A;B".split(';')
+        A_LIST = "Quel âge avez-vous ?;Quel est le diplôme le plus élevé que vous avez obtenu ?;Veuillez également répondre à la question suivante :;Quel est votre genre ?;Quel est votre pays de naissance?".split(';')
+        A_TYPES = [x.split(':') for x in "slider:int;radio;info;radio;select".split(';')]
+        A_OPTS = [x.split(':') for x in "99:18:1:17;Sans diplôme:Certificat d’études primaires:Ancien brevet BEPC:Certificat d’aptitude professionnelle (CAP):Brevet d’enseignement professionnel (BEP):BAC d’enseignement technique et professionnel:BAC d’enseignement général:BAC +2 (DUT, BTS, D\EUG):Diplôme de l’enseignement supérieur (2ème ou 3ème cycles, grande école);;Homme:Femme;France:Etranger".split(';')]
+        A_VARS = "age;diplome;a_info_1;genre;pays".split(";")
+        A_BY=2
+        A_BY_INTRO=[""]
+        # A_NO_SCREEN_TIME = True
+        A_TITLE="Questionnaire"
+        B_ASSO_LIST="asso_gibiers;asso_neige;asso_petitsprinces;asso_armeschasse;asso_vehiculesepoque;asso_medecinsdumonde;asso_parachitistes;asso_medecinssansfrontiers;asso_industrienationale;asso_sourds;asso_ceramique;asso_yachtclub".split(";")
+        B_LIST = "Sur une échelle de 1 (pas bénéfiques) à 5 (très bénéfiques), pensez-vous que les Associations Reconnues d’Utilité Publique (ARUP) sont généralement bénéfiques pour la société ?;Association nationale des chasseurs de grands gibiers;Association nationale pour l’étude de la neige et des avalanches ;Association des petits princes;Union nationale des propriétaires d’armes de chasse et de tir;Fédération française des véhicules d’époque;Médecins du monde;Union nationale des parachutistes;Médecins sans frontières;Société d’encouragement pour l’industrie nationale;Fédération nationale des sourds de France;Société française de céramique;Yacht club de France;Je pense que je suis une personne de valeur, au moins égale à n’importe qui d’autre;Je pense que je possède un certain nombre de belles qualités;Tout bien considéré, je suis porté-e à me considérer comme un-e raté-e;Je suis capable de faire les choses aussi bien que la majorité des gens;Je sens peu de raisons d’être fier-e de moi;J’ai une attitude positive vis-à-vis moi-même;Dans l’ensemble, je suis satisfait-e de moi;J’aimerais avoir plus de respect pour moi-même;Parfois je me sens vraiment inutile;Il m’arrive de penser que je suis un-e bon-ne à rien".split(";")
+        B_TYPES = [x.split(':') for x in ["radioline:1-5"]+["checkbox:inline"]*len(B_ASSO_LIST)+"radiotable:first;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable:last".split(';')]
+        B_OPTS = [x.split(':') for x in ["(pas bénéfiques)::::(très bénéfiques)"]+["OUI:NON"]*len(B_ASSO_LIST)+["Tout à fait en désaccord:Plutôt en désaccord:Plutôt en accord:Tout à fait en accord"]*10]
+        B_VARS = ["arup_benefiques"]+B_ASSO_LIST+"self_estim_01;self_estim_02;self_estim_03;self_estim_04;self_estim_05;self_estim_06;self_estim_07;self_estim_08;self_estim_09;self_estim_10".split(";")
+        B_BY = "1;12;10".split(';')
+        B_BY_INTRO = ";Lesquelles de ces associations sont selon vous des Associations Reconnues d’Utilité Publique ?;;Sur une échelle de « 1 » (jamais) à « 5 » (souvent), répondez aux affirmations suivantes :;Pour chacune des caractéristiques ou descriptions suivantes, indiquez à quel point chacune est vraie pour vous.".split(';')
+        B_RANDOMORDERS=["B_ASSO_LIST","self_estim_01;self_estim_02;self_estim_03;self_estim_04;self_estim_05;self_estim_06;self_estim_07;self_estim_08;self_estim_09;self_estim_10".split(';')]
+        B_RANDOMORDERS_SHOWNUMBERS=[True,False]
+        # B_SAME_ORDERS_IN_ALL_ROUNDS=[False]
     for i in range(len(BLOCPAGES)):
         locals()[BLOCPAGES[i]+"_QNUMS"]=list(range(1,len(locals()[BLOCPAGES[i]+"_LIST"])+1))
         if i==len(BLOCPAGES)-1: del i  
