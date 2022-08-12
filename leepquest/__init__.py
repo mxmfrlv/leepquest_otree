@@ -33,7 +33,9 @@ class C(BaseConstants):
                         if scol.upper() in ['TYPES','OPTS']:
                             tempvar=[x.split(':') for x in tempvar]
                         elif scol.upper() in ['BY', 'TITLE']:
-                            if len(tempvar) == 1: tempvar = tempvar[0]
+                            if len(tempvar) == 1: 
+                                tempvar = tempvar[0]
+                                if scol.upper() in ['BY'] and str(tempvar).isnumeric and int(tempvar)==0 : tempvar=sh_df.shape[0]
                         elif scol.upper() in ['RANDOMORDERS_SHOWNUMBERS', 'SAME_ORDERS_IN_ALL_ROUNDS']:
                             tempvar=[bool(int(str(x).lower().replace('false','0').replace('true','1'))) for x in tempvar]
                         elif scol.upper() in ['RANDOMORDERS']:
