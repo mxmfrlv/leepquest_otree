@@ -169,11 +169,13 @@ def track_reloads(player: Player, page):
     if hasattr(C,"TRACK_BLOCPAGE_LOADS") and page in C.TRACK_BLOCPAGE_LOADS:
         setattr(player,page+"_nloads",getattr(player,page+"_nloads",0)+1)
 
-def get_current_blocpage(player: Player):
+def get_current_blocpage(player: Player, shift=0):
+    blocpageindex = 0
     if hasattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") and getattr(C,"BLOCPAGEDATA_IN_PARTICIPANT"):
-        return C.BLOCPAGES[player.participant.blocpageindex%len(C.BLOCPAGES)]
+        blocpageindex = player.participant.blocpageindex + shift
     else:
-        return C.BLOCPAGES[player.blocpageindex%len(C.BLOCPAGES)]
+        blocpageindex = player.blocpageindex%len(C.BLOCPAGES) + shift
+    return C.BLOCPAGES[blocpageindex%len(C.BLOCPAGES)]
 
 def get_blocpage_index(player: Player):
     if hasattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") and getattr(C,"BLOCPAGEDATA_IN_PARTICIPANT"):
@@ -300,6 +302,7 @@ class BlocPage(Page):
     @staticmethod
     def before_next_page(player, timeout_happened):
         cbp=get_current_blocpage(player)
+        next_cbp=get_current_blocpage(player,1)
         if hasattr(C,"DEBUG") and getattr(C,"DEBUG") : print("before_next_page, cbp is",cbp)
         set_blocpage_data(player,"")
         for i in getattr(C,cbp+"_QNUMS"):
