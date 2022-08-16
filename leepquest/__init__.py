@@ -22,6 +22,9 @@ class C(BaseConstants):
                         ne_found=False
                         for i, x in reversed(list(enumerate(tempvar))):
                             # print(i,x)
+                            if isinstance(x,str) and scol.upper() in ['LIST'] and x=='-':
+                                ne_found=True
+                                tempvar[i]=''
                             if i==0 or scol.upper() in ['OPTS']: ne_found=True
                             if isinstance(x,float) and math.isnan(x):
                                 if not ne_found: del tempvar[i]
