@@ -221,18 +221,19 @@ if(sliderpresent) {
 	var starthidden=false;
 	var copts=slideropts[sl].split(':');
 	var cmaxval=100, cminval=0, cstep=1;
-	if(copts.length>0 && copts[0]!='') cmaxval=parseFloat(copts[0]);
-	if(copts.length>1 && copts[1]!='') cminval=parseFloat(copts[1]);
-	if(copts.length>2 && copts[2]!='') cstep=parseFloat(copts[2]);
+	if(copts.length>0 && copts[0].replace(/\s+/g,"")!='') cmaxval=parseFloat(copts[0]);
+	if(copts.length>1 && copts[1].replace(/\s+/g,"")!='') cminval=parseFloat(copts[1]);
+	if(copts.length>2 && copts[2].replace(/\s+/g,"")!='') cstep=parseFloat(copts[2]);
 	if(cminval>cmaxval) {var cminval_old=cminval; cminval=cmaxval; cmaxval=cminval_old;}
 	var cstart=(cmaxval+cminval)/2;
 	if(copts.length>3) {
 		if(copts[3].toLowerCase().substr(0,3)=="inv") {
 			starthidden=true;
 			cstart=cminval;
-			if(copts[3].toLowerCase().substr(-4)==",min") cstart=cminval;
-			if(copts[3].toLowerCase().substr(-4)==",max") cstart=cmaxval;
-			if(copts[3].toLowerCase().substr(-4)==",mid" || copts[3].toLowerCase().substr(-4)==",avg") cstart=(cmaxval+cminval)/2;
+			var last4=copts[3].toLowerCase().substr(-4).replace(/\s+/g,"");
+			if(last4==",min") cstart=cminval;
+			if(last4==",max") cstart=cmaxval;
+			if(last4==",mid" || last4==",avg") cstart=(cmaxval+cminval)/2;
 		}
 		else cstart=parseFloat(copts[3]);
 	}

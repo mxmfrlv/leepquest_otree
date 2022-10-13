@@ -34,7 +34,7 @@ class C(BaseConstants):
                         del i,x,ne_found       
                         tempvar=[str(int(x) if isinstance(x,float) else x) for x in tempvar]
                         if scol.upper() in ['TYPES','OPTS']:
-                            tempvar=[x.split(':') for x in tempvar]
+                            tempvar=[[z.strip() for z in y] for y in [x.split(':') for x in tempvar]]
                         elif scol.upper() in ['BY', 'TITLE']:
                             if len(tempvar) == 1: 
                                 tempvar = tempvar[0]

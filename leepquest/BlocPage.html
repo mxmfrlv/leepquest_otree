@@ -25,12 +25,14 @@
 		{{ if not field.short_name in radiotable_rows and not field.short_name in singleline }} <h5><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</h5>{{ endif }}
 		{{ if field.short_name in slidervars }}
 			<em>(<span id="sliderhint_{{field.short_name}}">faites bouger le curseur ci-dessous afin de répondre</span>)</em><br><br>
-			<input type=hidde id="sliderinput_{{field.short_name}}" name="{{field.short_name}}" {{if 'InputRequired' in field.validators.0.__str__() }} style="display:none" class="form-control" required{{ endif }} value="" />
+			<input type=hidden id="sliderinput_{{field.short_name}}" name="{{field.short_name}}" {{if 'InputRequired' in field.validators.0.__str__() }} style="display:none" class="form-control" required{{ endif }} value="" />
 			<input type=hidden name="{{field.type}}" value=0 id="slidershown_{{field.short_name}}" />
 			<div style="white-space:nowrap"><span id="sliderleft_{{field.short_name}}"></span><div style='width:50%;display:inline-block' id="slider_{{field.short_name}}"></div><span id="sliderright_{{field.short_name}}"></span></div>
 			<br>
 			{{ formfield_errors field.name }}
-			<div class="alert-warning" style="display:none" id="{{field.short_name}}_errormessage"></div>
+			{{if 'InputRequired' in field.validators.0.__str__() }} 
+				<div class="alert-warning" style="display:none" id="{{field.short_name}}_errormessage"></div>
+			{{ endif }}
 		{{ elif field.short_name in radiolines }}
 			<table cellpadding=5 style='text-align:center;vertical-align:middle;'><tr>
 			{{ for choice in field }} <td style='width:{{ radioline_width }}'> {{ choice }} </td> {{ endfor }}
