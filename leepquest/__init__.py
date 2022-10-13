@@ -4,7 +4,7 @@ import math, random, os, pandas
 class C(BaseConstants):
     NAME_IN_URL = 'leepquest'
     PLAYERS_PER_GROUP = None
-    NUM_ROUNDS = 3
+    NUM_ROUNDS = 1
     # BLOCPAGEDATA_IN_PARTICIPANT = True
     APP_NAME=os.path.basename(os.path.dirname(__file__))
     LQ_PATH=os.path.join(os.getcwd(),APP_NAME,"leepquest.xlsx")
@@ -469,4 +469,8 @@ class BlocPage(Page):
         if hasattr(C,"TRACK_BLOCPAGE_LOADS") and cbp in C.TRACK_BLOCPAGE_LOADS: res['loadtimevar']=cbp+"_loadtime"
         return res
 
-page_sequence = [BlocPage,BlocPage]
+page_sequence = [BlocPage]
+
+if page_sequence.count(BlocPage) < len(C.BLOCPAGES):
+    for i in range(len(C.BLOCPAGES)-page_sequence.count(BlocPage)):
+        page_sequence.append(BlocPage)
