@@ -224,6 +224,7 @@ if(sliderpresent) {
 	if(copts.length>0 && copts[0]!='') cmaxval=parseFloat(copts[0]);
 	if(copts.length>1 && copts[1]!='') cminval=parseFloat(copts[1]);
 	if(copts.length>2 && copts[2]!='') cstep=parseFloat(copts[2]);
+	if(cminval>cmaxval) {var cminval_old=cminval; cminval=cmaxval; cmaxval=cminval_old;}
 	var cstart=(cmaxval+cminval)/2;
 	if(copts.length>3) {
 		if(copts[3].toLowerCase().substr(0,3)=="inv") {
@@ -231,7 +232,7 @@ if(sliderpresent) {
 			cstart=cminval;
 			if(copts[3].toLowerCase().substr(-4)==",min") cstart=cminval;
 			if(copts[3].toLowerCase().substr(-4)==",max") cstart=cmaxval;
-			if(copts[3].toLowerCase().substr(-4)==",max") cstart=(cmaxval+cminval)/2;
+			if(copts[3].toLowerCase().substr(-4)==",mid" || copts[3].toLowerCase().substr(-4)==",avg") cstart=(cmaxval+cminval)/2;
 		}
 		else cstart=parseFloat(copts[3]);
 	}

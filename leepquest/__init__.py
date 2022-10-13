@@ -110,6 +110,11 @@ class Player(BasePlayer):
         by_list=[getattr(C,cbp+'_BY')]*math.ceil(len(getattr(C,cbp+'_LIST'))/int(getattr(C,cbp+'_BY'))) if not isinstance(getattr(C,cbp+'_BY'),list) else getattr(C,cbp+'_BY')
         for i in getattr(C,cbp+"_QNUMS"):
             cblank=False
+            min_index=1; max_index=0
+            if getattr(C,cbp+'_TYPES')[i-1][0]=="int" or getattr(C,cbp+'_TYPES')[i-1][0]=="float":
+                if len(getattr(C,cbp+'_OPTS')[i-1])>1 and getattr(C,cbp+'_OPTS')[i-1][0].strip()!="" and getattr(C,cbp+'_OPTS')[i-1][1].strip()!="" :
+                    if int(getattr(C,cbp+'_OPTS')[i-1][0].strip())<int(getattr(C,cbp+'_OPTS')[i-1][1].strip()):
+                        max_index = 1; min_index = 0
             # print(getattr(C,cbp+'_TYPES')[i-1][0])
             for h in range(1,len(getattr(C,cbp+'_TYPES')[i-1])):
                 if getattr(C,cbp+'_TYPES')[i-1][h]=="optional": cblank = True
@@ -147,9 +152,9 @@ class Player(BasePlayer):
                 locals()[getattr(C,cbp+'_VARS')[i-1]]=models.StringField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1], blank=cblank)
             elif getattr(C,cbp+'_TYPES')[i-1][0]=="int":
                 # print(getattr(C,cbp+'_VARS')[i-1],cblank)
-                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1], max=int(getattr(C,cbp+'_OPTS')[i-1][0]) if getattr(C,cbp+'_OPTS')[i-1][0]!="" else None, min=int(getattr(C,cbp+'_OPTS')[i-1][1]) if len(getattr(C,cbp+'_OPTS')[i-1])>1 and getattr(C,cbp+'_OPTS')[i-1][1]!="" else None, blank=cblank)
+                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1], max=int(getattr(C,cbp+'_OPTS')[i-1][max_index].strip()) if getattr(C,cbp+'_OPTS')[i-1][max_index].strip()!="" else None, min=int(getattr(C,cbp+'_OPTS')[i-1][min_index].strip()) if len(getattr(C,cbp+'_OPTS')[i-1])>1 and getattr(C,cbp+'_OPTS')[i-1][min_index].strip()!="" else None, blank=cblank)
             elif getattr(C,cbp+'_TYPES')[i-1][0]=="float":
-                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.FloatField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1], max=float(getattr(C,cbp+'_OPTS')[i-1][0]) if getattr(C,cbp+'_OPTS')[i-1][0]!="" else None, min=float(getattr(C,cbp+'_OPTS')[i-1][1]) if len(getattr(C,cbp+'_OPTS')[i-1])>1 and getattr(C,cbp+'_OPTS')[i-1][1]!="" else None, blank=cblank)
+                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.FloatField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1], max=float(getattr(C,cbp+'_OPTS')[i-1][max_index].strip()) if getattr(C,cbp+'_OPTS')[i-1][max_index].strip()!="" else None, min=float(getattr(C,cbp+'_OPTS')[i-1][min_index].strip()) if len(getattr(C,cbp+'_OPTS')[i-1])>1 and getattr(C,cbp+'_OPTS')[i-1][min_index].strip()!="" else None, blank=cblank)
             elif getattr(C,cbp+'_TYPES')[i-1][0]=="info":
                 locals()[getattr(C,cbp+'_VARS')[i-1]]=models.BooleanField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1], blank=True)
             elif getattr(C,cbp+'_TYPES')[i-1][0]=="nothing":
@@ -164,7 +169,7 @@ class Player(BasePlayer):
             if i == len(by_list): 
                 del i
         if bpi == len(C.BLOCPAGES)-1:
-            del bpi, cbp, by_list                  
+            del bpi, cbp, by_list, min_index, max_index
     ### blocpage stuff above
 
 # FUNCTIONS
