@@ -170,7 +170,7 @@ if(js_vars.min_times != undefined) {
 		$("#control_buttons").hide(); //$("#waitnext_text").show(); // in liveRecv()
 	}
 }
-if(js_vars.randomorders != undefined && js_vars.firstrandoms != undefined) {
+if(js_vars.randomorders != undefined && js_vars.firstrandoms != undefined && js_vars.randomorders.length != 0) {
 	for(var q in js_vars.randomorders) {
 		for(var o in js_vars.randomorders[q]) {
 			if(document.getElementById("table_"+js_vars.firstrandoms[q]) === null) 
@@ -185,7 +185,7 @@ if(js_vars.randomorders != undefined && js_vars.firstrandoms != undefined) {
 			orderInput.type="hidden"; orderInput.value=(parseInt(o)+1).toString();
 			orderInput.name=js_vars.randomorders[q][o]+"_order";
 			$("form").append(orderInput);
-			if(js_vars.shownumbers != undefined && js_vars.shownumbers.length>q && js_vars.shownumbers[q]) {
+			if(js_vars.shownumbers != undefined && js_vars.shownumbers.length>q && parseInt(js_vars.shownumbers[q])) {
 				var cnumber=parseInt(o)+1;
 				var csnumber=cnumber.toString()+".&nbsp;";
 				if(cnumber<10) csnumber="&nbsp;"+csnumber;
@@ -194,6 +194,20 @@ if(js_vars.randomorders != undefined && js_vars.firstrandoms != undefined) {
 		}
 	}
 }
+else if(js_vars.shownumbers != undefined && js_vars.shownumbers.length != 0) {
+	for(var iav in allvars) {
+		//console.log(iav,js_vars.shownumbers.length,js_vars.shownumbers[iav])
+		if(js_vars.shownumbers.length>iav && parseInt(js_vars.shownumbers[iav])) {
+			var cnumber=parseInt(iav)+1;
+			var csnumber=cnumber.toString()+".&nbsp;";
+			if(cnumber<10) csnumber="&nbsp;"+csnumber;
+			$("#field_"+allvars[iav]+"_number_placeholder").html(csnumber);
+			$("#field_"+allvars[iav]+"_number_placeholder").parent().find('label').html($("#field_"+allvars[iav]+"_number_placeholder").parent().find('label').html().replace(' ?','&nbsp;?'));
+			$("#field_"+allvars[iav]+"_number_placeholder").parent().find('label').prepend($("#field_"+allvars[iav]+"_number_placeholder"));
+		}
+	}
+}
+// console.log(js_vars.shownumbers,js_vars.randomorders,js_vars.firstrandoms,js_vars.shownumbers != undefined);
 if(document.getElementById("initial_presentation") !== null) $([document.documentElement, document.body]).animate({
 	scrollTop: (js_vars.bys_intro != undefined && js_vars.bys_intro[0] != "" )? $("#initial_presentation").offset().top : 0
 }, 10);

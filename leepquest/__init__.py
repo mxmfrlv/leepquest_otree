@@ -459,6 +459,13 @@ class BlocPage(Page):
                 if isinstance(getattr(C,cbp+"_RANDOMORDERS_SHOWNUMBERS"),bool): shownumbers.append(getattr(C,cbp+"_RANDOMORDERS_SHOWNUMBERS"))
                 elif isinstance(getattr(C,cbp+"_RANDOMORDERS_SHOWNUMBERS"),list) and ovi<len(getattr(C,cbp+"_RANDOMORDERS_SHOWNUMBERS")):
                      shownumbers.append(getattr(C,cbp+"_RANDOMORDERS_SHOWNUMBERS")[ovi])                
+        elif hasattr(C,cbp+"_SHOWNUMBERS"):
+            for i in getattr(C,cbp+"_QNUMS"):
+                if (isinstance(getattr(C,cbp+"_SHOWNUMBERS"),list)):
+                    cshownumber = getattr(C,cbp+"_SHOWNUMBERS")[i-1] if i-1 < len(getattr(C,cbp+"_SHOWNUMBERS")) else getattr(C,cbp+"_SHOWNUMBERS")[-1]
+                    shownumbers.append(cshownumber)
+                elif int(getattr(C,cbp+"_SHOWNUMBERS")):
+                    shownumbers.append(getattr(C,cbp+"_SHOWNUMBERS"))
         res = dict(
             hide_initial=False,
             bys_intro=getattr(C,cbp+"_BY_INTRO") if hasattr (C,cbp+"_BY_INTRO") else [""],
