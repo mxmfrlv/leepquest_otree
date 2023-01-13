@@ -69,9 +69,21 @@
 			</th>
 			{{ for choice in field }} <td> <span data-toggle="tooltip" data-html="true" title='{{ choice.label }}'>{{ choice }}</span> </td> {{ endfor }}
 			</tr>
-		{{ else }}
+			
 		{{ elif field.short_name in singleline }}
-			<div class="row border-bottom"><div class="col-8"><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</div><div style='display:inline-block' class="col-4" >{{ field }}</div></div>
+			<div class="row border-bottom"><div class="col-8"><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</div>
+			<div style='display:inline-block' class="col-4" >
+			{{ if field.short_name in suffixvars }}
+				<div class="input-group">
+			{{ endif }}
+			{{ field }}
+			{{ if field.short_name in suffixvars }}
+				<span class="input-group-text">{{ for suff in suffixes }} {{ if suff.var == field.short_name }} {{ suff.val }} {{ endif }} {{ endfor }}</span>
+				</div>
+			{{ endif }}
+			</div></div>
+		{{ elif field.short_name in onlyinfo }}
+			<input type=hidden value="1" name="{{field.short_name}}" />
 		{{ elif field.short_name in onlyinfo }}
 			<input type=hidden value="1" name="{{field.short_name}}" />
 		{{ else }}
