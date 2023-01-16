@@ -84,8 +84,6 @@
 			</div></div>
 		{{ elif field.short_name in onlyinfo }}
 			<input type=hidden value="1" name="{{field.short_name}}" />
-		{{ elif field.short_name in onlyinfo }}
-			<input type=hidden value="1" name="{{field.short_name}}" />
 		{{ else }}
 			{{ if field.short_name in suffixvars }}
 				<div class="input-group">
