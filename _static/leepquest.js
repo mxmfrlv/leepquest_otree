@@ -265,7 +265,22 @@ if(sliderpresent) {
 	if(starthidden) document.getElementById("sliderhint_"+slidervars[sl]).innerHTML="cliquez sur le champ grisé ci-dessous afin de faire apparaître un curseur et répondre";
 	var cdecimals=0; if(cstep>0 && cstep<1) cdecimals=cstep.toString().length-2;
 	sliderbeh='tap'; //starthidden?'snap':'tap';
-	noUiSlider.create(slider, {
+	var uipips={
+			mode: 'range',
+			stepped: true,
+			format: wNumb({decimals: cdecimals, prefix:pref, suffix:suff}),
+	}
+	if(verticalsliders.indexOf(slidervars[sl])>-1 || copts.length>6) {
+		uipips['mode']='positions';
+		uipips['density']=5;
+		uipips['values']=[0,10,20,30,40,50,60,70,80,90,100];
+		if(copts.length>6) {
+			var valdens=copts[6].split('/');
+			uipips['values']=valdens[0].split(',');
+			if(valdens.length>1) uipips['density']=valdens[1];
+		}
+	}
+	var cslideroptions={
 		start:cstart,
 		range: {
 			'min': cminval,
@@ -275,13 +290,14 @@ if(sliderpresent) {
 		tooltips: wNumb({decimals: cdecimals, prefix:pref, suffix:suff}),
 		
 		// Show a scale with the slider
-		pips: {
-			mode: 'range',
-			stepped: true,
-			format: wNumb({decimals: cdecimals, prefix:pref, suffix:suff}),
-		},
+		pips: uipips,
 		behaviour: sliderbeh
-	});
+	}
+	if(verticalsliders.indexOf(slidervars[sl])>-1) {
+		cslideroptions['orientation']='vertical';
+		cslideroptions['direction']='rtl';
+	}
+	noUiSlider.create(slider, cslideroptions);
 	bindSliderUpdate(slider,sl,starthidden,cdecimals);
  }
 }

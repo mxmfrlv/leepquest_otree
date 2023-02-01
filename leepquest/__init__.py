@@ -378,6 +378,8 @@ class BlocPage(Page):
         cbp=get_current_blocpage(player)
         slidervars=[]
         slideropts=[]
+        vsliders=[]
+        vslider_height=400
         radiolines=[]
         radiotable_headers=[]
         radiotable_bottoms=[]
@@ -398,6 +400,11 @@ class BlocPage(Page):
             elif getattr(C,cbp+'_TYPES')[i-1][0]=="slider":
                 slidervars.append(getattr(C,cbp+'_VARS')[i-1])
                 slideropts.append(str.join(':',getattr(C,cbp+'_OPTS')[i-1]))
+                for h in range(1,len(getattr(C,cbp+'_TYPES')[i-1])):
+                    if getattr(C,cbp+'_TYPES')[i-1][h].split('/')[0]=="vertical": 
+                        vsliders.append(getattr(C,cbp+'_VARS')[i-1])
+                        if len(getattr(C,cbp+'_TYPES')[i-1][h].split('/'))>1 :
+                            vslider_height=getattr(C,cbp+'_TYPES')[i-1][h].split('/')[1]
             elif getattr(C,cbp+'_TYPES')[i-1][0]=="radioline":
                 radiolines.append(getattr(C,cbp+'_VARS')[i-1])
             for h in range(1,len(getattr(C,cbp+'_TYPES')[i-1])):
@@ -425,6 +432,8 @@ class BlocPage(Page):
         res = dict(
             slidervars=slidervars,
             radiolines=radiolines,
+            vsliders=vsliders,
+            vslider_height=str(vslider_height)+'px',
             onlyinfo=onlyinfo,
             radioline_width="120px",
             singleline=singleline,
@@ -434,6 +443,7 @@ class BlocPage(Page):
             radiotable_bottoms=radiotable_bottoms,
             cslidervars=str.join(';',slidervars),
             cslideropts=str.join(';',slideropts),
+            cvsliders=str.join(';',vsliders),
             all_vars=[v for v in allvars if v != "__info__"],
             allvars=str.join(';',allvars),
             by=str.join(',',[str(getattr(C,cbp+'_BY'))]*math.ceil(len(getattr(C,cbp+'_LIST'))/int(getattr(C,cbp+'_BY'))) if not isinstance(getattr(C,cbp+'_BY'),list) else getattr(C,cbp+'_BY')),
