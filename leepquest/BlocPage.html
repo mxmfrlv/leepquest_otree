@@ -28,7 +28,7 @@
 			<input type=hidden id="sliderinput_{{field.short_name}}" name="{{field.short_name}}" {{if 'InputRequired' in field.validators.0.__str__() }} style="display:none" class="form-control" required{{ endif }} value="" />
 			<input type=hidden name="{{field.type}}" value=0 id="slidershown_{{field.short_name}}" />
 			{{ if not field.short_name in vsliders }} <div style="white-space:nowrap"><span id="sliderleft_{{field.short_name}}"></span><div style='width:50%;display:inline-block' id="slider_{{field.short_name}}"></div><span id="sliderright_{{field.short_name}}"></span></div>
-			{{ else }}<br><center><em id="sliderright_{{field.short_name}}"></em><br><br><div id="slider_{{field.short_name}}"  class="noUi-target noUi-rtl noUi-vertical noUi-txt-dir-ltr" style="height:{{ vslider_height }}; "></div><br><em id="sliderleft_{{field.short_name}}"></em></center>
+			{{ else }}<br><center><em id="sliderright_{{field.short_name}}"></em><br><br><div id="slider_{{field.short_name}}"  class="" style="height:{{ vslider_height }}; "></div><br><em id="sliderleft_{{field.short_name}}"></em></center>
 			{{ endif }}
 			<br>
 			{{ formfield_errors field.name }}

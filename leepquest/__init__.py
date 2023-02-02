@@ -433,7 +433,7 @@ class BlocPage(Page):
             slidervars=slidervars,
             radiolines=radiolines,
             vsliders=vsliders,
-            vslider_height=str(vslider_height)+'px',
+            vslider_height=str(vslider_height)+('px' if not 'px' in str(vslider_height) else ''),
             onlyinfo=onlyinfo,
             radioline_width="120px",
             singleline=singleline,
