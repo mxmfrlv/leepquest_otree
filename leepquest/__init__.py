@@ -6,6 +6,7 @@ class C(BaseConstants):
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 1
     # BLOCPAGEDATA_IN_PARTICIPANT = True
+    TAGS_IN_TEXT = False
     APP_NAME=os.path.basename(os.path.dirname(__file__))
     LQ_PATH=os.path.join(os.getcwd(),APP_NAME,"leepquest.xlsx")
     if os.path.exists(LQ_PATH):
@@ -389,6 +390,7 @@ class BlocPage(Page):
         suffixvars=[]
         suffixes=[]
         title=""
+        questtags=[]
         if(hasattr(C,cbp+"_TITLE")): title=getattr(C,cbp+"_TITLE")
         presentation_tepmplate=""
         if os.path.exists(C.NAME_IN_URL+"/include_"+cbp+".html"): presentation_tepmplate=C.NAME_IN_URL+"/include_"+cbp+".html"
@@ -423,6 +425,11 @@ class BlocPage(Page):
                 elif len(getattr(C,cbp+'_TYPES')[i-1]) > 1 and getattr(C,cbp+'_TYPES')[i-1][1] == "last":
                     radiotable_bottoms.append(getattr(C,cbp+'_VARS')[i-1])
                     radiotable_rows.append(getattr(C,cbp+'_VARS')[i-1])
+            cqtag='h5'
+            if(hasattr(C,cbp+"_QUESTTAG")):
+                cqtag_cand = getattr(C,cbp+"_QUESTTAG")[i-1] if i <= len(getattr(C,cbp+"_QUESTTAG")) else getattr(C,cbp+"_QUESTTAG")[-1]
+                if str(cqtag_cand)!='' and str(cqtag_cand)!='-' and str(cqtag_cand)!='0': cqtag=cqtag_cand
+            questtags.append(dict(var=getattr(C,cbp+'_VARS')[i-1],tag=cqtag))
         mintime_text="Le bouton Suivant apparaîtra très bientôt"
         allvars=[]
         for vi,v in enumerate(getattr(C,cbp+'_VARS')): 
@@ -430,6 +437,7 @@ class BlocPage(Page):
             if getattr(C,cbp+'_TYPES')[vi][0]=="nothing" or make_type_nothing(player,v) : allvars.append("__info__");
             else: allvars.append(getattr(C,cbp+'_VARS')[vi])
         res = dict(
+            questtags=questtags,
             slidervars=slidervars,
             radiolines=radiolines,
             vsliders=vsliders,
@@ -461,6 +469,7 @@ class BlocPage(Page):
         randomorders=[]
         shownumbers=[]
         fixedsum_sliders=[]
+        withtags=[]
         if hasattr(C,cbp+"_RANDOMORDERS"):
            for ovi,ov in enumerate(getattr(C,cbp+"_RANDOMORDERS")):
             firstrandoms.append(ov[0] if isinstance(ov,list) else getattr(C,ov)[0])
@@ -476,6 +485,14 @@ class BlocPage(Page):
                     shownumbers.append(cshownumber)
                 elif int(getattr(C,cbp+"_SHOWNUMBERS")):
                     shownumbers.append(getattr(C,cbp+"_SHOWNUMBERS"))
+        if hasattr(C,cbp+"_HASTAGS") or C.TAGS_IN_TEXT:
+            for i in getattr(C,cbp+"_QNUMS"):
+                chastags = C.TAGS_IN_TEXT
+                if hasattr(C,cbp+"_HASTAGS"):
+                    clastval = getattr(C,cbp+"_HASTAGS")[i-1] if i <= len(getattr(C,cbp+"_HASTAGS")) else getattr(C,cbp+"_HASTAGS")[-1]
+                    chastags =  not (str(clastval) == '' or 'f' in str(clastval).lower() or str(clastval) == '0' or 'n' in str(clastval).lower())
+                    # print(getattr(C,cbp+'_VARS')[i-1],clastval,chastags,C.TAGS_IN_TEXT);
+                if chastags: withtags.append(getattr(C,cbp+'_VARS')[i-1])
         res = dict(
             hide_initial=False,
             bys_intro=getattr(C,cbp+"_BY_INTRO") if hasattr (C,cbp+"_BY_INTRO") else [""],
@@ -486,6 +503,7 @@ class BlocPage(Page):
             shownumbers=shownumbers,
             screentime_prefix=cbp+"_",
             fixedsum_sliders=fixedsum_sliders,
+            withtags=withtags,
             debug=False,
         )
         if hasattr(C,"TRACK_BLOCPAGE_LOADS") and cbp in C.TRACK_BLOCPAGE_LOADS: res['loadtimevar']=cbp+"_loadtime"

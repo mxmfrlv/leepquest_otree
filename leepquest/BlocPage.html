@@ -22,7 +22,7 @@
 		{{ endif }}
 		<input type=hidden name="{{field.short_name}}_validator" value='{{ field.validators.0 }}' id="{{field.short_name}}_validator" />
 	   {{ endif }}
-		{{ if not field.short_name in radiotable_rows and not field.short_name in singleline }} <h5><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</h5>{{ endif }}
+		{{ if not field.short_name in radiotable_rows and not field.short_name in singleline }} <{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ qitem.tag }}{{ endif }}{{ endfor }}><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ qitem.tag }}{{ endif }}{{ endfor }}>{{ endif }}
 		{{ if field.short_name in slidervars }}
 			<em>(<span id="sliderhint_{{field.short_name}}">faites bouger le curseur ci-dessous afin de répondre</span>)</em><br><br>
 			<input type=hidden id="sliderinput_{{field.short_name}}" name="{{field.short_name}}" {{if 'InputRequired' in field.validators.0.__str__() }} style="display:none" class="form-control" required{{ endif }} value="" />

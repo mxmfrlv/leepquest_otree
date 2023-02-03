@@ -520,6 +520,18 @@ $("#prevbutton").click(function(e){
 	}
 });
 
+console.log(js_vars.withtags);
+if(js_vars.withtags.length>0) {
+  $("label").each(function() {
+	  var cfor =  $(this).attr("for");
+	  var proceed=false;
+	  for(var w=0; w<js_vars.withtags.length; w++) {
+		  if(cfor.replace(js_vars.withtags[w],'')!=cfor) proceed=true;
+	  }
+	  if(proceed) $( this ).html($( this ).html().replace(/&gt;/gi,">").replace(/&lt;/gi,"<"));
+   console.log("for="+$(this).attr("for"),$( this ).html());
+  });
+}							  
 if(typeof liveSend === 'function') liveSend('load|nscr:0:'+starttime.toString());
 });
 
