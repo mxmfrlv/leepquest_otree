@@ -70,6 +70,98 @@ function bindOnChangeForTime(field) {
 		// console.log("starttime:",starttime,"timenow: ",timenow_ch,"field.name: ",field.name, $("#"+field.name+"_time").val());
 	}
 }
+///dependencies
+function dependfunc(depended,dependon,depvals,inv) {
+	// console.log(document.forms[0][dependon].value,',by='+by,dependon,depended,depvals,inv);
+	var negform=false;
+	if(depvals.substr(0,1)=='!') {
+		negform=true; depvals=depvals.substr(1);
+	}
+	var adepvals=depvals.split(',');
+	var depok=negform;
+	for(var i=0; i<adepvals.length; i++) {
+		if(adepvals[i]==document.forms[0][dependon].value) depok=!negform;
+	}
+	if(depok) {
+		if(document.getElementById(depended+'_errormessage') == null) $( '<div class="alert-warning" style="display:none" title="required" id="'+depended+'_errormessage">Veuillez répondre à cette question</div>' ).insertBefore( $( '#field_'+depended+'_number_placeholder' ) );
+		document.getElementById(depended+'_errormessage').title="required"; //$('#'+depended+'_errormessage').attr("title","required");
+		// console.log(typeof document.forms[0][depended].checkValidity)
+		if(typeof document.forms[0][depended].checkValidity === 'function') {
+			$('#id_'+depended).prop('required',true);
+			//document.forms[0][depended].setCustomValidity("Veuillez répondre à cette question");
+			// console.log('set '+'#id_'+depended+' required');
+		}
+		// console.log('inserted','by='+by);
+		if(inv){
+			var imshown=false;
+			for(i=0; i<varsshown.length; i++) if(varsshown[i]>0 && allvars[i]==depended) imshown=true;
+			$('#field_'+depended).off('show');
+			if(imshown) $('#field_'+depended).show();
+		}
+	}
+	if(!depok) {
+		if(document.getElementById(depended+'_errormessage') != null) {
+			document.getElementById(depended+'_errormessage').title=""; 
+			// if(document.forms[0][depended].checkValidity === 'function') document.forms[0][depended].setCustomValidity("");
+			//$('#'+depended+'_errormessage').attr("title","");
+			$('#id_'+depended).prop('required',false);
+		}
+		if(inv) {
+			// console.log("invisible, by="+by);
+			var imshown=false;
+			for(i=0; i<varsshown.length; i++) if(varsshown[i]>0 && allvars[i]==depended) imshown=true;
+			if(!imshown) $('#field_'+depended).on('show', {depended:depended}, function(event) {
+				setTimeout(function() {
+					if(by == 1) $(".otree-btn-next").click();
+					else $('#field_'+event.data.depended).hide();
+				},50);
+								
+			});
+			if(imshown) $('#field_'+depended).hide();
+			
+		}
+	}
+}
+function applydependencies(){
+		for(var i=0; i<deps.length; i++) {
+			// console.log(deps[i]);
+			var depselems=deps[i].split(':');
+			var depended=depselems[0].replace(/\s+/g,"");
+			var dependon=depselems[1].replace(/\s+/g,"");
+			var depvals='1'
+			if(depselems.length>2) depvals=depselems[2];
+			var inv=false;
+			if(depselems.length>3 && depselems[3].substr(0,3).toLowerCase()=="inv") inv=true;
+			$('#field_'+dependon).on('change', {depended:depended,dependon:dependon,depvals:depvals,inv:inv}, function(event) {
+				setTimeout("dependfunc('"+event.data.depended+"','"+event.data.dependon+"','"+event.data.depvals+"',"+(event.data.inv?'true':'false')+")",50);		  
+			});
+			$('#id_'+depended).on('keyup', function(event) {
+				// console.log(this); 
+				$(this).trigger("change");
+			});
+			if(inv){
+				// console.log('inv field_'+depended, "by="+by); 
+				var imshown=false;
+				for(i2=0; i2<varsshown.length; i2++)  {
+					// console.log(i2,varsshown[i2],allvars[i2]); 
+					if(varsshown[i2]>0 && allvars[i2]==depended) imshown=true;
+				}
+				// console.log('inv field_'+depended, "by="+by, "imshown=",imshown);
+				if(imshown) setTimeout(hideField.bind(null,depended),50);
+				else $('#field_'+depended).on('show', {depended:depended}, function(event) {
+				setTimeout(function() {
+					if(by == 1) $(".otree-btn-next").click();
+					else $('#field_'+event.data.depended).hide();
+				},50);				
+				});
+			}
+		}
+}
+function hideField(f){
+	$('#field_'+f).hide(); 
+	// console.log($('#field_'+f), '#field_'+f+' hidden');
+}
+///dependencies end
 function liveRecv(data) {
 	var command=data.substr(0,data.search(/[|]/));
 	// console.log('received message, command=',command, "data=", data, data.search(/[|]/));
@@ -97,6 +189,7 @@ function liveRecv(data) {
 				$("#control_buttons").hide(); $("#waitnext_text").show(); waitnext_timer_handler=setTimeout(function(){$("#waitnext_text").hide(); $("#control_buttons").show(); }, cmintime*1000)
 			}
 		}
+		applydependencies();
 	}
 	if(command.toLowerCase() == 'apply') {
 		$("#blocpage_content").css("visibility","visible");  $("#pleasewait").hide();
@@ -127,6 +220,7 @@ function liveRecv(data) {
 						$(".otree-btn-next").delay(delay).trigger('click',[true]);
 						delay+=10;
 					}
+					applydependencies(); //setTimeout(applydependencies,delay);
 					screen_listing=false;
 					starttime=parseInt(cbundle[2]);
 					if(js_vars.min_times != undefined) {
@@ -310,10 +404,11 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 		var force_prevent_default=false;
 		for(i=0; i<varsshown.length; i++) if(varsshown[i]>0 && allvars[i]!="") {
 			bynow++;
+			var errormessage=false;
 			var iamoptional=document.getElementById(allvars[i]+"_validator") !== null && (document.getElementById(allvars[i]+"_validator").value.replace(/Optional/,"")!=document.getElementById(allvars[i]+"_validator").value);
-			// alert(document.getElementById(allvars[i]+"_errormessage")+","+iamoptional.toString());
+			// alert(allvars[i]+"_errormessage,"+document.getElementById(allvars[i]+"_errormessage")+","+iamoptional.toString());
 			if(iamoptional && document.getElementById(allvars[i]+"_errormessage") !== null) {
-				if(document.getElementById(allvars[i]+"_errormessage").title == 'required') iamoptional=false;
+				if(document.getElementById(allvars[i]+"_errormessage").title == 'required') { iamoptional=false; errormessage=true;}
 				// alert(document.getElementById(allvars[i]+"_errormessage").title+"\r\n"+document.getElementById(allvars[i]+"_errormessage").outerHTML+"\r\n"+$(allvars[i]+"_errormessage").attr("title"));
 			}
 			if(allvars[i]=="__info__") iamoptional=true;
@@ -531,7 +626,10 @@ if(js_vars.withtags.length>0) {
 	  if(proceed) $( this ).html($( this ).html().replace(/&gt;/gi,">").replace(/&lt;/gi,"<"));
    // console.log("for="+$(this).attr("for"),$( this ).html());
   });
-}							  
+}
+
+
+						  
 if(typeof liveSend === 'function') liveSend('load|nscr:0:'+starttime.toString());
 });
 

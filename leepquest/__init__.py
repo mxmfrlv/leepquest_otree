@@ -34,7 +34,7 @@ class C(BaseConstants):
                                 ne_found=True
                         del i,x,ne_found       
                         tempvar=[str(int(x) if isinstance(x,float) else x) for x in tempvar]
-                        if scol.upper() in ['TYPES','OPTS']:
+                        if scol.upper() in ['TYPES','OPTS','DEPS']:
                             tempvar=[[z.strip() for z in y] for y in [x.split(':') for x in tempvar]]
                         elif scol.upper() in ['BY', 'TITLE']:
                             if len(tempvar) == 1: 
@@ -120,6 +120,10 @@ class Player(BasePlayer):
             for h in range(1,len(getattr(C,cbp+'_TYPES')[i-1])):
                 if getattr(C,cbp+'_TYPES')[i-1][h]=="optional": cblank = True
                 if h==len(getattr(C,cbp+'_TYPES')[i-1])-1: del h
+            if not cblank and hasattr(C,cbp+"_DEPS"):
+                for h in range(len(getattr(C,cbp+'_DEPS'))):
+                    if getattr(C,cbp+'_DEPS')[h][0]==getattr(C,cbp+'_VARS')[i-1]: cblank = True
+                    if h==len(getattr(C,cbp+'_DEPS'))-1: del h
             if getattr(C,cbp+"_TYPES")[i-1][0]=="radio":
                 locals()[getattr(C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1],choices=[[h+1,x] for h,x in enumerate(getattr(C,cbp+'_OPTS')[i-1])],widget=widgets.RadioSelect, blank=cblank)
                 # print(getattr(C,cbp+'_VARS')[i-1],cblank)
@@ -391,6 +395,7 @@ class BlocPage(Page):
         suffixes=[]
         title=""
         questtags=[]
+        deps=[]
         if(hasattr(C,cbp+"_TITLE")): title=getattr(C,cbp+"_TITLE")
         presentation_tepmplate=""
         if os.path.exists(C.NAME_IN_URL+"/include_"+cbp+".html"): presentation_tepmplate=C.NAME_IN_URL+"/include_"+cbp+".html"
@@ -430,6 +435,9 @@ class BlocPage(Page):
                 cqtag_cand = getattr(C,cbp+"_QUESTTAG")[i-1] if i <= len(getattr(C,cbp+"_QUESTTAG")) else getattr(C,cbp+"_QUESTTAG")[-1]
                 if str(cqtag_cand)!='' and str(cqtag_cand)!='-' and str(cqtag_cand)!='0': cqtag=cqtag_cand
             questtags.append(dict(var=getattr(C,cbp+'_VARS')[i-1],tag=cqtag))
+        if hasattr(C,cbp+"_DEPS"):
+            for h in range(len(getattr(C,cbp+'_DEPS'))):
+                deps.append(str.join(':',getattr(C,cbp+'_DEPS')[h]))
         mintime_text="Le bouton Suivant apparaîtra très bientôt"
         allvars=[]
         for vi,v in enumerate(getattr(C,cbp+'_VARS')): 
@@ -438,6 +446,7 @@ class BlocPage(Page):
             else: allvars.append(getattr(C,cbp+'_VARS')[vi])
         res = dict(
             questtags=questtags,
+            deps=deps,
             slidervars=slidervars,
             radiolines=radiolines,
             vsliders=vsliders,
