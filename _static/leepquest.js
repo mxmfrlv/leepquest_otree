@@ -96,6 +96,7 @@ function dependfunc(depended,dependon,depvals,inv) {
 			var imshown=false;
 			for(i=0; i<varsshown.length; i++) if(varsshown[i]>0 && allvars[i]==depended) imshown=true;
 			$('#field_'+depended).off('show');
+			// console.log('off show for '+'#field_'+depended);
 			if(imshown) $('#field_'+depended).show();
 		}
 	}
@@ -110,13 +111,17 @@ function dependfunc(depended,dependon,depvals,inv) {
 			// console.log("invisible, by="+by);
 			var imshown=false;
 			for(i=0; i<varsshown.length; i++) if(varsshown[i]>0 && allvars[i]==depended) imshown=true;
-			if(!imshown) $('#field_'+depended).on('show', {depended:depended}, function(event) {
-				setTimeout(function() {
-					if(by == 1) $(".otree-btn-next").click();
-					else $('#field_'+event.data.depended).hide();
-				},50);
+			if(!imshown) {
+				$('#field_'+depended).off('show');
+				// console.log('off show for '+'#field_'+depended+' creating new show event');
+				$('#field_'+depended).on('show', {depended:depended}, function(event) {
+					setTimeout(function() {
+						if(by == 1) $(".otree-btn-next").click();
+						else $('#field_'+event.data.depended).hide();
+					},50);
 								
-			});
+				});
+			}
 			if(imshown) $('#field_'+depended).hide();
 			
 		}
@@ -237,6 +242,20 @@ function liveRecv(data) {
 		}
 	}
 }
+var additional_validate=function(varname){
+	return true;
+};
+var additional_validate_message=(js_vars.additional_validate_message === undefined)?"Veuillez corriger les erreurs":js_vars.additional_validate_message;
+var additional_validate_invalid_action=function(varnames,alertneeded){
+	console.log(varnames);
+	if(alertneeded === undefined) alertneeded=false;
+	for(var i=0; i<varnames.length; i++) {
+		$('label[for="id_'+varnames[i]+'"]').css({'color':'red'});
+		// console.log(i,$('label[for="id_'+varnames[i]+'"]'));
+	}
+	if(alertneeded) alert(additional_validate_message);
+};
+
 $(document).ready(function() {
 $(".replacelinebreaks").each(function(){$( this ).html($( this ).html().replace(/#line#/g,"<br>"));});
 $(function () {
@@ -402,6 +421,7 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 	if(by>0 && allvars.length>0) {
 		var nanswnow=0, nanswtot=0, bynow=0;
 		var force_prevent_default=false;
+		var invalidated_vars=[];
 		for(i=0; i<varsshown.length; i++) if(varsshown[i]>0 && allvars[i]!="") {
 			bynow++;
 			var errormessage=false;
@@ -415,10 +435,18 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 			// console.log("allvars[i]=",allvars[i], "iamoptional=", iamoptional);
 			var ok_pass=(document.forms[0][allvars[i]] !== undefined || allvars[i]=="__info__") && (iamoptional || (document.forms[0][allvars[i]].value!="" && typeof document.forms[0][allvars[i]].checkValidity !== 'function') || (typeof document.forms[0][allvars[i]].checkValidity === 'function' && document.forms[0][allvars[i]].checkValidity()));
 			// console.log("i=",i,"allvars[i]=",allvars[i],"ok_pass=",ok_pass,"typeof checkValidity ",typeof document.forms[0][allvars[i]].checkValidity,"iamoptional=",iamoptional,document.getElementById(allvars[i]+"_validator").value); console.log(allvars[i],"checkValidity",((typeof document.forms[0][allvars[i]].checkValidity === 'function')?document.forms[0][allvars[i]].checkValidity():"not a function"));
+			if(ok_pass && !additional_validate(allvars[i])) {
+				force_prevent_default=true;
+				invalidated_vars.push(allvars[i]);
+				ok_pass=false;
+			}
 			if(ok_pass) {
 				varsanswered[i] = 1;
 				nanswnow++;
 			}
+		}
+		if(invalidated_vars.length>0) {
+			additional_validate_invalid_action(invalidated_vars);
 		}
 		// console.log("bynow=",bynow, "nanswnow=", nanswnow);
 		if(nanswnow == bynow) {
