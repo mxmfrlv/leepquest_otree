@@ -83,7 +83,10 @@ function dependfunc(depended,dependon,depvals,inv) {
 		if(adepvals[i]==document.forms[0][dependon].value) depok=!negform;
 	}
 	if(depok) {
-		if(document.getElementById(depended+'_errormessage') == null) $( '<div class="alert-warning" style="display:none" title="required" id="'+depended+'_errormessage">Veuillez répondre à cette question</div>' ).insertBefore( $( '#field_'+depended+'_number_placeholder' ) );
+		if(document.getElementById(depended+'_errormessage') == null) {
+			$( '<div class="alert-warning" style="display:none" title="required" id="'+depended+'_errormessage">Veuillez répondre à cette question</div>' ).insertBefore( $( '#field_'+depended+'_number_placeholder' ) );
+			// console.log(depended,$( '#field_'+depended+'_number_placeholder' ),$('#'+depended+'_errormessage'));
+		}
 		document.getElementById(depended+'_errormessage').title="required"; //$('#'+depended+'_errormessage').attr("title","required");
 		// console.log(typeof document.forms[0][depended].checkValidity)
 		if(typeof document.forms[0][depended].checkValidity === 'function') {
@@ -194,7 +197,7 @@ function liveRecv(data) {
 				$("#control_buttons").hide(); $("#waitnext_text").show(); waitnext_timer_handler=setTimeout(function(){$("#waitnext_text").hide(); $("#control_buttons").show(); }, cmintime*1000)
 			}
 		}
-		applydependencies();
+		if(typeof deps !== 'undefined') applydependencies();
 	}
 	if(command.toLowerCase() == 'apply') {
 		$("#blocpage_content").css("visibility","visible");  $("#pleasewait").hide();
@@ -225,7 +228,7 @@ function liveRecv(data) {
 						$(".otree-btn-next").delay(delay).trigger('click',[true]);
 						delay+=10;
 					}
-					applydependencies(); //setTimeout(applydependencies,delay);
+					if(typeof deps !== 'undefined') applydependencies(); //setTimeout(applydependencies,delay);
 					screen_listing=false;
 					starttime=parseInt(cbundle[2]);
 					if(js_vars.min_times != undefined) {
