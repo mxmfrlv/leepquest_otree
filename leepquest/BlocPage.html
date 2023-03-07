@@ -22,7 +22,7 @@
 		{{ endif }}
 		<input type=hidden name="{{field.short_name}}_validator" value='{{ field.validators.0 }}' id="{{field.short_name}}_validator" />
 	   {{ endif }}
-		{{ if not field.short_name in radiotable_rows and not field.short_name in singleline }} <{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ qitem.tag }}{{ endif }}{{ endfor }}><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ qitem.tag }}{{ endif }}{{ endfor }}>{{ endif }}
+		{{ if not field.short_name in radiotable_rows and not field.short_name in singleline }} <{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ qitem.tag }}{{ endif }}{{ endfor }} style='{{if quest_width_px > 0 }}width:{{quest_width_px}}px;{{ endif }}'><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ qitem.tag }}{{ endif }}{{ endfor }}>{{ endif }}
 		{{ if field.short_name in slidervars }}
 			<em>(<span id="sliderhint_{{field.short_name}}">faites bouger le curseur ci-dessous afin de répondre</span>)</em><br><br>
 			<input type=hidden id="sliderinput_{{field.short_name}}" name="{{field.short_name}}" {{if 'InputRequired' in field.validators.0.__str__() }} style="display:none" class="form-control" required{{ endif }} value="" />
@@ -36,11 +36,21 @@
 				<div class="alert-warning" style="display:none" id="{{field.short_name}}_errormessage"></div>
 			{{ endif }}
 		{{ elif field.short_name in radiolines }}
-			<table cellpadding=5 style='text-align:center;vertical-align:middle;'><tr>
-			{{ for choice in field }} <td style='width:{{ radioline_width }}'> {{ choice }} </td> {{ endfor }}
-			</tr><tr>
+			{{ if field.short_name in singleline }} <{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ qitem.tag }}{{ endif }}{{ endfor }} style='display:inline-block;{{if quest_width_px > 0 }}width:{{quest_width_px}}px;{{ endif }}'>{{ field.label }}</{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ qitem.tag }}{{ endif }}{{ endfor }}> {{ endif }}
+			<table cellpadding=5 style='text-align:center;vertical-align:middle;{{ if field.short_name in singleline }}display:inline-block;{{ endif }}'><tr>
+			{{ if field.short_name in nonumbers }}<td {{if radioline_leftright_width_px > 0}}style='width:{{radioline_leftright_width_px}}px;text-align:right'{{ endif }}> {{ field.0.label }} </td>{{ endif }}
+			{{ for choice in field }} <td style='width:{{ if not field.short_name in nonumbers }}{{ radioline_width }}{{else}}{{ radioline_width_nonumbers }}{{endif}}'> {{ choice }} </td>
+			{{ if field.short_name in nonumbers and choice.id != field.0.id and choice.label.text != '' }}<td {{if radioline_leftright_width_px > 0}}style='width:{{radioline_leftright_width_px}}px;text-align:left'{{ endif }}>{{ choice.label }}</td>{{ endif }}
+
+			{{ endfor }}
+			</tr>
+			{{ if not field.short_name in nonumbers }}
+			<tr>
 			{{ for choice in field }} <td style='vertical-align:top'> <span class="replacelinebreaks">{{ choice.label }}</span> </td> {{ endfor }}
-			</tr></table>
+			</tr>
+			{{ endif }}
+			</table>
+			{{ if field.short_name in singleline }}<br>{{ endif }}
 		{{ elif field.short_name in radiotable_headers }}
 			<input type=hidden name="beforefield_{{field.short_name}}" value=0 id="beforefield_{{field.short_name}}" />
 			<div id='field_{{field.short_name}}'>
@@ -97,8 +107,10 @@
 			{{ endif }}
 		{{ endif }}
             
-		{{ if not field.short_name in radiotable_rows }} 
+		{{ if not field.short_name in radiotable_rows }}
+			{{ if separate_line }}<hr>{{else}}
 			{{ if not field.short_name in singleline and not field.short_name in onlyinfo }} <br><br> {{ else }} <br> {{ endif }}
+			{{ endif }}
 			</div>
 		{{ endif }}
 	{{ endif }}

@@ -228,7 +228,7 @@ function liveRecv(data) {
 						$(".otree-btn-next").delay(delay).trigger('click',[true]);
 						delay+=10;
 					}
-					if(typeof deps !== 'undefined') applydependencies(); //setTimeout(applydependencies,delay);
+					if(typeof deps !== 'undefined' && deps !='') { applydependencies();} //setTimeout(applydependencies,delay);
 					screen_listing=false;
 					starttime=parseInt(cbundle[2]);
 					if(js_vars.min_times != undefined) {

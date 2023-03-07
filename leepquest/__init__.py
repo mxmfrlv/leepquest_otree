@@ -6,7 +6,7 @@ class C(BaseConstants):
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 1
     # BLOCPAGEDATA_IN_PARTICIPANT = True
-    TAGS_IN_TEXT = False
+    TAGS_IN_TEXT = True
     APP_NAME=os.path.basename(os.path.dirname(__file__))
     LQ_PATH=os.path.join(os.getcwd(),APP_NAME,"leepquest.xlsx")
     if os.path.exists(LQ_PATH):
@@ -26,6 +26,8 @@ class C(BaseConstants):
                             if isinstance(x,str) and scol.upper() in ['LIST'] and x=='-':
                                 ne_found=True
                                 tempvar[i]=''
+                            if isinstance(x,str) and scol.upper() in ['TYPES']:
+                                tempvar[i]=x.lower()
                             if i==0 or scol.upper() in ['OPTS']: ne_found=True
                             if isinstance(x,float) and math.isnan(x):
                                 if not ne_found: del tempvar[i]
@@ -137,7 +139,7 @@ class Player(BasePlayer):
                 ctypesvals=[]
                 cstep=1 if len(getattr(C,cbp+'_TYPES')[i-1]) ==1 or len(getattr(C,cbp+'_TYPES')[i-1][1].split('-')) == 1 or int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0])<=int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[1]) else -1
                 # print(cstep,getattr(C,cbp+'_TYPES')[i-1][1],len(getattr(C,cbp+'_TYPES')[i-1][1].split('-')),getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0],getattr(C,cbp+'_TYPES')[i-1][1].split('-')[1],len(getattr(C,cbp+'_TYPES')[i-1]) or len(getattr(C,cbp+'_TYPES')[i-1][1].split('-')) == 1 or int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0])<=int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[1]))
-                for h in range(0,len(getattr(C,cbp+'_OPTS')[i-1])): ctypesvals.append([(str(h*cstep+suph)+"#line#" if len(getattr(C,cbp+'_TYPES')[i-1]) ==1 or len(getattr(C,cbp+'_TYPES')[i-1][1].split('-')) == 1 or (h*cstep+suph>=min([int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0]),int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[1])]) and h*cstep+suph<=max([int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0]),int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[1])])) else '')+getattr(C,cbp+'_OPTS')[i-1][h],suph,cstep])
+                for h in range(0,len(getattr(C,cbp+'_OPTS')[i-1])): ctypesvals.append([(str(h*cstep+suph)+"#line#" if not 'nonumbers' in getattr(C,cbp+'_TYPES')[i-1] and (len(getattr(C,cbp+'_TYPES')[i-1]) ==1 or len(getattr(C,cbp+'_TYPES')[i-1][1].split('-')) == 1 or (h*cstep+suph>=min([int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0]),int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[1])]) and h*cstep+suph<=max([int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0]),int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[1])]))) else '')+getattr(C,cbp+'_OPTS')[i-1][h],suph,cstep])
                 locals()[getattr(C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1],choices=[[x[2]*h+x[1],x[0]] for h,x in enumerate(ctypesvals)],widget=widgets.RadioSelectHorizontal, blank=cblank)
                 locals()[getattr(C,cbp+'_VARS')[i-1]+"_strval"]=models.StringField(label=getattr(C,cbp+'_LIST')[i-1],choices=getattr(C,cbp+'_OPTS')[i-1],widget=widgets.RadioSelectHorizontal,blank=True)
                 del suph,ctypesvals,cstep,h
@@ -386,6 +388,7 @@ class BlocPage(Page):
         vsliders=[]
         vslider_height=400
         radiolines=[]
+        nonumbers=[]
         radiotable_headers=[]
         radiotable_bottoms=[]
         radiotable_rows=[]
@@ -417,6 +420,8 @@ class BlocPage(Page):
             for h in range(1,len(getattr(C,cbp+'_TYPES')[i-1])):
                 if getattr(C,cbp+'_TYPES')[i-1][h]=="inline":
                     singleline.append(getattr(C,cbp+'_VARS')[i-1])
+                if getattr(C,cbp+'_TYPES')[i-1][h]=="nonumbers":
+                    nonumbers.append(getattr(C,cbp+'_VARS')[i-1])
             for h in range(1,len(getattr(C,cbp+'_OPTS')[i-1])):
                 if getattr(C,cbp+'_OPTS')[i-1][h][:5]=="suff=":
                     suffixvars.append(getattr(C,cbp+'_VARS')[i-1])
@@ -449,10 +454,15 @@ class BlocPage(Page):
             deps=deps,
             slidervars=slidervars,
             radiolines=radiolines,
+            nonumbers=nonumbers,
             vsliders=vsliders,
             vslider_height=str(vslider_height)+('px' if not 'px' in str(vslider_height) else ''),
             onlyinfo=onlyinfo,
-            radioline_width="120px",
+            radioline_width=getattr(C,cbp+"_RADIOLINE_WIDTH")[0] if hasattr(C,cbp+"_RADIOLINE_WIDTH") and getattr(C,cbp+"_RADIOLINE_WIDTH")[0] != '' else "120px",
+            radioline_width_nonumbers=getattr(C,cbp+"_RADIOLINE_WIDTH_NONUMBERS")[0] if hasattr(C,cbp+"_RADIOLINE_WIDTH_NONUMBERS") and getattr(C,cbp+"_RADIOLINE_WIDTH_NONUMBERS")[0] != '' else getattr(C,cbp+"_RADIOLINE_WIDTH")[0] if hasattr(C,cbp+"_RADIOLINE_WIDTH") and getattr(C,cbp+"_RADIOLINE_WIDTH")[0] != '' else "50px",
+            radioline_leftright_width_px=int(getattr(C,cbp+"_RADIOLINE_LEFTRIGH_PX")[0]) if hasattr(C,cbp+"_RADIOLINE_LEFTRIGH_PX") and getattr(C,cbp+"_RADIOLINE_LEFTRIGH_PX")[0] != '' else 0, #100
+            quest_width_px=int(getattr(C,cbp+"_QUEST_WIDTH_PX")[0]) if hasattr(C,cbp+"_QUEST_WIDTH_PX") and getattr(C,cbp+"_QUEST_WIDTH_PX")[0] != '' else 0, #600
+            separate_line=getattr(C,cbp+"_SEPARATE_LINE")[0] if hasattr(C,cbp+"_SEPARATE_LINE") and getattr(C,cbp+"_SEPARATE_LINE")[0] != "0" else False, #600
             singleline=singleline,
             waitnext_text=mintime_text,
             radiotable_headers=radiotable_headers,
