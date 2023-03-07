@@ -463,6 +463,7 @@ class BlocPage(Page):
             radioline_leftright_width_px=int(getattr(C,cbp+"_RADIOLINE_LEFTRIGH_PX")[0]) if hasattr(C,cbp+"_RADIOLINE_LEFTRIGH_PX") and getattr(C,cbp+"_RADIOLINE_LEFTRIGH_PX")[0] != '' else 0, #100
             quest_width_px=int(getattr(C,cbp+"_QUEST_WIDTH_PX")[0]) if hasattr(C,cbp+"_QUEST_WIDTH_PX") and getattr(C,cbp+"_QUEST_WIDTH_PX")[0] != '' else 0, #600
             separate_line=getattr(C,cbp+"_SEPARATE_LINE")[0] if hasattr(C,cbp+"_SEPARATE_LINE") and getattr(C,cbp+"_SEPARATE_LINE")[0] != "0" else False, #600
+            choice_label_tag=getattr(C,cbp+"_OPTS_TAG")[0] if hasattr(C,cbp+"_OPTS_TAG") and getattr(C,cbp+"_OPTS_TAG")[0] != "0" else "", #600
             singleline=singleline,
             waitnext_text=mintime_text,
             radiotable_headers=radiotable_headers,
