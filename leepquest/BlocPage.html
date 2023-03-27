@@ -6,6 +6,15 @@
 <script src="{{ static 'nouislider.min.js' }}"> </script>
 <script src="{{ static 'wNumb.min.js' }}"> </script>
 <script src="{{ static 'blockunload.js' }}"></script>
+<script>
+var bys = "{{ by }}".split(',');
+var by = parseInt(bys[0]);
+var slidervars="{{ cslidervars }}".split(";");
+var slideropts="{{ cslideropts }}".split(";");
+var verticalsliders="{{ cvsliders }}".split(";");
+var allvars="{{ allvars }}".split(';');
+var deps={{deps}};
+</script>
 <div id="blocpage_content" style="visibility:hidden">
 <div id="initial_presentation">
 </div>
@@ -116,15 +125,6 @@
 	{{ endif }}
     {{ endfor }}
 </div>
-<script>
-var bys = "{{ by }}".split(',');
-var by = parseInt(bys[0]);
-var slidervars="{{ cslidervars }}".split(";");
-var slideropts="{{ cslideropts }}".split(";");
-var verticalsliders="{{ cvsliders }}".split(";");
-var allvars="{{ allvars }}".split(';');
-var deps={{deps}};
-</script>
 <script src="{{ static 'leepquest.js' }}"></script>
 
 <div class="alert position-fixed top-50 start-50 translate-middle" id="pleasewait">Veuillez patienter...</div>
