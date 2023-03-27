@@ -175,6 +175,16 @@ class Player(BasePlayer):
                 locals()[cbp+"_screen"+str(i)+"_time"]=models.FloatField(initial=-11,blank=True)
             if i == len(by_list): 
                 del i
+        if hasattr(C,cbp+"_BY_ERRORVARS"):
+            for i in range(len(getattr(C,cbp+"_BY_ERRORVARS"))):
+               if getattr(C,cbp+"_BY_ERRORVARS")[i].strip() != '': 
+                locals()[getattr(C,cbp+"_BY_ERRORVARS")[i]]=models.IntegerField(initial=0,blank=True)
+               if i==len(getattr(C,cbp+"_BY_ERRORVARS"))-1: del i    
+        if hasattr(C,cbp+"_ANSWERS_VARS"):
+            for i in range(len(getattr(C,cbp+"_ANSWERS_VARS"))):
+               if getattr(C,cbp+"_ANSWERS_VARS")[i].strip() != '': 
+                locals()[getattr(C,cbp+"_ANSWERS_VARS")[i]]=models.StringField(initial='',blank=True)
+               if i==len(getattr(C,cbp+"_ANSWERS_VARS"))-1: del i    
         if bpi == len(C.BLOCPAGES)-1:
             del bpi, cbp, by_list, min_index, max_index
     ### blocpage stuff above
@@ -353,6 +363,11 @@ class BlocPage(Page):
            for rpi,ov in enumerate(getattr(C,cbp+"_RANDOMORDERS")):
             vars_for_orders = getattr(C,cbp+"_RANDOMORDERS")[rpi] if isinstance(getattr(C,cbp+"_RANDOMORDERS")[rpi], list) else getattr(C,getattr(C,cbp+"_RANDOMORDERS")[rpi])
             for x in vars_for_orders: res.append(x+'_order')
+        if hasattr(C,cbp+"_ANSWERS_VARS"):
+            for w in range(len(getattr(C,cbp+"_ANSWERS_VARS"))):
+               if getattr(C,cbp+"_ANSWERS_VARS")[w].strip() != '': 
+                res.append(getattr(C,cbp+"_ANSWERS_VARS")[w])
+               if w==len(getattr(C,cbp+"_ANSWERS_VARS"))-1: del w
         if hasattr(C,"TRACK_BLOCPAGE_LOADS") and cbp in C.TRACK_BLOCPAGE_LOADS: res.append(cbp+"_loadtime")
         return res
     @staticmethod
@@ -487,6 +502,7 @@ class BlocPage(Page):
             prefixes=prefixes,
             presentation_tepmplate=presentation_tepmplate,
         )
+        if hasattr(C,cbp+"_ANSWERS_VARS"): res['answers_vars']=';'.join(getattr(C,cbp+"_ANSWERS_VARS"))
         # print(cbp,res)
         return res
     @staticmethod
