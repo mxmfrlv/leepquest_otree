@@ -94,11 +94,14 @@ var deps={{deps}};
 		{{ elif field.short_name in singleline }}
 			<div class="row border-bottom"><div class="col-8"><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</div>
 			<div style='display:inline-block' class="col-4" >
-			{{ if field.short_name in suffixvars }}
+			{{ if field.short_name in suffixvars or field.short_name in prefixvars}}
 				<div class="input-group">
 			{{ endif }}
+			{{ if field.short_name in prefixvars }}
+				<span class="input-group-text">{{ for suff in prefixes }} {{ if suff.var == field.short_name }} {{ suff.val }} {{ endif }} {{ endfor }}</span>
+			{{ endif }}
 			{{ field }}
-			{{ if field.short_name in suffixvars }}
+			{{ if field.short_name in suffixvars or field.short_name in prefixvars }}
 				<span class="input-group-text">{{ for suff in suffixes }} {{ if suff.var == field.short_name }} {{ suff.val }} {{ endif }} {{ endfor }}</span>
 				</div>
 			{{ endif }}
@@ -106,11 +109,14 @@ var deps={{deps}};
 		{{ elif field.short_name in onlyinfo }}
 			<input type=hidden value="1" name="{{field.short_name}}" />
 		{{ else }}
-			{{ if field.short_name in suffixvars }}
+			{{ if field.short_name in suffixvars or field.short_name in prefixvars }}
 				<div class="input-group">
 			{{ endif }}
+			{{ if field.short_name in prefixvars }}
+				<span class="input-group-text">{{ for suff in prefixes }} {{ if suff.var == field.short_name }} {{ suff.val }} {{ endif }} {{ endfor }}</span>
+			{{ endif }}
 			{{ field }}
-			{{ if field.short_name in suffixvars }}
+			{{ if field.short_name in suffixvars or field.short_name in prefixvars }}
 				<span class="input-group-text">{{ for suff in suffixes }} {{ if suff.var == field.short_name }} {{ suff.val }} {{ endif }} {{ endfor }}</span>
 				</div>
 			{{ endif }}

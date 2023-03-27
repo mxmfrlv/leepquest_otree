@@ -396,6 +396,8 @@ class BlocPage(Page):
         onlyinfo=[]
         suffixvars=[]
         suffixes=[]
+        prefixvars=[]
+        prefixes=[]
         title=""
         questtags=[]
         deps=[]
@@ -426,6 +428,9 @@ class BlocPage(Page):
                 if getattr(C,cbp+'_OPTS')[i-1][h][:5]=="suff=":
                     suffixvars.append(getattr(C,cbp+'_VARS')[i-1])
                     suffixes.append(dict(var=getattr(C,cbp+'_VARS')[i-1], val=getattr(C,cbp+'_OPTS')[i-1][h][5:]))
+                if getattr(C,cbp+'_OPTS')[i-1][h][:5]=="pref=":
+                    prefixvars.append(getattr(C,cbp+'_VARS')[i-1])
+                    prefixes.append(dict(var=getattr(C,cbp+'_VARS')[i-1], val=getattr(C,cbp+'_OPTS')[i-1][h][5:]))
             if getattr(C,cbp+'_TYPES')[i-1][0]=="radiotable":
                 if len(getattr(C,cbp+'_TYPES')[i-1]) <= 1 or getattr(C,cbp+'_TYPES')[i-1][1] == "row":
                     radiotable_rows.append(getattr(C,cbp+'_VARS')[i-1])
@@ -478,6 +483,8 @@ class BlocPage(Page):
             title=title,
             suffixvars=suffixvars,
             suffixes=suffixes,
+            prefixvars=prefixvars,
+            prefixes=prefixes,
             presentation_tepmplate=presentation_tepmplate,
         )
         # print(cbp,res)
