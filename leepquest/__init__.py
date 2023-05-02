@@ -187,6 +187,7 @@ class Player(BasePlayer):
                if i==len(getattr(C,cbp+"_ANSWERS_VARS"))-1: del i    
         if bpi == len(C.BLOCPAGES)-1:
             del bpi, cbp, by_list, min_index, max_index
+    participant_startpageindex=models.IntegerField(initial=-1)# FUNCTIONS
     ### blocpage stuff above
 
 # FUNCTIONS
@@ -236,18 +237,32 @@ def track_reloads(player: Player, page):
         setattr(player,page+"_nloads",getattr(player,page+"_nloads",0)+1)
 
 def get_current_blocpage(player: Player, shift=0):
-    blocpageindex = 0
-    if hasattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") and getattr(C,"BLOCPAGEDATA_IN_PARTICIPANT"):
-        blocpageindex = player.participant.blocpageindex + shift
-    else:
-        blocpageindex = player.blocpageindex%len(C.BLOCPAGES) + shift
+    blocpageindex = get_blocpage_index(player) + shift
     return C.BLOCPAGES[blocpageindex%len(C.BLOCPAGES)]
 
 def get_blocpage_index(player: Player):
+    if player.participant_startpageindex < 0:
+        my_start_index=0
+        for i in range(len(page_sequence)):
+            if page_sequence[i].__name__ == 'BlocPage': break
+            my_start_index+=1
+        player.participant_startpageindex = player.participant._index_in_pages - my_start_index
+    cindex=-1
     if hasattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") and getattr(C,"BLOCPAGEDATA_IN_PARTICIPANT"):
-        return player.participant.blocpageindex
+        cindex = player.participant.blocpageindex
     else:
-        return player.blocpageindex
+        cindex = player.blocpageindex
+    return cindex
+    # debug=hasattr(C,"DEBUG") and getattr(C,"DEBUG")
+    # index_should_be=-1
+    # for i in range((player.participant._index_in_pages-player.participant_startpageindex)%len(page_sequence)+1):
+        # print(page_sequence[i].__dict__, page_sequence[i].__class__, page_sequence[i].__class__.__name__, page_sequence[i].__name__)
+        # if page_sequence[i].__name__ == 'BlocPage' : index_should_be+=1
+    # if debug : print("get_blocpage_index: bp index_should_be",index_should_be, "bp index is",cindex)
+    # while index_should_be > cindex: 
+        # increment_blocpage_index(player)
+        # cindex = player.participant.blocpageindex if hasattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") and getattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") else player.blocpageindex
+    # return cindex
 
 def increment_blocpage_index(player: Player, cthreshold=-1):
     import time
@@ -323,16 +338,22 @@ class BlocPage(Page):
     live_method = blocpage_live_method
     @staticmethod
     def is_displayed(player):
+        if player.participant_startpageindex < 0:
+            my_start_index=0
+            for i in range(len(page_sequence)):
+                if page_sequence[i] == __class__: break
+                my_start_index+=1
+            player.participant_startpageindex = player.participant._index_in_pages - my_start_index
         cbp=get_current_blocpage(player)
         res=True
         # blockpages exlusions below
         # blockpages exlusions above
         debug = hasattr(C,"DEBUG") and getattr(C,"DEBUG")
         cblocpageindex=get_blocpage_index(player)
-        if debug : print("\nis_displayed, cbp is",cbp, ", display",res,", cbp index", get_blocpage_index(player), "page index : ", player.participant._index_in_pages)
+        if debug : print("\nis_displayed, cbp is",cbp, ",round is", player.round_number, ", display",res,", cbp index:", get_blocpage_index(player), ", page index:", player.participant._index_in_pages, ", participant_startpageindex:", player.participant_startpageindex, ', len(page_sequence)',len(page_sequence))
         if not res:
             index_should_be=-1
-            for i in range((player.participant._index_in_pages-1)%len(page_sequence)+1):
+            for i in range((player.participant._index_in_pages-player.participant_startpageindex)%len(page_sequence)+1):
                 if page_sequence[i] == __class__: index_should_be+=1
             if debug : print("bp index_should_be",index_should_be, "bp index is",cblocpageindex)
             if index_should_be == cblocpageindex: increment_blocpage_index(player)
