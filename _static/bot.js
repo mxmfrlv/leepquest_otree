@@ -67,6 +67,17 @@ function botProceedInput(index) {
 						if(checked) {$(form_map[name][i]).click(); console.log("clicked to check",name);}
 						else console.log("chosen not to check",name);
 					}
+					else if(form_map[name][i].type.split('-')[0] == "select") {
+						var options = form_map[name][i].getElementsByTagName("option");
+						var values = [];
+						for(var io = 0; io<options.length; io++) {
+							if(options[io].value) values.push([io,options[io].value])
+						}
+						var choosen=Math.floor(Math.random()*values.length);
+						form_map[name][i].value=values[choosen][1];
+						console.log(name,form_map[name][i].type+" value set to ",values[choosen][1]);
+							
+					}
 					else if(form_map[name][i].type != "hidden" || !$(form_map[name][i]).val() ) {
 						var min=0, max=100;
 						if(form_map[name][i].hasAttribute("min")) min=form_map[name][i].min;

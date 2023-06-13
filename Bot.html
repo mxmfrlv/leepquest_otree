@@ -1,5 +1,7 @@
-{{ if player.participant.label and player.participant.label in player.session.config.bot_labels }}
+<script>var artificial=false;</script>
+{{ if participant.label and participant.label in session.config.bot_labels }}
+ <script>artificial=true;</script>
  <script src="{{ static 'bot.js' }}"></script>
  {{ else }}
- <!-- label = {{player.participant.label}}, bot_labels = {{player.session.config.bot_labels}}, -->
+
 {{ endif }}
