@@ -79,12 +79,17 @@ function botProceedInput(index) {
 							
 					}
 					else if(form_map[name][i].type != "hidden" || !$(form_map[name][i]).val() ) {
-						var min=0, max=100;
-						if(form_map[name][i].hasAttribute("min")) min=form_map[name][i].min;
-						if(form_map[name][i].hasAttribute("max")) max=form_map[name][i].max;
-						var choosen=parseFloat(min)+Math.floor(Math.random()*(parseFloat(max)+1-parseFloat(min)));
-						$(form_map[name][i]).val(choosen); console.log("value set",name);
-						console.log(form_map[name][i], form_map[name][i].value, choosen, min, max);
+						if(form_map[name][i].type == "hidden" && typeof botProceedHiddenInput === 'function') {
+							botProceedHiddenInput(form_map[name][i])
+						}
+						else {
+							var min=0, max=100;
+							if(form_map[name][i].hasAttribute("min")) min=form_map[name][i].min;
+							if(form_map[name][i].hasAttribute("max")) max=form_map[name][i].max;
+							var choosen=parseFloat(min)+Math.floor(Math.random()*(parseFloat(max)+1-parseFloat(min)));
+							$(form_map[name][i]).val(choosen); console.log("value set",name);
+							console.log(form_map[name][i], form_map[name][i].value, choosen, min, max);
+						}
 					}
 				}
 			}
