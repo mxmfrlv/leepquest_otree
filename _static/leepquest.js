@@ -376,7 +376,11 @@ if(sliderpresent) {
 	if(copts.length>5) {
 		var leftright=copts[5].split('/');
 		document.getElementById("sliderleft_"+slidervars[sl]).innerHTML=leftright[0].replace(/_/g,"&nbsp;");
-		if(leftright.length>1) document.getElementById("sliderright_"+slidervars[sl]).innerHTML=leftright[1].replace(/_/g,"&nbsp;");
+		document.getElementById("sliderleft_"+slidervars[sl]).style.marginRight="16px";
+		if(leftright.length>1) {
+			document.getElementById("sliderright_"+slidervars[sl]).innerHTML=leftright[1].replace(/_/g,"&nbsp;");
+			document.getElementById("sliderright_"+slidervars[sl]).style.marginLeft="16px";
+		}
 	}
 	if(starthidden) document.getElementById("sliderhint_"+slidervars[sl]).innerHTML="cliquez sur le champ grisé ci-dessous afin de faire apparaître un curseur et répondre";
 	var cdecimals=0; if(cstep>0 && cstep<1) cdecimals=cstep.toString().length-2;
