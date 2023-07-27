@@ -41,7 +41,7 @@ var deps={{deps}};
 			{{ endif }}
 			<br>
 			{{ formfield_errors field.name }}
-			{{if 'InputRequired' in field.validators.0.__str__() }} 
+			{{if 'InputRequired' in field.validators.__str__() }} 
 				<div class="alert-warning" style="display:none" id="{{field.short_name}}_errormessage"></div>
 			{{ endif }}
 		{{ elif field.short_name in radiolines }}

@@ -441,10 +441,10 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 			if(allvars[i]=="__info__") iamoptional=true;
 			// console.log("allvars[i]=",allvars[i], "iamoptional=", iamoptional);
 			var ok_pass=(document.forms[0][allvars[i]] !== undefined || allvars[i]=="__info__") && (iamoptional || (document.forms[0][allvars[i]].value!="" && typeof document.forms[0][allvars[i]].checkValidity !== 'function') || (typeof document.forms[0][allvars[i]].checkValidity === 'function' && document.forms[0][allvars[i]].checkValidity()));
-			// console.log("i=",i,"allvars[i]=",allvars[i],"ok_pass=",ok_pass,"typeof checkValidity ",typeof document.forms[0][allvars[i]].checkValidity,"iamoptional=",iamoptional,document.getElementById(allvars[i]+"_validator").value); console.log(allvars[i],"checkValidity",((typeof document.forms[0][allvars[i]].checkValidity === 'function')?document.forms[0][allvars[i]].checkValidity():"not a function"));
-			if(ok_pass && !additional_validate(allvars[i])) {
+			// console.log("i=",i,"allvars[i]=",allvars[i],"ok_pass=",ok_pass,"document.forms[0][allvars[i]]=",document.forms[0][allvars[i]],"typeof checkValidity ",typeof document.forms[0][allvars[i]].checkValidity,"iamoptional=",iamoptional,document.getElementById(allvars[i]+"_validator").value); console.log(allvars[i],"checkValidity",((typeof document.forms[0][allvars[i]].checkValidity === 'function')?document.forms[0][allvars[i]].checkValidity():"not a function")); if(typeof document.forms[0][allvars[i]].checkValidity === 'function') console.log(document.forms[0][allvars[i]].checkValidity());
+			if(ok_pass && (!additional_validate(allvars[i]) || (!iamoptional && document.forms[0][allvars[i]].value==""))) { // && slidervars.indexOf(allvars[i])>-1
 				force_prevent_default=true;
-				invalidated_vars.push(allvars[i]);
+				if(!additional_validate(allvars[i]) || slidervars.indexOf(allvars[i])<0) invalidated_vars.push(allvars[i]);
 				ok_pass=false;
 			}
 			if(ok_pass) {
