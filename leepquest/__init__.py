@@ -9,6 +9,7 @@ class C(BaseConstants):
     TAGS_IN_TEXT = True
     APP_NAME=os.path.basename(os.path.dirname(__file__))
     LQ_PATH=os.path.join(os.getcwd(),APP_NAME,"leepquest.xlsx")
+    if not os.path.exists(LQ_PATH): LQ_PATH=os.path.join(os.getcwd(),APP_NAME,APP_NAME+".xlsx")
     if os.path.exists(LQ_PATH):
         LQ_XLSX = pandas.ExcelFile(LQ_PATH)
         BLOCPAGES=[]
