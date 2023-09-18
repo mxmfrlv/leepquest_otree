@@ -70,24 +70,24 @@ var deps={{deps}};
 					<input type=hidden name="{{field.short_name}}_validator" value='{{ field.validators.0 }}' id="{{field.short_name}}_validator" />   
 			</th>{{ for choice in field }} <td scope='col'> {{ if choice_label_tag != '' }}<{{choice_label_tag}}>{{ endif }}{{ choice.label }}{{ if choice_label_tag != '' }}</{{choice_label_tag}}>{{ endif }} </td> {{ endfor }}
 			</tr><tr id="tr_{{field.short_name}}">
-			<th scope='row' style='text-align:left;'><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</th>{{ for choice in field }} <td> <span data-toggle="tooltip" data-html="true" title='{{ if choice_label_tag != '' }}<{{choice_label_tag}}>{{ endif }}{{ choice.label }}{{ if choice_label_tag != '' }}</{{choice_label_tag}}>{{ endif }}'>{{ choice }}</span> </td> {{ endfor }}
+			<{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ if qitem.tag == 'td' or qitem.tag == 'th' }}{{qitem.tag}}{{else}}td scope='row' style='text-align:left;'><{{qitem.tag}}{{endif}}{{ endif }}{{ endfor }} scope='row' style='text-align:left;'><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ if qitem.tag == 'td' or qitem.tag == 'th' }}{{qitem.tag}}{{else}}{{qitem.tag}}></td{{endif}}{{ endif }}{{ endfor }}>{{ for choice in field }} <td> <span data-toggle="tooltip" data-html="true" title='{{ if choice_label_tag != '' }}<{{choice_label_tag}}>{{ endif }}{{ choice.label }}{{ if choice_label_tag != '' }}</{{choice_label_tag}}>{{ endif }}'>{{ choice }}</span> </td> {{ endfor }}
 			</tr>
 		{{ elif field.short_name in radiotable_bottoms }}
 			<tr id="tr_{{field.short_name}}">
-			<th scope='row' style='text-align:left;'>
+			<{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ if qitem.tag == 'td' or qitem.tag == 'th' }}{{qitem.tag}}{{else}}td scope='row' style='text-align:left;'><{{qitem.tag}}{{endif}}{{ endif }}{{ endfor }} scope='row' style='text-align:left;'>
 				<input type=hidden name="{{field.short_name}}_time" value=0 id="{{field.short_name}}_time" />
 				<input type=hidden name="{{field.short_name}}_validator" value='{{ field.validators.0 }}' id="{{field.short_name}}_validator" />   
 				<span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}
-			</th>
+			</{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ if qitem.tag == 'td' or qitem.tag == 'th' }}{{qitem.tag}}{{else}}{{qitem.tag}}></td{{endif}}{{ endif }}{{ endfor }}>
 			{{ for choice in field }} <td> <span data-toggle="tooltip" data-html="true" title='{{ if choice_label_tag != '' }}<{{choice_label_tag}}>{{ endif }}{{ choice.label }}{{ if choice_label_tag != '' }}</{{choice_label_tag}}>{{ endif }}'>{{ choice }}</span> </td> {{ endfor }}
 			</tr></table></div>
 		{{ elif field.short_name in radiotable_rows }}
 			<tr id="tr_{{field.short_name}}">
-			<th scope='row' style='text-align:left;'>
+			<{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ if qitem.tag == 'td' or qitem.tag == 'th' }}{{qitem.tag}}{{else}}td scope='row' style='text-align:left;'><{{qitem.tag}}{{endif}}{{ endif }}{{ endfor }} scope='row' style='text-align:left;'>
 				<input type=hidden name="{{field.short_name}}_time" value=0 id="{{field.short_name}}_time" />
 				<input type=hidden name="{{field.short_name}}_validator" value='{{ field.validators.0 }}' id="{{field.short_name}}_validator" />   
 				<span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}
-			</th>
+			</{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ if qitem.tag == 'td' or qitem.tag == 'th' }}{{qitem.tag}}{{else}}{{qitem.tag}}></td{{endif}}{{ endif }}{{ endfor }}>
 			{{ for choice in field }} <td> <span data-toggle="tooltip" data-html="true" title='{{ if choice_label_tag != '' }}<{{choice_label_tag}}>{{ endif }}{{ choice.label }}{{ if choice_label_tag != '' }}</{{choice_label_tag}}>{{ endif }}'>{{ choice }}</span> </td> {{ endfor }}
 			</tr>
 			

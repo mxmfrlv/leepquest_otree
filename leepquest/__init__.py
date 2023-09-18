@@ -477,7 +477,7 @@ class BlocPage(Page):
                 elif len(getattr(C,cbp+'_TYPES')[i-1]) > 1 and getattr(C,cbp+'_TYPES')[i-1][1] == "last":
                     radiotable_bottoms.append(getattr(C,cbp+'_VARS')[i-1])
                     radiotable_rows.append(getattr(C,cbp+'_VARS')[i-1])
-            cqtag='h5'
+            cqtag='h5' if not getattr(C,cbp+'_VARS')[i-1] in radiotable_rows else 'th'
             if(hasattr(C,cbp+"_QUESTTAG")):
                 cqtag_cand = getattr(C,cbp+"_QUESTTAG")[i-1] if i <= len(getattr(C,cbp+"_QUESTTAG")) else getattr(C,cbp+"_QUESTTAG")[-1]
                 if str(cqtag_cand)!='' and str(cqtag_cand)!='-' and str(cqtag_cand)!='0': cqtag=cqtag_cand
