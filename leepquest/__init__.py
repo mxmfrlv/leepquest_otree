@@ -440,7 +440,7 @@ class BlocPage(Page):
         deps=[]
         if(hasattr(C,cbp+"_TITLE")): title=getattr(C,cbp+"_TITLE")
         presentation_tepmplate=""
-        if os.path.exists(C.NAME_IN_URL+"/include_"+cbp+".html"): presentation_tepmplate=C.NAME_IN_URL+"/include_"+cbp+".html"
+        if os.path.exists(C.APP_NAME+"/include_"+cbp+".html"): presentation_tepmplate=C.APP_NAME+"/include_"+cbp+".html"
         # print("vars_for_template")
         for i in getattr(C,cbp+"_QNUMS"):
             if skip_some_blocpage_quests(player,cbp,i,"vars_for_template"): continue
