@@ -75,6 +75,7 @@ function botProceedInput(index) {
 						}
 						var choosen=Math.floor(Math.random()*values.length);
 						form_map[name][i].value=values[choosen][1];
+						$(form_map[name][i]).change();
 						console.log(name,form_map[name][i].type+" value set to ",values[choosen][1]);
 							
 					}
@@ -125,6 +126,12 @@ $(document).ready(function() {
 	if(bot_submit_but_name) bot_name_array.push(bot_submit_but_name);
 	console.log(bot_name_array,form_map)
 	if(bot_name_array.length>0) setTimeout(function() {bot_loaded=true; botProceedInput(0);},500);
+	var test_nosubmit=false;
+	if(test_nosubmit) $("form.otree-form").on("submit",function(event) {
+		event.stopPropagation();
+		return false;
+	});
+
 // for(var name in form_map) {
 
 // }
