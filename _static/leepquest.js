@@ -661,7 +661,7 @@ if(js_vars.withtags.length>0) {
 	  }
 	  if(proceed) {
 		  proceeded=true;
-		  $( this ).html($( this ).html().replace(/&gt;/gi,">").replace(/&lt;/gi,"<"));
+		  $( this ).html($( this ).html().replace(/&gt;/gi,">").replace(/&lt;/gi,"<").replace(/&amp;/gi,"&"));
 	  }
    // console.log("for="+$(this).attr("for"),$( this ).html());
   });
@@ -674,7 +674,7 @@ if(js_vars.withtags.length>0) {
 		  if(cfor.replace(js_vars.withtags[w],'')!=cfor) proceed=true;
 	  }
 	  if(proceed) {
-		  $( this ).html($( this ).html().replace(/&gt;/gi,">").replace(/&lt;/gi,"<"));
+		  $( this ).html($( this ).html().replace(/&gt;/gi,">").replace(/&lt;/gi,"<").replace(/&amp;/gi,"&"));
 	  }
 	});
 }
