@@ -105,8 +105,10 @@ function dependfunc(depended,dependon,depvals,inv) {
 		}
 	}
 	if(!depok) {
+		// console.log("!depok",document.getElementById(depended+'_errormessage'),"required before:",$('#id_'+depended).prop('required'));
 		if(document.getElementById(depended+'_errormessage') != null) {
 			document.getElementById(depended+'_errormessage').title=""; 
+			$("#"+depended+"_errormessage").hide()
 			// if(document.forms[0][depended].checkValidity === 'function') document.forms[0][depended].setCustomValidity("");
 			//$('#'+depended+'_errormessage').attr("title","");
 			$('#id_'+depended).prop('required',false);
@@ -129,6 +131,7 @@ function dependfunc(depended,dependon,depvals,inv) {
 			if(imshown) $('#field_'+depended).hide();
 			
 		}
+		// console.log("required after:",$('#id_'+depended).prop('required'));
 	}
 }
 function applydependencies(){
@@ -251,7 +254,7 @@ var additional_validate=function(varname){
 };
 var additional_validate_message=(js_vars.additional_validate_message === undefined)?"Veuillez corriger les erreurs":js_vars.additional_validate_message;
 var additional_validate_invalid_action=function(varnames,alertneeded){
-	console.log(varnames);
+	// console.log(varnames);
 	if(alertneeded === undefined) alertneeded=false;
 	for(var i=0; i<varnames.length; i++) {
 		$('label[for="id_'+varnames[i]+'"]').css({'color':'red'});
@@ -442,8 +445,8 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 			if(allvars[i]=="__info__") iamoptional=true;
 			// console.log("allvars[i]=",allvars[i], "iamoptional=", iamoptional);
 			var ok_pass=(document.forms[0][allvars[i]] !== undefined || allvars[i]=="__info__") && (iamoptional || (document.forms[0][allvars[i]].value!="" && typeof document.forms[0][allvars[i]].checkValidity !== 'function') || (typeof document.forms[0][allvars[i]].checkValidity === 'function' && document.forms[0][allvars[i]].checkValidity()));
-			// console.log("i=",i,"allvars[i]=",allvars[i],"ok_pass=",ok_pass,"document.forms[0][allvars[i]]=",document.forms[0][allvars[i]],"typeof checkValidity ",typeof document.forms[0][allvars[i]].checkValidity,"iamoptional=",iamoptional,document.getElementById(allvars[i]+"_validator").value); console.log(allvars[i],"checkValidity",((typeof document.forms[0][allvars[i]].checkValidity === 'function')?document.forms[0][allvars[i]].checkValidity():"not a function")); if(typeof document.forms[0][allvars[i]].checkValidity === 'function') console.log(document.forms[0][allvars[i]].checkValidity());
-			if(ok_pass && (!additional_validate(allvars[i]) || (!iamoptional && document.forms[0][allvars[i]].value==""))) { // && slidervars.indexOf(allvars[i])>-1
+			// console.log("i=",i,"allvars[i]=",allvars[i],"ok_pass=",ok_pass,"document.forms[0][allvars[i]]=",document.forms[0][allvars[i]],"typeof checkValidity ",typeof document.forms[0][allvars[i]].checkValidity,"iamoptional=",iamoptional,document.getElementById(allvars[i]+"_validator").value); console.log(allvars[i],"checkValidity",((typeof document.forms[0][allvars[i]].checkValidity === 'function')?document.forms[0][allvars[i]].checkValidity():"not a function"),"required:",$('#id_'+allvars[i]).prop('required')); if(typeof document.forms[0][allvars[i]].checkValidity === 'function') console.log("checkValidity:",document.forms[0][allvars[i]].checkValidity());
+			if(ok_pass && (!additional_validate(allvars[i]) || (!iamoptional && document.forms[0][allvars[i]].value=="" && $('#id_'+allvars[i]).prop('required')))) { // && slidervars.indexOf(allvars[i])>-1
 				force_prevent_default=true;
 				if(!additional_validate(allvars[i]) || slidervars.indexOf(allvars[i])<0) invalidated_vars.push(allvars[i]);
 				ok_pass=false;
@@ -547,7 +550,7 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 		}
 		else {
 			var scrolled=false;
-			for(i=0; i<varsshown.length; i++) if(varsshown[i]>0 && document.getElementById(allvars[i]+"_errormessage") !== null && document.forms[0][allvars[i]].value=="") {
+			for(i=0; i<varsshown.length; i++) if(varsshown[i]>0 && document.getElementById(allvars[i]+"_errormessage") !== null && document.forms[0][allvars[i]].value==""  && document.getElementById(allvars[i]+"_errormessage").title=="required") {
 				force_prevent_default=true;
 				document.getElementById(allvars[i]+"_errormessage").innerHTML=(js_vars.field_required_message === undefined)?"Veuillez répondre à cette question":js_vars.field_required_message;
 				document.getElementById(allvars[i]+"_errormessage").style.display="block";
