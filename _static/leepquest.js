@@ -80,7 +80,8 @@ function dependfunc(depended,dependon,depvals,inv) {
 	var adepvals=depvals.split(',');
 	var depok=negform;
 	for(var i=0; i<adepvals.length; i++) {
-		if(adepvals[i]==document.forms[0][dependon].value) depok=!negform;
+		if(adepvals[i]==document.forms[0][dependon].value || (document.forms[0][dependon].type=="checkbox" && document.forms[0][dependon].checked)) depok=!negform;
+		// console.log("dependon;",dependon,"value",document.forms[0][dependon].value,"check_equals_to",adepvals[i],"depended:",depended,"depended elem:",document.forms[0][depended],"dependon elem:",document.forms[0][dependon]);
 	}
 	if(depok) {
 		if(document.getElementById(depended+'_errormessage') == null) {
