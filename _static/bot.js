@@ -18,7 +18,7 @@ function botSubmitForm(name,i) {
 	
 	// if('prev' in form_map && form_map['prev'].length==1) {console.log("now click prev button"); $(form_map['prev'][0]).click();}
 	if($(me).is(':visible')) {
-		bot_submit_timeout=setTimeout(function() {console.log(form_map,name,i); botSubmitForm(name,i);}, 500);
+		bot_submit_timeout=setTimeout(function() {console.log(form_map,name,i); botSubmitForm(name,i);}, 1000);
 		console.log("set timeout again");
 	}
 }
@@ -111,7 +111,7 @@ $(document).ready(function() {setTimeout(function() {if(_bot_input_forms_passed=
 		if($(this).hasClass("otree-btn-next")) {
 			if(!name) name="otree-btn-next";
 			if(bot_submit_but_name) bot_name_array.push(bot_submit_but_name);
-			if(bot_submit_index>0) name+="-".name.toString()
+			if(bot_submit_index>0) name+="-"+(bot_submit_index.toString())
 			bot_submit_but_name = name;
 			bot_submit_index++;
 			console.log("otree-btn-next",bot_submit_index);
@@ -141,4 +141,4 @@ $(document).ready(function() {setTimeout(function() {if(_bot_input_forms_passed=
 
 // }
 // setTimeout(function() {$("form#form").submit();}, 100);
-}},50)});
+}},100)});
