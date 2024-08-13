@@ -73,7 +73,7 @@ class LQ_C(BaseConstants):
         TRACK_BLOCPAGE_LOADS = "A;B".split(';')
         A_LIST = "Quel âge avez-vous ?;Quel est le diplôme le plus élevé que vous avez obtenu ?;Veuillez également répondre à la question suivante :;Quel est votre genre ?;Quel est votre pays de naissance?".split(';')
         A_TYPES = [x.split(':') for x in "slider:int;radio;info;radio;select".split(';')]
-        A_OPTS = [x.split(':') for x in "99:18:1:17;Sans diplôme:Certificat d’études primaires:Ancien brevet BEPC:Certificat d’aptitude professionnelle (CAP):Brevet d’enseignement professionnel (BEP):BAC d’enseignement technique et professionnel:BAC d’enseignement général:BAC +2 (DUT, BTS, D\EUG):Diplôme de l’enseignement supérieur (2ème ou 3ème cycles, grande école);;Homme:Femme;France:Etranger".split(';')]
+        A_OPTS = [x.split(':') for x in "99:18:1:17;Sans diplôme:Certificat d’études primaires:Ancien brevet BEPC:Certificat d’aptitude professionnelle (CAP):Brevet d’enseignement professionnel (BEP):BAC d’enseignement technique et professionnel:BAC d’enseignement général:BAC +2 (DUT, BTS, DEUG):Diplôme de l’enseignement supérieur (2ème ou 3ème cycles, grande école);;Homme:Femme;France:Etranger".split(';')]
         A_VARS = "age;diplome;a_info_1;genre;pays".split(";")
         A_BY=2
         A_BY_INTRO=[""]

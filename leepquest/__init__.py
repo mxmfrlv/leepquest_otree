@@ -1,17 +1,20 @@
 from otree.api import *
 import math, random, os, pandas
-from typing import Union,Optional,Callable,List,Dict,Any
+
+from typing import Union,Optional,Callable,List,Dict,Any #in order to annotate the return types of *bp_* functions
 
 class PlayerVariables:
     # additional player variables should be defined here
     test = models.IntegerField(initial = 1)
     # pass
 
+# import leepquest:
 with open('LQ.py','r', encoding="utf-8") as f:
     content = f.read()
 exec(content)
 
 # STANDARD OTREE CLASSES (except Player which is inside LQ.py with (optional) additional variables in the PlayerVariables class above)
+# (the C class should inherit from the leepquest's LQ_C class (which inherits from BaseConstants) )
 class C(LQ_C):
     pass 
 
@@ -44,7 +47,7 @@ def bp_is_displayed(player:Player, cbp:str)->bool:
 
 # bp_get_timeout_seconds is used to add a timeout to some blocpages, in should return (cbp is the current blocpage's name)
 def bp_get_timeout_seconds(player:Player, cbp:str) -> Union[int,None]:
-    # example: if cbp == "RAVEN" : return 60*LQ_C.RAVEN_MINUTES
+    # example: if cbp == "RAVEN" : return 60*C.RAVEN_MINUTES
     return None
 
 # bp_get_form_fields is used to add additional fields to blocpages (the additional fields should be defined in PlayerVariables class)
@@ -67,10 +70,19 @@ def bp_js_vars(player:Player,cbp:str) -> Dict[str,Any]:
 #PAGES
 # define additional pages to BlocPage in a standard way
 
+# class MyPage(Page):
+    # pass 
+
+# compose the page sequence :
+
+# page_sequence = [MyPage, BlocPage] ### in order to place custom pages before blocpages
 page_sequence = [BlocPage]
+
+# the code below adds the necessary number of blocpages in order to correspond to the leepquest.xlsx (or [appname].xlsx) confifuration file
 if page_sequence.count(BlocPage) < len(C.BLOCPAGES):
     for i in range(len(C.BLOCPAGES)-page_sequence.count(BlocPage)):
         page_sequence.append(BlocPage)
 
+### a way to place additional custom pages at the end :
 # custom_page_sequence=[MyPage]        
-# page_sequence +=custom_page_sequence ### in order to place additional custom pages at the end
+# page_sequence +=custom_page_sequence
