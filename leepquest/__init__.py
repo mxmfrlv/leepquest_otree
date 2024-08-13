@@ -1,5 +1,6 @@
 from otree.api import *
 import math, random, os, pandas
+from typing import Union,Optional,Callable,List,Dict,Any
 
 class PlayerVariables:
     # additional player variables should be defined here
@@ -28,38 +29,38 @@ def creating_session(subsession: Subsession):
     # put additional logic below
 
 # skip_some_bp_quests is used to skip some questions inside blocpages (cbp is for current blocpage) n is the question number
-def skip_some_bp_quests(player:Player, cbp,n,function=None):
+def skip_some_bp_quests(player:Player,cbp:str,n:int,function:Optional[str]=None) -> bool:
     # example: if cbp == 'B2' and n > 1 and player.treatment > 3: return True
     return False
     
 # make_bp_type_nothing is also used to skip some questions inside blocpages (var is the question's variable name with a block name prefix) but this function does not remove the question from blocpage sequence if blocpage's BY argument equals 1
-def make_bp_type_nothing(player:Player, var):
+def make_bp_type_nothing(player:Player, var:str)->bool:
     # example: if var == "blocB_evaluation" and player.treatment != 2 and player.treatment != 3: return True
     return False
 
 # bp_is_displayed is used to dynamically exclude some blocpages (cbp is the current blocpage's name)
-def bp_is_displayed(player:Player, cbp:str):
+def bp_is_displayed(player:Player, cbp:str)->bool:
     return True
 
-# bp_get_timeout_seconds is used to add a timeout to some blocpages (cbp is the current blocpage's name)
-def bp_get_timeout_seconds(player:Player, cbp:str):
+# bp_get_timeout_seconds is used to add a timeout to some blocpages, in should return (cbp is the current blocpage's name)
+def bp_get_timeout_seconds(player:Player, cbp:str) -> Union[int,None]:
     # example: if cbp == "RAVEN" : return 60*LQ_C.RAVEN_MINUTES
     return None
 
 # bp_get_form_fields is used to add additional fields to blocpages (the additional fields should be defined in PlayerVariables class)
-def bp_get_form_fields(player:Player, cbp:str):
+def bp_get_form_fields(player:Player, cbp:str) -> List[str]:
     return []
 
 # bp_before_next_page is used to execute additional code before passing to the next blocpage (cbp is the current blocpage's name, next_cbp is the next blocpage's name)
-def bp_before_next_page(player:Player,timeout_happened:bool, cbp:str, next_cbp:str):
+def bp_before_next_page(player:Player,timeout_happened:bool, cbp:str, next_cbp:str) -> None:
     pass
 
 # bp_vars_for_template is used to to add additional variables for blocpage template (cbp is the current blocpage's name)
-def bp_vars_for_template(player:Player,cbp:str):
+def bp_vars_for_template(player:Player,cbp:str) -> Dict[str,Any]:
     return {}
 
 # bp_js_vars is used to to add additional variables to the otree's js_vars (cbp is the current blocpage's name)
-def bp_js_vars(player:Player,cbp:str):
+def bp_js_vars(player:Player,cbp:str) -> Dict[str,Any]:
     return {}
 
 
