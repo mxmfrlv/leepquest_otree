@@ -1,82 +1,18 @@
 from otree.api import *
 import math, random, os, pandas
 
-class C(BaseConstants):
-    NAME_IN_URL = 'leepquest'
-    PLAYERS_PER_GROUP = None
-    NUM_ROUNDS = 1
-    # BLOCPAGEDATA_IN_PARTICIPANT = True
-    TAGS_IN_TEXT = True
-    APP_NAME=os.path.basename(os.path.dirname(__file__))
-    LQ_PATH=os.path.join(os.getcwd(),APP_NAME,"leepquest.xlsx")
-    if not os.path.exists(LQ_PATH): LQ_PATH=os.path.join(os.getcwd(),APP_NAME,APP_NAME+".xlsx")
-    if os.path.exists(LQ_PATH):
-        LQ_XLSX = pandas.ExcelFile(LQ_PATH)
-        BLOCPAGES=[]
-        for sheet in LQ_XLSX.sheet_names:
-            if sheet[0] != '#':
-                BLOCPAGES.append(sheet)
-                sh_df=LQ_XLSX.parse(sheet.upper())
-                for scol in list(sh_df.columns):
-                    if scol[0] != '#':
-                        cvarname=sheet.upper()+'_'+scol.upper()
-                        tempvar=list(sh_df[scol])
-                        ne_found=False
-                        for i, x in reversed(list(enumerate(tempvar))):
-                            # print(i,x)
-                            if isinstance(x,str) and scol.upper() in ['LIST'] and x=='-':
-                                ne_found=True
-                                tempvar[i]=''
-                            if isinstance(x,str) and scol.upper() in ['TYPES']:
-                                tempvar[i]=x.lower()
-                            if i==0 or scol.upper() in ['OPTS']: ne_found=True
-                            if isinstance(x,float) and math.isnan(x):
-                                if not ne_found: del tempvar[i]
-                                else: tempvar[i]=''
-                            else:
-                                ne_found=True
-                        del i,x,ne_found       
-                        tempvar=[str(int(x) if isinstance(x,float) else x) for x in tempvar]
-                        if scol.upper() in ['TYPES','OPTS','DEPS']:
-                            tempvar=[[z.strip() for z in y] for y in [x.split(':') for x in tempvar]]
-                        elif scol.upper() in ['BY', 'TITLE']:
-                            if len(tempvar) == 1: 
-                                tempvar = tempvar[0]
-                                if scol.upper() in ['BY'] and str(tempvar).isnumeric() and int(tempvar)==0 : tempvar=sh_df.shape[0]
-                        elif scol.upper() in ['RANDOMORDERS_SHOWNUMBERS', 'SAME_ORDERS_IN_ALL_ROUNDS']:
-                            tempvar=[bool(int(str(x).lower().replace('false','0').replace('true','1'))) for x in tempvar]
-                        elif scol.upper() in ['RANDOMORDERS']:
-                            tempvar=[x.split(';') if ';' in x else sheet.upper()+"_"+x for x,sheet in zip(tempvar,[sheet]*len(tempvar))]
-                        locals()[cvarname]=tempvar
-                        # print(cvarname,tempvar)
-                        del tempvar
-                del scol, sh_df
-        del sheet, LQ_XLSX
-        TRACK_BLOCPAGE_LOADS = BLOCPAGES
-    else:
-        BLOCPAGES="A;B".split(';')
-        TRACK_BLOCPAGE_LOADS = "A;B".split(';')
-        A_LIST = "Quel âge avez-vous ?;Quel est le diplôme le plus élevé que vous avez obtenu ?;Veuillez également répondre à la question suivante :;Quel est votre genre ?;Quel est votre pays de naissance?".split(';')
-        A_TYPES = [x.split(':') for x in "slider:int;radio;info;radio;select".split(';')]
-        A_OPTS = [x.split(':') for x in "99:18:1:17;Sans diplôme:Certificat d’études primaires:Ancien brevet BEPC:Certificat d’aptitude professionnelle (CAP):Brevet d’enseignement professionnel (BEP):BAC d’enseignement technique et professionnel:BAC d’enseignement général:BAC +2 (DUT, BTS, D\EUG):Diplôme de l’enseignement supérieur (2ème ou 3ème cycles, grande école);;Homme:Femme;France:Etranger".split(';')]
-        A_VARS = "age;diplome;a_info_1;genre;pays".split(";")
-        A_BY=2
-        A_BY_INTRO=[""]
-        # A_NO_SCREEN_TIME = True
-        A_TITLE="Questionnaire"
-        B_ASSO_LIST="asso_gibiers;asso_neige;asso_petitsprinces;asso_armeschasse;asso_vehiculesepoque;asso_medecinsdumonde;asso_parachitistes;asso_medecinssansfrontiers;asso_industrienationale;asso_sourds;asso_ceramique;asso_yachtclub".split(";")
-        B_LIST = "Sur une échelle de 1 (pas bénéfiques) à 5 (très bénéfiques), pensez-vous que les Associations Reconnues d’Utilité Publique (ARUP) sont généralement bénéfiques pour la société ?;Association nationale des chasseurs de grands gibiers;Association nationale pour l’étude de la neige et des avalanches ;Association des petits princes;Union nationale des propriétaires d’armes de chasse et de tir;Fédération française des véhicules d’époque;Médecins du monde;Union nationale des parachutistes;Médecins sans frontières;Société d’encouragement pour l’industrie nationale;Fédération nationale des sourds de France;Société française de céramique;Yacht club de France;Je pense que je suis une personne de valeur, au moins égale à n’importe qui d’autre;Je pense que je possède un certain nombre de belles qualités;Tout bien considéré, je suis porté-e à me considérer comme un-e raté-e;Je suis capable de faire les choses aussi bien que la majorité des gens;Je sens peu de raisons d’être fier-e de moi;J’ai une attitude positive vis-à-vis moi-même;Dans l’ensemble, je suis satisfait-e de moi;J’aimerais avoir plus de respect pour moi-même;Parfois je me sens vraiment inutile;Il m’arrive de penser que je suis un-e bon-ne à rien".split(";")
-        B_TYPES = [x.split(':') for x in ["radioline:1-5"]+["checkbox:inline"]*len(B_ASSO_LIST)+"radiotable:first;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable:last".split(';')]
-        B_OPTS = [x.split(':') for x in ["(pas bénéfiques)::::(très bénéfiques)"]+["OUI:NON"]*len(B_ASSO_LIST)+["Tout à fait en désaccord:Plutôt en désaccord:Plutôt en accord:Tout à fait en accord"]*10]
-        B_VARS = ["arup_benefiques"]+B_ASSO_LIST+"self_estim_01;self_estim_02;self_estim_03;self_estim_04;self_estim_05;self_estim_06;self_estim_07;self_estim_08;self_estim_09;self_estim_10".split(";")
-        B_BY = "1;12;10".split(';')
-        B_BY_INTRO = ";Lesquelles de ces associations sont selon vous des Associations Reconnues d’Utilité Publique ?;;Sur une échelle de « 1 » (jamais) à « 5 » (souvent), répondez aux affirmations suivantes :;Pour chacune des caractéristiques ou descriptions suivantes, indiquez à quel point chacune est vraie pour vous.".split(';')
-        B_RANDOMORDERS=["B_ASSO_LIST","self_estim_01;self_estim_02;self_estim_03;self_estim_04;self_estim_05;self_estim_06;self_estim_07;self_estim_08;self_estim_09;self_estim_10".split(';')]
-        B_RANDOMORDERS_SHOWNUMBERS=[True,False]
-        # B_SAME_ORDERS_IN_ALL_ROUNDS=[False]
-    for i in range(len(BLOCPAGES)):
-        locals()[BLOCPAGES[i]+"_QNUMS"]=list(range(1,len(locals()[BLOCPAGES[i]+"_LIST"])+1))
-        if i==len(BLOCPAGES)-1: del i  
+class PlayerVariables:
+    # additional player variables should be defined here
+    test = models.IntegerField(initial = 1)
+    # pass
+
+with open('LQ.py','r', encoding="utf-8") as f:
+    content = f.read()
+exec(content)
+
+# STANDARD OTREE CLASSES (except Player which is inside LQ.py with (optional) additional variables in the PlayerVariables class above)
+class C(LQ_C):
+    pass 
 
 class Subsession(BaseSubsession):
     pass
@@ -86,496 +22,54 @@ class Group(BaseGroup):
     pass
 
 
-class Player(BasePlayer):
-    ### blocpage stuff below
-    if not hasattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") or not getattr(C,"BLOCPAGEDATA_IN_PARTICIPANT"):
-        blocpagedata=models.LongStringField(initial="")
-        blocpageindex=models.IntegerField(initial=0)
-        blocpagelasttime=models.FloatField(initial=0.0)
-    if hasattr(C,"TRACK_BLOCPAGE_LOADS"):
-        for i in range(len(C.TRACK_BLOCPAGE_LOADS)):
-           if C.TRACK_BLOCPAGE_LOADS[i].strip() != '': 
-            locals()[C.TRACK_BLOCPAGE_LOADS[i]+"_nloads"]=models.IntegerField(initial=0)
-            locals()[C.TRACK_BLOCPAGE_LOADS[i]+"_loadtime"]=models.FloatField(initial=-11,blank=True)
-           if i==len(C.TRACK_BLOCPAGE_LOADS)-1: del i
-    for bpi in range(len(C.BLOCPAGES)):
-        cbp=C.BLOCPAGES[bpi]
-        if hasattr(C,cbp+"_RANDOMORDERS"):
-            for rpi in range(len(getattr(C,cbp+"_RANDOMORDERS"))):
-                vars_for_orders = getattr(C,cbp+"_RANDOMORDERS")[rpi] if isinstance(getattr(C,cbp+"_RANDOMORDERS")[rpi], list) else getattr(C,getattr(C,cbp+"_RANDOMORDERS")[rpi])
-                var_name=getattr(C,cbp+"_RANDOMORDERS")[rpi].lower()+"_orders" if not isinstance(getattr(C,cbp+"_RANDOMORDERS")[rpi], list) else  cbp+"_orders_"+str(rpi+1)
-                locals()[var_name]=models.StringField()
-                for i in list(range(1,len(vars_for_orders)+1)):
-                    locals()[vars_for_orders[i-1]+"_order"]=models.IntegerField(initial=-11,blank=True)
-                    if i == len(vars_for_orders): 
-                        del i
-                if rpi == len(getattr(C,cbp+"_RANDOMORDERS"))-1:
-                    del rpi, vars_for_orders, var_name
-        by_list=[getattr(C,cbp+'_BY')]*math.ceil(len(getattr(C,cbp+'_LIST'))/int(getattr(C,cbp+'_BY'))) if not isinstance(getattr(C,cbp+'_BY'),list) else getattr(C,cbp+'_BY')
-        for i in getattr(C,cbp+"_QNUMS"):
-            cblank=False
-            min_index=1; max_index=0
-            if getattr(C,cbp+'_TYPES')[i-1][0]=="int" or getattr(C,cbp+'_TYPES')[i-1][0]=="float":
-                if len(getattr(C,cbp+'_OPTS')[i-1])>1 and getattr(C,cbp+'_OPTS')[i-1][0].strip()!="" and getattr(C,cbp+'_OPTS')[i-1][1].strip()!="" :
-                    if int(getattr(C,cbp+'_OPTS')[i-1][0].strip())<int(getattr(C,cbp+'_OPTS')[i-1][1].strip()):
-                        max_index = 1; min_index = 0
-            # print(getattr(C,cbp+'_TYPES')[i-1][0])
-            for h in range(1,len(getattr(C,cbp+'_TYPES')[i-1])):
-                if getattr(C,cbp+'_TYPES')[i-1][h]=="optional": cblank = True
-                if h==len(getattr(C,cbp+'_TYPES')[i-1])-1: del h
-            if not cblank and hasattr(C,cbp+"_DEPS"):
-                for h in range(len(getattr(C,cbp+'_DEPS'))):
-                    if getattr(C,cbp+'_DEPS')[h][0]==getattr(C,cbp+'_VARS')[i-1]: cblank = True
-                    if h==len(getattr(C,cbp+'_DEPS'))-1: del h
-            if getattr(C,cbp+"_TYPES")[i-1][0]=="radio":
-                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1],choices=[[h+1,x] for h,x in enumerate(getattr(C,cbp+'_OPTS')[i-1])],widget=widgets.RadioSelect, blank=cblank)
-                # print(getattr(C,cbp+'_VARS')[i-1],cblank)
-                locals()[getattr(C,cbp+'_VARS')[i-1]+"_strval"]=models.StringField(label=getattr(C,cbp+'_LIST')[i-1],choices=getattr(C,cbp+'_OPTS')[i-1],widget=widgets.RadioSelect,blank=True)
-            elif getattr(C,cbp+'_TYPES')[i-1][0]=="hradio" or getattr(C,cbp+'_TYPES')[i-1][0]=="radiotable":
-                # print(getattr(C,cbp+'_VARS')[i-1])
-                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1],choices=[[h+1,x] for h,x in enumerate(getattr(C,cbp+'_OPTS')[i-1])],widget=widgets.RadioSelectHorizontal, blank=cblank)
-                locals()[getattr(C,cbp+'_VARS')[i-1]+"_strval"]=models.StringField(label=getattr(C,cbp+'_LIST')[i-1],choices=getattr(C,cbp+'_OPTS')[i-1],widget=widgets.RadioSelectHorizontal,blank=True)
-            elif getattr(C,cbp+'_TYPES')[i-1][0]=="radioline":
-                suph=1 if len(getattr(C,cbp+'_TYPES')[i-1]) == 1 else int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0])
-                ctypesvals=[]
-                cstep=1 if len(getattr(C,cbp+'_TYPES')[i-1]) ==1 or len(getattr(C,cbp+'_TYPES')[i-1][1].split('-')) == 1 or int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0])<=int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[1]) else -1
-                # print(cstep,getattr(C,cbp+'_TYPES')[i-1][1],len(getattr(C,cbp+'_TYPES')[i-1][1].split('-')),getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0],getattr(C,cbp+'_TYPES')[i-1][1].split('-')[1],len(getattr(C,cbp+'_TYPES')[i-1]) or len(getattr(C,cbp+'_TYPES')[i-1][1].split('-')) == 1 or int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0])<=int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[1]))
-                for h in range(0,len(getattr(C,cbp+'_OPTS')[i-1])): ctypesvals.append([(str(h*cstep+suph)+"#line#" if not 'nonumbers' in getattr(C,cbp+'_TYPES')[i-1] and (len(getattr(C,cbp+'_TYPES')[i-1]) ==1 or len(getattr(C,cbp+'_TYPES')[i-1][1].split('-')) == 1 or (h*cstep+suph>=min([int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0]),int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[1])]) and h*cstep+suph<=max([int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0]),int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[1])]))) else '')+getattr(C,cbp+'_OPTS')[i-1][h],suph,cstep])
-                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1],choices=[[x[2]*h+x[1],x[0]] for h,x in enumerate(ctypesvals)],widget=widgets.RadioSelectHorizontal, blank=cblank)
-                locals()[getattr(C,cbp+'_VARS')[i-1]+"_strval"]=models.StringField(label=getattr(C,cbp+'_LIST')[i-1],choices=getattr(C,cbp+'_OPTS')[i-1],widget=widgets.RadioSelectHorizontal,blank=True)
-                del suph,ctypesvals,cstep,h
-            elif getattr(C,cbp+'_TYPES')[i-1][0]=="checkbox":
-                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.BooleanField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1], widget=widgets.CheckboxInput, blank=True, initial=False)
-                locals()[getattr(C,cbp+'_VARS')[i-1]+"_strval"]=models.StringField(label=getattr(C,cbp+'_LIST')[i-1],choices=getattr(C,cbp+'_OPTS')[i-1],blank=True)
-            elif getattr(C,cbp+'_TYPES')[i-1][0]=="select":
-                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1],choices=[[h+1,x] for h,x in enumerate(getattr(C,cbp+'_OPTS')[i-1])], blank=cblank)
-                locals()[getattr(C,cbp+'_VARS')[i-1]+"_strval"]=models.StringField(label=getattr(C,cbp+'_LIST')[i-1],choices=getattr(C,cbp+'_OPTS')[i-1],blank=True)
-            elif getattr(C,cbp+'_TYPES')[i-1][0]=="slider" and len(getattr(C,cbp+'_TYPES')[i-1])>1 and  getattr(C,cbp+'_TYPES')[i-1][1]=="int":
-                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1], blank=cblank)
-            elif getattr(C,cbp+'_TYPES')[i-1][0]=="slider" and (len(getattr(C,cbp+'_TYPES')[i-1])<=1 or getattr(C,cbp+'_TYPES')[i-1][1]=="float"):
-                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.FloatField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1], blank=cblank)
-            elif getattr(C,cbp+'_TYPES')[i-1][0]=="ltext" or getattr(C,cbp+'_TYPES')[i-1][0]=="longstring":
-                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.LongStringField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1], blank=cblank)
-            elif getattr(C,cbp+'_TYPES')[i-1][0]=="stext" or getattr(C,cbp+'_TYPES')[i-1][0]=="string":
-                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.StringField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1], blank=cblank)
-            elif getattr(C,cbp+'_TYPES')[i-1][0]=="int":
-                # print(getattr(C,cbp+'_VARS')[i-1],cblank)
-                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1], max=int(getattr(C,cbp+'_OPTS')[i-1][max_index].strip()) if getattr(C,cbp+'_OPTS')[i-1][max_index].strip()!="" else None, min=int(getattr(C,cbp+'_OPTS')[i-1][min_index].strip()) if len(getattr(C,cbp+'_OPTS')[i-1])>1 and getattr(C,cbp+'_OPTS')[i-1][min_index].strip()!="" else None, blank=cblank)
-            elif getattr(C,cbp+'_TYPES')[i-1][0]=="float":
-                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.FloatField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1], max=float(getattr(C,cbp+'_OPTS')[i-1][max_index].strip()) if getattr(C,cbp+'_OPTS')[i-1][max_index].strip()!="" else None, min=float(getattr(C,cbp+'_OPTS')[i-1][min_index].strip()) if len(getattr(C,cbp+'_OPTS')[i-1])>1 and getattr(C,cbp+'_OPTS')[i-1][min_index].strip()!="" else None, blank=cblank)
-            elif getattr(C,cbp+'_TYPES')[i-1][0]=="info":
-                locals()[getattr(C,cbp+'_VARS')[i-1]]=models.BooleanField(variable=getattr(C,cbp+'_VARS')[i-1], label=getattr(C,cbp+'_LIST')[i-1], blank=True)
-            elif getattr(C,cbp+'_TYPES')[i-1][0]=="nothing":
-                pass
-            if not (not isinstance(getattr(C,cbp+'_BY'),list) and str(getattr(C,cbp+'_BY')) == '0'):
-                locals()[getattr(C,cbp+'_VARS')[i-1]+"_time"]=models.FloatField(blank=True, initial=-11)
-            if i == len(getattr(C,cbp+"_QNUMS")): 
-                del i, cblank
-        for i in list(range(1,len(by_list)+1)):
-            if not hasattr(C,cbp+'_NO_SCREEN_TIME') or not getattr(C,cbp+'_NO_SCREEN_TIME'):
-                locals()[cbp+"_screen"+str(i)+"_time"]=models.FloatField(initial=-11,blank=True)
-            if i == len(by_list): 
-                del i
-        if hasattr(C,cbp+"_BY_ERRORVARS"):
-            for i in range(len(getattr(C,cbp+"_BY_ERRORVARS"))):
-               if getattr(C,cbp+"_BY_ERRORVARS")[i].strip() != '': 
-                locals()[getattr(C,cbp+"_BY_ERRORVARS")[i]]=models.IntegerField(initial=0,blank=True)
-               if i==len(getattr(C,cbp+"_BY_ERRORVARS"))-1: del i    
-        if hasattr(C,cbp+"_ANSWERS_VARS"):
-            for i in range(len(getattr(C,cbp+"_ANSWERS_VARS"))):
-               if getattr(C,cbp+"_ANSWERS_VARS")[i].strip() != '': 
-                locals()[getattr(C,cbp+"_ANSWERS_VARS")[i]]=models.StringField(initial='',blank=True)
-               if i==len(getattr(C,cbp+"_ANSWERS_VARS"))-1: del i    
-        if bpi == len(C.BLOCPAGES)-1:
-            del bpi, cbp, by_list, min_index, max_index
-    participant_startpageindex=models.IntegerField(initial=-1)# FUNCTIONS
-    ### blocpage stuff above
-
 # FUNCTIONS
 def creating_session(subsession: Subsession):
-    session = subsession.session
-    period = subsession.round_number
-    players=subsession.get_players()
-    import random
-    for player in players :
-        ### blocpage stuff below
-        for i,cbp in enumerate(C.BLOCPAGES):
-            if hasattr(C,cbp+"_RANDOMORDERS"):
-               for ovi,ov in enumerate(getattr(C,cbp+"_RANDOMORDERS")):
-                make_random_orders(player,i,ov,ovi,period)
-        if hasattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") and getattr(C,"BLOCPAGEDATA_IN_PARTICIPANT"):
-            player.participant.blocpagedata=""
-            player.participant.blocpageindex=0
-            player.participant.blocpagelasttime=0.0
-        ### blocpage stuff above
+    LQ_creating_session(subsession) ## leepquest stuff
+    # put additional logic below
 
-### blocpage stuff below        
-def make_random_orders(player: Player, cbpi: int, var_name_or_list, roi : int, period : int):
-    import random
-    cbp=C.BLOCPAGES[cbpi]
-    init_list=getattr(C,var_name_or_list) if not isinstance(var_name_or_list, list) else var_name_or_list
-    orders=list(range(1,len(init_list)+1))
-    random.shuffle(orders)
-    orders_list=str.join(',',[str(o) for o in orders])
-    var_name=var_name_or_list.lower()+"_orders" if not isinstance(var_name_or_list, list) else  cbp+"_orders_"+str(roi+1)
-    if(hasattr(C,cbp+"_SAME_ORDERS_IN_ALL_ROUNDS")):
-        if (isinstance(getattr(C,cbp+"_SAME_ORDERS_IN_ALL_ROUNDS"),bool) and getattr(C,cbp+"_SAME_ORDERS_IN_ALL_ROUNDS")) or (isinstance(getattr(C,cbp+"_SAME_ORDERS_IN_ALL_ROUNDS"),list) and cbpi<len(getattr(C,cbp+"_SAME_ORDERS_IN_ALL_ROUNDS")) and getattr(C,cbp+"_SAME_ORDERS_IN_ALL_ROUNDS")[cbpi]):
-            if period>1:
-                orders_list = getattr(player.in_round(1),var_name)
-    setattr(player,var_name,orders_list)
-def get_random_orders(player: Player, var_name_or_list, roi : int, cbp : str):
-    var_name=var_name_or_list.lower()+"_orders" if not isinstance(var_name_or_list, list) else  cbp+"_orders_"+str(roi+1)
-    orders=[int(o) for o in getattr(player,var_name).split(',')]
-    init_list=getattr(C,var_name_or_list) if not isinstance(var_name_or_list, list) else var_name_or_list
-    var_orders=[]
-    for i,o in enumerate(orders): 
-        var_orders.append(init_list[o-1])
-        setattr(player,init_list[o-1]+"_order",0) #i+1
-    return var_orders
-
-def track_reloads(player: Player, page):
-    if hasattr(C,"TRACK_BLOCPAGE_LOADS") and page in C.TRACK_BLOCPAGE_LOADS:
-        setattr(player,page+"_nloads",getattr(player,page+"_nloads",0)+1)
-
-def get_current_blocpage(player: Player, shift=0):
-    blocpageindex = get_blocpage_index(player) + shift
-    return C.BLOCPAGES[blocpageindex%len(C.BLOCPAGES)]
-
-def get_blocpage_index(player: Player):
-    if player.participant_startpageindex < 0:
-        my_start_index=0
-        for i in range(len(page_sequence)):
-            if page_sequence[i].__name__ == 'BlocPage': break
-            my_start_index+=1
-        player.participant_startpageindex = player.participant._index_in_pages - my_start_index
-    cindex=-1
-    if hasattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") and getattr(C,"BLOCPAGEDATA_IN_PARTICIPANT"):
-        cindex = player.participant.blocpageindex
-    else:
-        cindex = player.blocpageindex
-    return cindex
-    # debug=hasattr(C,"DEBUG") and getattr(C,"DEBUG")
-    # index_should_be=-1
-    # for i in range((player.participant._index_in_pages-player.participant_startpageindex)%len(page_sequence)+1):
-        # print(page_sequence[i].__dict__, page_sequence[i].__class__, page_sequence[i].__class__.__name__, page_sequence[i].__name__)
-        # if page_sequence[i].__name__ == 'BlocPage' : index_should_be+=1
-    # if debug : print("get_blocpage_index: bp index_should_be",index_should_be, "bp index is",cindex)
-    # while index_should_be > cindex: 
-        # increment_blocpage_index(player)
-        # cindex = player.participant.blocpageindex if hasattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") and getattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") else player.blocpageindex
-    # return cindex
-
-def increment_blocpage_index(player: Player, cthreshold=-1):
-    import time
-    ctime=time.time()
-    done=False
-    debug=hasattr(C,"DEBUG") and getattr(C,"DEBUG")
-    if hasattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") and getattr(C,"BLOCPAGEDATA_IN_PARTICIPANT"):
-        if ctime-player.participant.blocpagelasttime>cthreshold:
-            player.participant.blocpageindex+=1
-            done=True
-            if debug: print("incrementing participant.blocpageindex new is", player.participant.blocpageindex, end=". ")
-        else:
-            if debug: print("not incrementing participant.blocpageindex current is", player.participant.blocpageindex, end=". ")
-            pass
-        if debug and cthreshold>-1: print("prevtime",player.participant.blocpagelasttime, "current time", ctime, "diff", ctime-player.participant.blocpagelasttime, "threshold", cthreshold)
-        if done: player.participant.blocpagelasttime=ctime;
-    else:
-        if ctime-player.blocpagelasttime>cthreshold:
-            player.blocpageindex+=1
-            done=True
-            if debug: print("incrementing player.blocpageindex new is", player.blocpageindex, end=". ")
-        else:
-            if debug: print("not incrementing player.blocpageindex current is", player.blocpageindex, end=". ")
-            pass
-        if debug and cthreshold>-1: print("prevtime",player.blocpagelasttime, "current time", ctime, "diff", ctime-player.blocpagelasttime, "threshold", cthreshold)
-        if done: player.blocpagelasttime=ctime;
-
-def get_blocpage_data(player: Player):
-    if hasattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") and getattr(C,"BLOCPAGEDATA_IN_PARTICIPANT"):
-        return player.participant.blocpagedata.strip()
-    else:
-        return player.blocpagedata.strip()
-def set_blocpage_data(player: Player,data):
-    if hasattr(C,"BLOCPAGEDATA_IN_PARTICIPANT") and getattr(C,"BLOCPAGEDATA_IN_PARTICIPANT"):
-        player.participant.blocpagedata = data
-    else:
-        player.blocpagedata = data
-
-def blocpage_live_method(player, data):
-    cbp=get_current_blocpage(player)
-    status=data[:data.find('|')]
-    if status=='load':
-        # print('loading page...')
-        track_reloads(player,cbp)
-        if get_blocpage_data(player) != "":
-            # print('apply',player.blocpagedata)
-            return {player.id_in_group: 'apply|'+get_blocpage_data(player)}
-        else: 
-            set_blocpage_data(player,data[data.find('|')+1:])
-            return {player.id_in_group: 'ok|'}
-    if status=='update':
-        blocpagedata=data[data.find('|')+1:]
-        set_blocpage_data(player,blocpagedata)
-        # for sb in blocpagedata.split('|'):
-            # bundle=sb.split(';')
-            # if(len(bundle)>1):
-                # print(bundle[0],str(player.__table__.columns[bundle[0]].type))
-                #setattr(player,bundle[0],bundle[1])
-        # print('update',data)
-### blocpage stuff above
-
-def skip_some_blocpage_quests(player, cbp,i,function):
-    if cbp == 'B2' and i > 1 and player.treatment > 3: return True
-    return False
-def make_type_nothing(player, var):
-    if var == "blocB_evaluation" and player.treatment != 2 and player.treatment != 3: return True
+# skip_some_bp_quests is used to skip some questions inside blocpages (cbp is for current blocpage) n is the question number
+def skip_some_bp_quests(player:Player, cbp,n,function=None):
+    # example: if cbp == 'B2' and n > 1 and player.treatment > 3: return True
     return False
     
-# PAGES
-class BlocPage(Page):
-    form_model = 'player'
-    # form_fields = getattr(C,cbp+'_VARS')+list(map(lambda x : x+'_time', getattr(C,cbp+'_VARS')))+list(map(lambda x : x+'_order', C.D_ASSO_LIST))+["blocD_screen"+str(i+1)+"_time" for i,v in enumerate(getattr(C,cbp+'_BY'))]
-    live_method = blocpage_live_method
-    @staticmethod
-    def is_displayed(player):
-        if player.participant_startpageindex < 0:
-            my_start_index=0
-            for i in range(len(page_sequence)):
-                if page_sequence[i] == __class__: break
-                my_start_index+=1
-            player.participant_startpageindex = player.participant._index_in_pages - my_start_index
-        cbp=get_current_blocpage(player)
-        res=True
-        # blockpages exlusions below
-        # blockpages exlusions above
-        debug = hasattr(C,"DEBUG") and getattr(C,"DEBUG")
-        cblocpageindex=get_blocpage_index(player)
-        if debug : print("\nis_displayed, cbp is",cbp, ",round is", player.round_number, ", display",res,", cbp index:", get_blocpage_index(player), ", page index:", player.participant._index_in_pages, ", participant_startpageindex:", player.participant_startpageindex, ', len(page_sequence)',len(page_sequence))
-        if not res:
-            index_should_be=-1
-            for i in range((player.participant._index_in_pages-player.participant_startpageindex)%len(page_sequence)+1):
-                if page_sequence[i] == __class__: index_should_be+=1
-            if debug : print("bp index_should_be",index_should_be, "bp index is",cblocpageindex)
-            if index_should_be == cblocpageindex: increment_blocpage_index(player)
-        if get_blocpage_index(player)>=page_sequence.count(__class__): res=False
-        return res #player.round_number == C.NUM_ROUNDS #1
-    @staticmethod
-    def get_timeout_seconds(player):
-        cbp=get_current_blocpage(player)
-        res = None
-        # blockpages timer conditions below
-        # if cbp == "RAVEN" : res=60*C.RAVEN_MINUTES
-        # blockpages timer conditions above
-        return res
-    @staticmethod
-    def get_form_fields(player):
-        cbp=get_current_blocpage(player)
-        res = []
-        for i in getattr(C,cbp+"_QNUMS"):
-            if getattr(C,cbp+"_TYPES")[i-1][0] != "nothing":
-                if skip_some_blocpage_quests(player,cbp,i,"get_form_fields") or make_type_nothing(player,getattr(C,cbp+'_VARS')[i-1]): continue
-                res.append(getattr(C,cbp+"_VARS")[i-1])
-                if getattr(C,cbp+"_TYPES")[i-1][0] != "info": res.append(getattr(C,cbp+"_VARS")[i-1]+'_time')
-        if not hasattr(C,cbp+'_NO_SCREEN_TIME') or not getattr(C,cbp+'_NO_SCREEN_TIME'):
-            by_list=[getattr(C,cbp+'_BY')]*math.ceil(len(getattr(C,cbp+'_LIST'))/int(getattr(C,cbp+'_BY'))) if not isinstance(getattr(C,cbp+'_BY'),list) else getattr(C,cbp+'_BY')
-            for h in range(1,len(by_list)+1):
-                res.append(cbp+"_screen"+str(h)+"_time")
-        if hasattr(C,cbp+"_RANDOMORDERS"):
-           for rpi,ov in enumerate(getattr(C,cbp+"_RANDOMORDERS")):
-            vars_for_orders = getattr(C,cbp+"_RANDOMORDERS")[rpi] if isinstance(getattr(C,cbp+"_RANDOMORDERS")[rpi], list) else getattr(C,getattr(C,cbp+"_RANDOMORDERS")[rpi])
-            for x in vars_for_orders: res.append(x+'_order')
-        if hasattr(C,cbp+"_ANSWERS_VARS"):
-            for w in range(len(getattr(C,cbp+"_ANSWERS_VARS"))):
-               if getattr(C,cbp+"_ANSWERS_VARS")[w].strip() != '': 
-                res.append(getattr(C,cbp+"_ANSWERS_VARS")[w])
-               if w==len(getattr(C,cbp+"_ANSWERS_VARS"))-1: del w
-        if hasattr(C,"TRACK_BLOCPAGE_LOADS") and cbp in C.TRACK_BLOCPAGE_LOADS: res.append(cbp+"_loadtime")
-        return res
-    @staticmethod
-    def before_next_page(player, timeout_happened):
-        cbp=get_current_blocpage(player)
-        next_cbp=get_current_blocpage(player,1)
-        if hasattr(C,"DEBUG") and getattr(C,"DEBUG") : print("before_next_page, cbp is",cbp)
-        set_blocpage_data(player,"")
-        for i in getattr(C,cbp+"_QNUMS"):
-            if skip_some_blocpage_quests(player,cbp,i,"before_next_page") or make_type_nothing(player,getattr(C,cbp+'_VARS')[i-1]): continue
-            if getattr(C,cbp+'_TYPES')[i-1][0]=="radio" or getattr(C,cbp+'_TYPES')[i-1][0]=="hradio" or getattr(C,cbp+'_TYPES')[i-1][0]=="select" or getattr(C,cbp+'_TYPES')[i-1][0]=="radioline" or getattr(C,cbp+'_TYPES')[i-1][0]=="radiotable":
-                if not player.field_maybe_none(getattr(C,cbp+'_VARS')[i-1]) is None:
-                    # print(i,getattr(C,cbp+'_VARS')[i-1],getattr(player,getattr(C,cbp+'_VARS')[i-1]));
-                    cindex=getattr(player,getattr(C,cbp+'_VARS')[i-1])-1
-                    if getattr(C,cbp+'_TYPES')[i-1][0]=="radioline" and len(getattr(C,cbp+'_TYPES')[i-1])>1 and  len(getattr(C,cbp+'_TYPES')[i-1][1].split('-'))>1:
-                        if int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0])>int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[1]):
-                            cindex=int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0])-getattr(player,getattr(C,cbp+'_VARS')[i-1])
-                        else:
-                            cindex=getattr(player,getattr(C,cbp+'_VARS')[i-1])-int(getattr(C,cbp+'_TYPES')[i-1][1].split('-')[0])
-                    cstringval=getattr(C,cbp+'_OPTS')[i-1][cindex] if getattr(player,getattr(C,cbp+'_VARS')[i-1])>0 else ""
-                    setattr(player,getattr(C,cbp+'_VARS')[i-1]+"_strval",cstringval if cstringval != "" else "("+str(getattr(player,getattr(C,cbp+'_VARS')[i-1]))+")")
-            if getattr(C,cbp+'_TYPES')[i-1][0]=="checkbox":
-                # print(getattr(C,cbp+'_VARS')[i-1],":",getattr(player,getattr(C,cbp+'_VARS')[i-1]))
-                cstringval=getattr(C,cbp+'_OPTS')[i-1][1-int(getattr(player,getattr(C,cbp+'_VARS')[i-1]))] if len(getattr(C,cbp+'_OPTS')[i-1])>1 else ['Y','N'][1-int(getattr(player,getattr(C,cbp+'_VARS')[i-1]))]
-                setattr(player,getattr(C,cbp+'_VARS')[i-1]+"_strval",cstringval if cstringval != "" else "("+str(getattr(player,getattr(C,cbp+'_VARS')[i-1]))+")")
-        increment_blocpage_index(player)
-            
-    @staticmethod
-    def vars_for_template(player: Player):
-        cbp=get_current_blocpage(player)
-        slidervars=[]
-        slideropts=[]
-        vsliders=[]
-        vslider_height=400
-        radiolines=[]
-        nonumbers=[]
-        radiotable_headers=[]
-        radiotable_bottoms=[]
-        radiotable_rows=[]
-        singleline=[]
-        onlyinfo=[]
-        suffixvars=[]
-        suffixes=[]
-        prefixvars=[]
-        prefixes=[]
-        title=""
-        questtags=[]
-        deps=[]
-        if(hasattr(C,cbp+"_TITLE")): title=getattr(C,cbp+"_TITLE")
-        presentation_tepmplate=""
-        if os.path.exists(C.APP_NAME+"/include_"+cbp+".html"): presentation_tepmplate=C.APP_NAME+"/include_"+cbp+".html"
-        # print("vars_for_template")
-        for i in getattr(C,cbp+"_QNUMS"):
-            if skip_some_blocpage_quests(player,cbp,i,"vars_for_template"): continue
-            if getattr(C,cbp+'_TYPES')[i-1][0]=="info" or getattr(C,cbp+'_TYPES')[i-1][0]=="nothing" or make_type_nothing(player,getattr(C,cbp+'_VARS')[i-1]):
-                onlyinfo.append(getattr(C,cbp+'_VARS')[i-1])
-            elif getattr(C,cbp+'_TYPES')[i-1][0]=="slider":
-                slidervars.append(getattr(C,cbp+'_VARS')[i-1])
-                slideropts.append(str.join(':',getattr(C,cbp+'_OPTS')[i-1]))
-                for h in range(1,len(getattr(C,cbp+'_TYPES')[i-1])):
-                    if getattr(C,cbp+'_TYPES')[i-1][h].split('/')[0]=="vertical": 
-                        vsliders.append(getattr(C,cbp+'_VARS')[i-1])
-                        if len(getattr(C,cbp+'_TYPES')[i-1][h].split('/'))>1 :
-                            vslider_height=getattr(C,cbp+'_TYPES')[i-1][h].split('/')[1]
-            elif getattr(C,cbp+'_TYPES')[i-1][0]=="radioline":
-                radiolines.append(getattr(C,cbp+'_VARS')[i-1])
-            for h in range(1,len(getattr(C,cbp+'_TYPES')[i-1])):
-                if getattr(C,cbp+'_TYPES')[i-1][h]=="inline":
-                    singleline.append(getattr(C,cbp+'_VARS')[i-1])
-                if getattr(C,cbp+'_TYPES')[i-1][h]=="nonumbers":
-                    nonumbers.append(getattr(C,cbp+'_VARS')[i-1])
-            for h in range(1,len(getattr(C,cbp+'_OPTS')[i-1])):
-                if getattr(C,cbp+'_OPTS')[i-1][h][:5]=="suff=":
-                    suffixvars.append(getattr(C,cbp+'_VARS')[i-1])
-                    suffixes.append(dict(var=getattr(C,cbp+'_VARS')[i-1], val=getattr(C,cbp+'_OPTS')[i-1][h][5:]))
-                if getattr(C,cbp+'_OPTS')[i-1][h][:5]=="pref=":
-                    prefixvars.append(getattr(C,cbp+'_VARS')[i-1])
-                    prefixes.append(dict(var=getattr(C,cbp+'_VARS')[i-1], val=getattr(C,cbp+'_OPTS')[i-1][h][5:]))
-            if getattr(C,cbp+'_TYPES')[i-1][0]=="radiotable":
-                if len(getattr(C,cbp+'_TYPES')[i-1]) <= 1 or getattr(C,cbp+'_TYPES')[i-1][1] == "row":
-                    radiotable_rows.append(getattr(C,cbp+'_VARS')[i-1])
-                elif len(getattr(C,cbp+'_TYPES')[i-1]) > 1 and getattr(C,cbp+'_TYPES')[i-1][1] == "first":
-                    radiotable_headers.append(getattr(C,cbp+'_VARS')[i-1])
-                    radiotable_rows.append(getattr(C,cbp+'_VARS')[i-1])
-                elif len(getattr(C,cbp+'_TYPES')[i-1]) > 1 and getattr(C,cbp+'_TYPES')[i-1][1] == "last":
-                    radiotable_bottoms.append(getattr(C,cbp+'_VARS')[i-1])
-                    radiotable_rows.append(getattr(C,cbp+'_VARS')[i-1])
-            cqtag='h5' if not getattr(C,cbp+'_VARS')[i-1] in radiotable_rows else 'th'
-            if(hasattr(C,cbp+"_QUESTTAG")):
-                cqtag_cand = getattr(C,cbp+"_QUESTTAG")[i-1] if i <= len(getattr(C,cbp+"_QUESTTAG")) else getattr(C,cbp+"_QUESTTAG")[-1]
-                if str(cqtag_cand)!='' and str(cqtag_cand)!='-' and str(cqtag_cand)!='0': cqtag=cqtag_cand
-            questtags.append(dict(var=getattr(C,cbp+'_VARS')[i-1],tag=cqtag))
-        if hasattr(C,cbp+"_DEPS"):
-            for h in range(len(getattr(C,cbp+'_DEPS'))):
-                deps.append(str.join(':',getattr(C,cbp+'_DEPS')[h]))
-        mintime_text="Le bouton Suivant apparaîtra très bientôt"
-        allvars=[]
-        for vi,v in enumerate(getattr(C,cbp+'_VARS')): 
-            if skip_some_blocpage_quests(player,cbp,vi+1,"vars_for_template"): continue
-            if getattr(C,cbp+'_TYPES')[vi][0]=="nothing" or make_type_nothing(player,v) : allvars.append("__info__");
-            else: allvars.append(getattr(C,cbp+'_VARS')[vi])
-        res = dict(
-            questtags=questtags,
-            deps=deps,
-            slidervars=slidervars,
-            radiolines=radiolines,
-            nonumbers=nonumbers,
-            vsliders=vsliders,
-            vslider_height=str(vslider_height)+('px' if not 'px' in str(vslider_height) else ''),
-            onlyinfo=onlyinfo,
-            radioline_width=getattr(C,cbp+"_RADIOLINE_WIDTH")[0] if hasattr(C,cbp+"_RADIOLINE_WIDTH") and getattr(C,cbp+"_RADIOLINE_WIDTH")[0] != '' else "120px",
-            radioline_width_nonumbers=getattr(C,cbp+"_RADIOLINE_WIDTH_NONUMBERS")[0] if hasattr(C,cbp+"_RADIOLINE_WIDTH_NONUMBERS") and getattr(C,cbp+"_RADIOLINE_WIDTH_NONUMBERS")[0] != '' else getattr(C,cbp+"_RADIOLINE_WIDTH")[0] if hasattr(C,cbp+"_RADIOLINE_WIDTH") and getattr(C,cbp+"_RADIOLINE_WIDTH")[0] != '' else "50px",
-            radioline_leftright_width_px=int(getattr(C,cbp+"_RADIOLINE_LEFTRIGH_PX")[0]) if hasattr(C,cbp+"_RADIOLINE_LEFTRIGH_PX") and getattr(C,cbp+"_RADIOLINE_LEFTRIGH_PX")[0] != '' else 0, #100
-            quest_width_px=int(getattr(C,cbp+"_QUEST_WIDTH_PX")[0]) if hasattr(C,cbp+"_QUEST_WIDTH_PX") and getattr(C,cbp+"_QUEST_WIDTH_PX")[0] != '' else 0, #600
-            separate_line=getattr(C,cbp+"_SEPARATE_LINE")[0] if hasattr(C,cbp+"_SEPARATE_LINE") and getattr(C,cbp+"_SEPARATE_LINE")[0] != "0" else False, #600
-            choice_label_tag=getattr(C,cbp+"_OPTS_TAG")[0] if hasattr(C,cbp+"_OPTS_TAG") and getattr(C,cbp+"_OPTS_TAG")[0] != "0" else "", #600
-            singleline=singleline,
-            waitnext_text=mintime_text,
-            radiotable_headers=radiotable_headers,
-            radiotable_rows=radiotable_rows,
-            radiotable_bottoms=radiotable_bottoms,
-            cslidervars=str.join(';',slidervars),
-            cslideropts=str.join(';',slideropts),
-            cvsliders=str.join(';',vsliders),
-            all_vars=[v for v in allvars if v != "__info__"],
-            allvars=str.join(';',allvars),
-            by=str.join(',',[str(getattr(C,cbp+'_BY'))]*math.ceil(len(getattr(C,cbp+'_LIST'))/int(getattr(C,cbp+'_BY'))) if not isinstance(getattr(C,cbp+'_BY'),list) else getattr(C,cbp+'_BY')),
-            title=title,
-            suffixvars=suffixvars,
-            suffixes=suffixes,
-            prefixvars=prefixvars,
-            prefixes=prefixes,
-            presentation_tepmplate=presentation_tepmplate,
-        )
-        if hasattr(C,cbp+"_ANSWERS_VARS"): res['answers_vars']=';'.join(getattr(C,cbp+"_ANSWERS_VARS"))
-        # print(cbp,res)
-        return res
-    @staticmethod
-    def js_vars(player):
-        cbp=get_current_blocpage(player)
-        firstrandoms=[]
-        randomorders=[]
-        shownumbers=[]
-        fixedsum_sliders=[]
-        withtags=[]
-        if hasattr(C,cbp+"_RANDOMORDERS"):
-           for ovi,ov in enumerate(getattr(C,cbp+"_RANDOMORDERS")):
-            firstrandoms.append(ov[0] if isinstance(ov,list) else getattr(C,ov)[0])
-            randomorders.append(get_random_orders(player,ov,ovi,cbp))
-            if hasattr(C,cbp+"_RANDOMORDERS_SHOWNUMBERS"):
-                if isinstance(getattr(C,cbp+"_RANDOMORDERS_SHOWNUMBERS"),bool): shownumbers.append(getattr(C,cbp+"_RANDOMORDERS_SHOWNUMBERS"))
-                elif isinstance(getattr(C,cbp+"_RANDOMORDERS_SHOWNUMBERS"),list) and ovi<len(getattr(C,cbp+"_RANDOMORDERS_SHOWNUMBERS")):
-                     shownumbers.append(getattr(C,cbp+"_RANDOMORDERS_SHOWNUMBERS")[ovi])                
-        elif hasattr(C,cbp+"_SHOWNUMBERS"):
-            for i in getattr(C,cbp+"_QNUMS"):
-                if (isinstance(getattr(C,cbp+"_SHOWNUMBERS"),list)):
-                    cshownumber = getattr(C,cbp+"_SHOWNUMBERS")[i-1] if i-1 < len(getattr(C,cbp+"_SHOWNUMBERS")) else getattr(C,cbp+"_SHOWNUMBERS")[-1]
-                    shownumbers.append(cshownumber)
-                elif int(getattr(C,cbp+"_SHOWNUMBERS")):
-                    shownumbers.append(getattr(C,cbp+"_SHOWNUMBERS"))
-        if hasattr(C,cbp+"_HASTAGS") or C.TAGS_IN_TEXT:
-            for i in getattr(C,cbp+"_QNUMS"):
-                chastags = C.TAGS_IN_TEXT
-                if hasattr(C,cbp+"_HASTAGS"):
-                    clastval = getattr(C,cbp+"_HASTAGS")[i-1] if i <= len(getattr(C,cbp+"_HASTAGS")) else getattr(C,cbp+"_HASTAGS")[-1]
-                    chastags =  not (str(clastval) == '' or 'f' in str(clastval).lower() or str(clastval) == '0' or 'n' in str(clastval).lower())
-                    # print(getattr(C,cbp+'_VARS')[i-1],clastval,chastags,C.TAGS_IN_TEXT);
-                if chastags: withtags.append(getattr(C,cbp+'_VARS')[i-1])
-        res = dict(
-            hide_initial=False,
-            bys_intro=getattr(C,cbp+"_BY_INTRO") if hasattr (C,cbp+"_BY_INTRO") else [""],
-            prev_buttons=getattr(C,cbp+"_PREV_BUTTONS") if hasattr (C,cbp+"_PREV_BUTTONS") else [0],
-            min_times=getattr(C,cbp+"_MIN_TIMES") if hasattr (C,cbp+"_MIN_TIMES") else [0],
-            randomorders=randomorders,
-            firstrandoms=firstrandoms,
-            shownumbers=shownumbers,
-            screentime_prefix=cbp+"_",
-            fixedsum_sliders=fixedsum_sliders,
-            withtags=withtags,
-            debug=False,
-        )
-        if hasattr(C,"TRACK_BLOCPAGE_LOADS") and cbp in C.TRACK_BLOCPAGE_LOADS: res['loadtimevar']=cbp+"_loadtime"
-        return res
+# make_bp_type_nothing is also used to skip some questions inside blocpages (var is the question's variable name with a block name prefix) but this function does not remove the question from blocpage sequence if blocpage's BY argument equals 1
+def make_bp_type_nothing(player:Player, var):
+    # example: if var == "blocB_evaluation" and player.treatment != 2 and player.treatment != 3: return True
+    return False
+
+# bp_is_displayed is used to dynamically exclude some blocpages (cbp is the current blocpage's name)
+def bp_is_displayed(player:Player, cbp:str):
+    return True
+
+# bp_get_timeout_seconds is used to add a timeout to some blocpages (cbp is the current blocpage's name)
+def bp_get_timeout_seconds(player:Player, cbp:str):
+    # example: if cbp == "RAVEN" : return 60*LQ_C.RAVEN_MINUTES
+    return None
+
+# bp_get_form_fields is used to add additional fields to blocpages (the additional fields should be defined in PlayerVariables class)
+def bp_get_form_fields(player:Player, cbp:str):
+    return []
+
+# bp_before_next_page is used to execute additional code before passing to the next blocpage (cbp is the current blocpage's name, next_cbp is the next blocpage's name)
+def bp_before_next_page(player:Player,timeout_happened:bool, cbp:str, next_cbp:str):
+    pass
+
+# bp_vars_for_template is used to to add additional variables for blocpage template (cbp is the current blocpage's name)
+def bp_vars_for_template(player:Player,cbp:str):
+    return {}
+
+# bp_js_vars is used to to add additional variables to the otree's js_vars (cbp is the current blocpage's name)
+def bp_js_vars(player:Player,cbp:str):
+    return {}
+
+
+#PAGES
+# define additional pages to BlocPage in a standard way
 
 page_sequence = [BlocPage]
-
 if page_sequence.count(BlocPage) < len(C.BLOCPAGES):
     for i in range(len(C.BLOCPAGES)-page_sequence.count(BlocPage)):
         page_sequence.append(BlocPage)
+
+# custom_page_sequence=[MyPage]        
+# page_sequence +=custom_page_sequence ### in order to place additional custom pages at the end
