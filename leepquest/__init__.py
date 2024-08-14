@@ -36,7 +36,7 @@ def skip_some_bp_quests(player:Player,cbp:str,n:int,function:Optional[str]=None)
     # example: if cbp == 'B2' and n > 1 and player.treatment > 3: return True
     return False
     
-# make_bp_type_nothing is also used to skip some questions inside blocpages (var is the question's variable name with a block name prefix) but this function does not remove the question from blocpage sequence if blocpage's BY argument equals 1
+# make_bp_type_nothing is also used to skip some questions inside blocpages (var is the question's variable name) but this function does not remove the corresponding part from blocpage sequence if blocpage's BY argument equals 1
 def make_bp_type_nothing(player:Player, var:str)->bool:
     # example: if var == "blocB_evaluation" and player.treatment != 2 and player.treatment != 3: return True
     return False
@@ -50,7 +50,7 @@ def bp_get_timeout_seconds(player:Player, cbp:str) -> Union[int,None]:
     # example: if cbp == "RAVEN" : return 60*C.RAVEN_MINUTES
     return None
 
-# bp_get_form_fields is used to add additional fields to blocpages (the additional fields should be defined in PlayerVariables class)
+# bp_get_form_fields is used to add additional fields to blocpages (the additional fields should be defined in PlayerVariables class above, created before importing LQ.py)
 def bp_get_form_fields(player:Player, cbp:str) -> List[str]:
     return []
 
@@ -68,7 +68,7 @@ def bp_js_vars(player:Player,cbp:str) -> Dict[str,Any]:
 
 
 #PAGES
-# define additional pages to BlocPage in a standard way
+# define additional pages in a standard way
 
 # class MyPage(Page):
     # pass 
