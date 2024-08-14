@@ -16,7 +16,9 @@ exec(content)
 # STANDARD OTREE CLASSES (except Player which is inside LQ.py with (optional) additional variables in the PlayerVariables class above)
 # (the C class should inherit from the leepquest's LQ_C class (which inherits from BaseConstants) )
 class C(LQ_C):
-    pass 
+    NAME_IN_URL = 'leepquest'
+    PLAYERS_PER_GROUP = None
+    NUM_ROUNDS = 1
 
 class Subsession(BaseSubsession):
     pass
