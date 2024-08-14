@@ -36,8 +36,8 @@ def skip_some_bp_quests(player:Player,cbp:str,n:int,var:str,function:Optional[st
     # example: if cbp == 'B2' and n > 1 and player.treatment > 3: return True
     return False
     
-# make_bp_type_nothing is also used to skip some questions inside blocpages (var is the question's variable name) but this function does not remove the corresponding part from blocpage sequence if blocpage's BY argument equals 1
-def make_bp_type_nothing(player:Player, var:str)->bool:
+# hide_some_bp_quests is used to hide some questions inside blocpages (var is the question's variable name). Unlike skip_some_bp_quests this function does not remove the corresponding part from blocpage sequence if blocpage's BY argument equals 1
+def hide_some_bp_quests(player:Player, var:str)->bool:
     # example: if var == "others_evaluation" and player.treatment != 2 and player.treatment != 3: return True
     return False
 
