@@ -8,3 +8,4 @@ __pycache__/
 start_exp
 stop_exp
 reset_db
+.python-version

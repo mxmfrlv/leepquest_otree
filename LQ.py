@@ -371,7 +371,7 @@ class BlocPage(Page):
         res = []
         for i in getattr(LQ_C,cbp+"_QNUMS"):
             if getattr(LQ_C,cbp+"_TYPES")[i-1][0] != "nothing":
-                if get_function('skip_some_bp_quests')(player,cbp,i,"get_form_fields") or get_function('make_bp_type_nothing')(player,getattr(LQ_C,cbp+'_VARS')[i-1]): continue
+                if get_function('skip_some_bp_quests')(player,cbp,i,getattr(LQ_C,cbp+"_VARS")[i-1],"get_form_fields") or get_function('make_bp_type_nothing')(player,getattr(LQ_C,cbp+'_VARS')[i-1]): continue
                 res.append(getattr(LQ_C,cbp+"_VARS")[i-1])
                 if getattr(LQ_C,cbp+"_TYPES")[i-1][0] != "info": res.append(getattr(LQ_C,cbp+"_VARS")[i-1]+'_time')
         if not hasattr(LQ_C,cbp+'_NO_SCREEN_TIME') or not getattr(LQ_C,cbp+'_NO_SCREEN_TIME'):
@@ -399,7 +399,7 @@ class BlocPage(Page):
         if hasattr(LQ_C,"DEBUG") and getattr(LQ_C,"DEBUG") : print("before_next_page, cbp is",cbp)
         set_blocpage_data(player,"")
         for i in getattr(LQ_C,cbp+"_QNUMS"):
-            if get_function('skip_some_bp_quests')(player,cbp,i,"before_next_page") or get_function('make_bp_type_nothing')(player,getattr(LQ_C,cbp+'_VARS')[i-1]): continue
+            if get_function('skip_some_bp_quests')(player,cbp,i,getattr(LQ_C,cbp+"_VARS")[i-1],"before_next_page") or get_function('make_bp_type_nothing')(player,getattr(LQ_C,cbp+'_VARS')[i-1]): continue
             if getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="radio" or getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="hradio" or getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="select" or getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="radioline" or getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="radiotable":
                 if not player.field_maybe_none(getattr(LQ_C,cbp+'_VARS')[i-1]) is None:
                     # print(i,getattr(LQ_C,cbp+'_VARS')[i-1],getattr(player,getattr(LQ_C,cbp+'_VARS')[i-1]));
@@ -444,7 +444,7 @@ class BlocPage(Page):
         if os.path.exists(LQ_C.APP_NAME+"/include_"+cbp+".html"): presentation_tepmplate=LQ_C.APP_NAME+"/include_"+cbp+".html"
         # print("vars_for_template")
         for i in getattr(LQ_C,cbp+"_QNUMS"):
-            if get_function('skip_some_bp_quests')(player,cbp,i,"vars_for_template"): continue
+            if get_function('skip_some_bp_quests')(player,cbp,i,getattr(LQ_C,cbp+"_VARS")[i-1],"vars_for_template"): continue
             if getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="info" or getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="nothing" or get_function('make_bp_type_nothing')(player,getattr(LQ_C,cbp+'_VARS')[i-1]):
                 onlyinfo.append(getattr(LQ_C,cbp+'_VARS')[i-1])
             elif getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="slider":
@@ -489,7 +489,7 @@ class BlocPage(Page):
         mintime_text="Le bouton Suivant apparaîtra très bientôt"
         allvars=[]
         for vi,v in enumerate(getattr(LQ_C,cbp+'_VARS')): 
-            if get_function('skip_some_bp_quests')(player,cbp,vi+1,"vars_for_template"): continue
+            if get_function('skip_some_bp_quests')(player,cbp,vi+1,v,"vars_for_template"): continue
             if getattr(LQ_C,cbp+'_TYPES')[vi][0]=="nothing" or get_function('make_bp_type_nothing')(player,v) : allvars.append("__info__");
             else: allvars.append(getattr(LQ_C,cbp+'_VARS')[vi])
         res = dict(

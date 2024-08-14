@@ -31,14 +31,14 @@ def creating_session(subsession: Subsession):
     LQ_creating_session(subsession) ## leepquest stuff
     # put additional logic below
 
-# skip_some_bp_quests is used to skip some questions inside blocpages (cbp is for current blocpage) n is the question number
-def skip_some_bp_quests(player:Player,cbp:str,n:int,function:Optional[str]=None) -> bool:
+# skip_some_bp_quests is used to skip some questions inside blocpages (cbp is the current blocpage, n is the question number, var is the question's variable name (cbp+n and var are interchangeable), function can one of "get_form_fields","vars_for_template","before_next_page" )
+def skip_some_bp_quests(player:Player,cbp:str,n:int,var:str,function:Optional[str]=None) -> bool:
     # example: if cbp == 'B2' and n > 1 and player.treatment > 3: return True
     return False
     
 # make_bp_type_nothing is also used to skip some questions inside blocpages (var is the question's variable name) but this function does not remove the corresponding part from blocpage sequence if blocpage's BY argument equals 1
 def make_bp_type_nothing(player:Player, var:str)->bool:
-    # example: if var == "blocB_evaluation" and player.treatment != 2 and player.treatment != 3: return True
+    # example: if var == "others_evaluation" and player.treatment != 2 and player.treatment != 3: return True
     return False
 
 # bp_is_displayed is used to dynamically exclude some blocpages (cbp is the current blocpage's name)
