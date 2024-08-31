@@ -480,7 +480,7 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 					if(cbsum<=nanswtot) cbindex++;
 				}
 				finished_screen_number=cbindex; last_screen_number=bys.length;
-				if(cbindex+1>bys.length) cbindex=bys.length-1;
+				if(cbindex+1>bys.length) {last_screen_number = cbindex+1; cbindex=bys.length-1;}
 				by=parseInt(bys[cbindex]);
 				if(js_vars.bys_intro != undefined && js_vars.bys_intro.length>cbindex) {
 					// console.log("-"+js_vars.bys_intro[cbindex]+"-");
