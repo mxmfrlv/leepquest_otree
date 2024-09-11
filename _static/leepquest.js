@@ -59,6 +59,7 @@ function bindSliderUpdate(slider,sl,starthidden,cdecimals) {
 		}
 	});
 }
+additional_onchange=function(varname){};
 function bindOnChangeForTime(field) {
 	if(field === null) return;
 	// console.log(field.name,field.type);
@@ -66,6 +67,7 @@ function bindOnChangeForTime(field) {
 		var timenow_ch=(new Date()).getTime();
 		if(document.getElementById(field.name+"_time")!==null) $("#"+field.name+"_time").val((timenow_ch-starttime)/1000);
 		if(document.getElementById(field.name+"_errormessage")!==null) $("#"+field.name+"_errormessage").hide();
+		additional_onchange(field.name);
 		// console.log("field.name: ",field.name, field.value);
 		// console.log("starttime:",starttime,"timenow: ",timenow_ch,"field.name: ",field.name, $("#"+field.name+"_time").val());
 	}
