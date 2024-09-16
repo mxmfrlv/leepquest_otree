@@ -2,8 +2,13 @@ from os import environ
 import random
 SESSION_CONFIGS = [
     dict(
-        name='leepquest', 
-        app_sequence=['leepquest'], 
+        name='introquest', 
+        app_sequence=['introquest'], 
+        num_demo_participants=1, 
+    ),
+    dict(
+        name='jeudede', 
+        app_sequence=['jeudede'], 
         num_demo_participants=1, 
     ),
 ]
@@ -18,7 +23,7 @@ for i in range(24): bot_labels.append("bot%d"%(i+1))
 # bot_labels=["AMS", "ATH", "BER", "BRU", "BUD", "DUB", "HEL", "LIS", "LON", "MAD", "MOS", "OSL", "PRA", "RIG", "ROM", "SOF", "VAR", "VIE", "VIL", "ZUR", "LAB", "BOX1", "BOX2", "BOX3", "BOX4", "BOX5", "BOX6", "BOX7", "BOX8"]
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=1, participation_fee=0.00, doc="", bot_labels=bot_labels #+["LIS","BUD","VAR","MAD","BRU","BOX1","BOX3","BOX7"]
+    real_world_currency_per_point=1, participation_fee=3.00, doc="", test_mode=False, bot_labels=bot_labels #+["LIS","BUD","VAR","MAD","BRU","BOX1","BOX3","BOX7"]
 )
 
 PARTICIPANT_FIELDS = []

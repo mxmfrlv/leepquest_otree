@@ -328,6 +328,9 @@ def blocpage_live_method(player, data):
     if status=='update':
         blocpagedata=data[data.find('|')+1:]
         set_blocpage_data(player,blocpagedata)
+    if status=='custom':
+       eventdata=data[data.find('|')+1:]
+       return bp_live_event(player,cbp,eventdata)
 
 
 # PAGES

@@ -250,6 +250,10 @@ function liveRecv(data) {
 			}
 		}
 	}
+	if(command.toLowerCase() == 'custom' && typeof customLiveRecv === "function") {
+		var customdatareceived=data.substr(data.search(/[|]/)+1)
+		customLiveRecv(customdatareceived);
+	}
 }
 var additional_validate=function(varname){
 	return true;

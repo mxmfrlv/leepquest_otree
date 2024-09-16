@@ -68,6 +68,10 @@ def bp_vars_for_template(player:Player,cbp:str) -> Dict[str,Any]:
 def bp_js_vars(player:Player,cbp:str) -> Dict[str,Any]:
     return {}
 
+# bp_live_event is used to capture liveSend events, the data sent and returned should be in string format and be prefixed by "custom|"
+def bp_live_event(player:Player,cbp:str,data:str) -> Union[Dict[int,Any],None]:
+    # return None
+
 
 #PAGES
 # define additional pages in a standard way
