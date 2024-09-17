@@ -70,7 +70,7 @@ def bp_js_vars(player:Player,cbp:str) -> Dict[str,Any]:
 
 # bp_live_event is used to capture liveSend events, the data sent and returned should be in string format and be prefixed by "custom|"
 def bp_live_event(player:Player,cbp:str,data:str) -> Union[Dict[int,Any],None]:
-    # return None
+    return None
 
 
 #PAGES
