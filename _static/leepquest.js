@@ -337,8 +337,8 @@ else if(js_vars.shownumbers != undefined && js_vars.shownumbers.length != 0) {
 if(document.getElementById("initial_presentation") !== null) $([document.documentElement, document.body]).animate({
 	scrollTop: (js_vars.bys_intro != undefined && js_vars.bys_intro[0] != "" )? $("#initial_presentation").offset().top : 0
 }, 10);
-for(var si in window.bys) {if(document.getElementById("initial_presentation_"+(parseInt(si)+1).toString()) !== null) $("#initial_presentation_"+(parseInt(si)+1).toString()).hide();}
-if(document.getElementById("initial_presentation_1") !== null) $("#initial_presentation_1").show();
+for(var si in window.bys) {$(".initial_presentation_"+(parseInt(si)+1).toString()).hide(); if(document.getElementById("initial_presentation_"+(parseInt(si)+1).toString()) !== null) $("#initial_presentation_"+(parseInt(si)+1).toString()).hide();}
+$(".initial_presentation_1").show(); if(document.getElementById("initial_presentation_1") !== null) $("#initial_presentation_1").show();
 
 starttime=(new Date()).getTime();
 for(var ff in document.forms[0]) {
@@ -502,17 +502,19 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 					}
 					else {$("#prevbutton").hide();}
 				}
-				for(var si in window.bys) {if(document.getElementById("initial_presentation_"+(parseInt(si)+1).toString()) !== null) $("#initial_presentation_"+(parseInt(si)+1).toString()).hide();}
-				if(document.getElementById("initial_presentation_"+(parseInt(cbindex)+1).toString()) !== null) $(("#initial_presentation_"+(parseInt(cbindex)+1).toString())).show();
+				for(var si in window.bys) {$(".initial_presentation_"+(parseInt(si)+1).toString()).hide(); if(document.getElementById("initial_presentation_"+(parseInt(si)+1).toString()) !== null) $("#initial_presentation_"+(parseInt(si)+1).toString()).hide();}
+				$((".initial_presentation_"+(parseInt(cbindex)+1).toString())).show(); if(document.getElementById("initial_presentation_"+(parseInt(cbindex)+1).toString()) !== null) $(("#initial_presentation_"+(parseInt(cbindex)+1).toString())).show();
 				// console.log("by=",by,"cbindex=",cbindex,"bys=",bys, "js_vars.bys_intro=", js_vars.bys_intro, $("#initial_presentation").html());
 			}
 			// console.log(js_vars.screentime_prefix,finished_screen_number,$("#screen"+finished_screen_number+"_time"),(document.getElementById("screen"+finished_screen_number+"_time") === null) );
+			no_scroll=false;
 			if(js_vars.min_times != undefined && (typeof a_sup_param === 'undefined' || a_sup_param === false)) {
 				var cmintime=(js_vars.min_times.length>finished_screen_number)?js_vars.min_times[finished_screen_number]:js_vars.min_times[js_vars.min_times.length-1];
 				if(cmintime > 0) {
 					$("#control_buttons").hide(); $("#waitnext_text").show(); clearTimeout(waitnext_timer_handler); waitnext_timer_handler=setTimeout(function(){$("#waitnext_text").hide(); $("#control_buttons").show(); }, cmintime*1000)
 				}
 				else {
+					if(cmintime < 0) no_scroll=true;
 					clearTimeout(waitnext_timer_handler); $("#control_buttons").show(); $("#waitnext_text").hide();
 				}
 			}
@@ -531,7 +533,7 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 				//console.log("allvars_i=",allvars[i],"i=",i,"nanswtot+by=",nanswtot+by);
 				varsshown[i] = 1;
 			}
-			if(finished_screen_number<last_screen_number && document.getElementById("initial_presentation") !== null) $([document.documentElement, document.body]).animate({
+			if(!no_scroll && finished_screen_number<last_screen_number && document.getElementById("initial_presentation") !== null) $([document.documentElement, document.body]).animate({
 				scrollTop: $("#initial_presentation").offset().top
 			}, 10);
 			starttime=(new Date()).getTime(); 
@@ -626,8 +628,8 @@ $("#prevbutton").click(function(e){
 				if (js_vars.bys_intro[cbindexprev] != "") new_presentation_content = "<h5>"+js_vars.bys_intro[cbindexprev]+"<br><br></h5>";
 				$("#initial_presentation").html(new_presentation_content);
 			}
-			for(var si in window.bys) {if(document.getElementById("initial_presentation_"+(parseInt(si)+1).toString()) !== null) $("#initial_presentation_"+(parseInt(si)+1).toString()).hide();}
-			if(document.getElementById("initial_presentation_"+(parseInt(cbindexprev)+1).toString()) !== null) $(("#initial_presentation_"+(parseInt(cbindexprev)+1).toString())).show();
+			for(var si in window.bys) {$(".initial_presentation_"+(parseInt(si)+1).toString()).hide(); if(document.getElementById("initial_presentation_"+(parseInt(si)+1).toString()) !== null) $("#initial_presentation_"+(parseInt(si)+1).toString()).hide();}
+			$((".initial_presentation_"+(parseInt(cbindexprev)+1).toString())).show(); if(document.getElementById("initial_presentation_"+(parseInt(cbindexprev)+1).toString()) !== null) $(("#initial_presentation_"+(parseInt(cbindexprev)+1).toString())).show();
 			// console.log("by=",by,"cbindex=",cbindex,"cbindexprev=",cbindexprev,"prev_buttons.length=",js_vars.prev_buttons.length,"bys=",bys, "nanswtot=", nanswtot, "varsshown=",varsshown, "varsanswered=",varsanswered);
 		}
 		var bynow=0;

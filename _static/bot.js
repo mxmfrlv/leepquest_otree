@@ -53,12 +53,15 @@ function botProceedInput(index) {
 		else {
 			for(var i = 0; i<form_map[name].length; i++)  {
 				if($(form_map[name][i]).is(":button")) {
-					// $(form_map[name][i]).prop("disabled",false);
-					if($(form_map[name][i]).hasClass("otree-btn-next") && bot_submit_index<=1) {
-						bot_submit_timeout=setTimeout(function() {console.log(form_map,name,i); botSubmitForm(name,0);}, 300);
-						console.log("Timeout set",name);
+					if($(form_map[name][i]).is(":visible")) {
+						// $(form_map[name][i]).prop("disabled",false);
+						if($(form_map[name][i]).hasClass("otree-btn-next") && bot_submit_index<=1) {
+							bot_submit_timeout=setTimeout(function() {console.log(form_map,name,i); botSubmitForm(name,0);}, 300);
+							console.log("Timeout set",name);
+						}
+						else if(name!="prev") {$(form_map[name][i]).click(); console.log("clicked",name);}
 					}
-					else if(name!="prev") {$(form_map[name][i]).click(); console.log("clicked",name);}
+					else console.log("button",name,"index",i,"is invisible, not clicked");
 				}
 				else {
 					if(form_map[name][i].type == "checkbox") {
