@@ -199,6 +199,7 @@ function liveRecv(data) {
 	if(command.toLowerCase() == "ok") {
 		if(js_vars.min_times != undefined) {
 			var cmintime=js_vars.min_times[0];
+			if(cmintime < -1) cmintime=Math.abs(cmintime)-1;
 			if(cmintime > 0) {
 				$("#control_buttons").hide(); $("#waitnext_text").show(); waitnext_timer_handler=setTimeout(function(){$("#waitnext_text").hide(); $("#control_buttons").show(); }, cmintime*1000)
 			}
@@ -239,6 +240,7 @@ function liveRecv(data) {
 					starttime=parseInt(cbundle[2]);
 					if(js_vars.min_times != undefined) {
 						var cmintime=(js_vars.min_times.length>cbundle[1])?js_vars.min_times[cbundle[1]]:js_vars.min_times[js_vars.min_times.length-1];
+						if(cmintime < -1) cmintime=Math.abs(cmintime)-1;
 						if(cmintime > 0) {
 							$("#control_buttons").hide(); $("#waitnext_text").show(); clearTimeout(waitnext_timer_handler); waitnext_timer_handler=setTimeout(function(){$("#waitnext_text").hide(); $("#control_buttons").show(); }, cmintime*1000)
 						}
@@ -292,6 +294,7 @@ if(js_vars.bys_intro != undefined && js_vars.bys_intro[0] != "" ) $("#initial_pr
 if(js_vars.prev_buttons != undefined && js_vars.prev_buttons[0] != 0 ) $("#prevbutton").show();
 if(js_vars.min_times != undefined) {
 	var cmintime=js_vars.min_times[0];
+	if(cmintime < -1) cmintime=Math.abs(cmintime)-1;
 	if(cmintime > 0) {
 		$("#control_buttons").hide(); //$("#waitnext_text").show(); // in liveRecv()
 	}
@@ -510,11 +513,14 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 			no_scroll=false;
 			if(js_vars.min_times != undefined && (typeof a_sup_param === 'undefined' || a_sup_param === false)) {
 				var cmintime=(js_vars.min_times.length>finished_screen_number)?js_vars.min_times[finished_screen_number]:js_vars.min_times[js_vars.min_times.length-1];
+				if(cmintime < -1) {
+					no_scroll=true;
+					cmintime=Math.abs(cmintime)-1;
+				}
 				if(cmintime > 0) {
 					$("#control_buttons").hide(); $("#waitnext_text").show(); clearTimeout(waitnext_timer_handler); waitnext_timer_handler=setTimeout(function(){$("#waitnext_text").hide(); $("#control_buttons").show(); }, cmintime*1000)
 				}
 				else {
-					if(cmintime < 0) no_scroll=true;
 					clearTimeout(waitnext_timer_handler); $("#control_buttons").show(); $("#waitnext_text").hide();
 				}
 			}

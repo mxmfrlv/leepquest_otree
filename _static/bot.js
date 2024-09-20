@@ -13,13 +13,20 @@ function botSubmitForm(name,i) {
 	$("form.otree-form").on("submit",function() {
 		clearTimeout(bot_submit_timeout);
 	});
-	console.log("now clicking submit button", me);
-	$(me).prop("disabled",false); $(me).click();$(me).click();
+	var pass_even_if_temporary_hidden=true;
+	if(!window.test_nosubmit && (pass_even_if_temporary_hidden || $(me).is(':visible'))) {
+		console.log("now clicking submit button", me);
+		$(me).prop("disabled",false); $(me).click();$(me).click();
+	}
 	
 	// if('prev' in form_map && form_map['prev'].length==1) {console.log("now click prev button"); $(form_map['prev'][0]).click();}
 	if($(me).is(':visible')) {
-		bot_submit_timeout=setTimeout(function() {console.log(form_map,name,i); botSubmitForm(name,i);}, 1000);
+		bot_submit_timeout=setTimeout(function() {console.log(form_map,name,i); botProceedInput(0);/*botSubmitForm(name,i);*/}, 1000);
 		console.log("set timeout again");
+	}
+	else {
+		console.log("submit button ",me, "is not visible, trying to submit later...");
+		bot_submit_timeout=setTimeout(function() {console.log(form_map,name,i); botSubmitForm(name,i);}, 1000);
 	}
 }
 function botProceedInput(index) {
@@ -51,17 +58,24 @@ function botProceedInput(index) {
 			}
 		}
 		else {
+			var submit_button_found=false, invisible_submit_found="";
 			for(var i = 0; i<form_map[name].length; i++)  {
 				if($(form_map[name][i]).is(":button")) {
 					if($(form_map[name][i]).is(":visible")) {
 						// $(form_map[name][i]).prop("disabled",false);
 						if($(form_map[name][i]).hasClass("otree-btn-next") && bot_submit_index<=1) {
 							bot_submit_timeout=setTimeout(function() {console.log(form_map,name,i); botSubmitForm(name,0);}, 300);
+							submit_button_found=true;
 							console.log("Timeout set",name);
 						}
-						else if(name!="prev") {$(form_map[name][i]).click(); console.log("clicked",name);}
+						else if(name!="prev") {$(form_map[name][i]).click(); submit_button_found=true; console.log("clicked",name);}
 					}
-					else console.log("button",name,"index",i,"is invisible, not clicked");
+					else {
+						console.log("button",name,"index",i,"is invisible, not clicked");
+						if(name!="prev" && $(form_map[name][i]).hasClass("otree-btn-next") && bot_submit_index<=1) {
+							invisible_submit_found=name;
+						}
+					}
 				}
 				else {
 					if(form_map[name][i].type == "checkbox") {
@@ -79,7 +93,9 @@ function botProceedInput(index) {
 							}
 							var choosen=Math.floor(Math.random()*values.length);
 							form_map[name][i].value=values[choosen][1];
-							$(form_map[name][i]).change();
+							try{$(form_map[name][i]).change();} catch (error) {
+							  console.error(error);
+							}
 							console.log(name,form_map[name][i].type+" value set to ",values[choosen][1]);
 						}
 						else console.log("invisible: ",form_map[name][i]);
@@ -99,6 +115,10 @@ function botProceedInput(index) {
 						}
 					}
 				}
+			}
+			if(!submit_button_found && invisible_submit_found) {
+				console.log("trying to click later on invisible submit found :", invisible_submit_found);
+				bot_submit_timeout=setTimeout(function() { botSubmitForm(invisible_submit_found,0);}, 2000);
 			}
 		}
 	}
@@ -134,7 +154,8 @@ $(document).ready(function() {setTimeout(function() {if(_bot_input_forms_passed=
 	if(bot_submit_but_name) bot_name_array.push(bot_submit_but_name);
 	console.log(bot_name_array,form_map,_bot_input_forms_passed)
 	if(bot_name_array.length>0) setTimeout(function() {bot_loaded=true; botProceedInput(0);},500);
-	var test_nosubmit=false;
+	// else bot_submit_timeout=setTimeout(function() {botSubmitForm(name,0);}, 1000);
+	window.test_nosubmit=false; //window.location.href.split('/').reverse()[0]=='12';
 	if(test_nosubmit) $("form.otree-form").on("submit",function(event) {
 		event.stopPropagation();
 		return false;
