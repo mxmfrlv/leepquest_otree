@@ -5,8 +5,8 @@ from typing import Union,Optional,Callable,List,Dict,Any #in order to annotate t
 
 class PlayerVariables:
     # additional player variables should be defined here
-    test = models.IntegerField(initial = 1)
-    # pass
+    # test = models.IntegerField(initial = 1)
+    pass
 
 # import leepquest:
 with open('LQ.py','r', encoding="utf-8") as f:
@@ -56,10 +56,6 @@ def bp_get_timeout_seconds(player:Player, cbp:str) -> Union[int,None]:
 def bp_get_form_fields(player:Player, cbp:str) -> List[str]:
     return []
 
-# bp_before_next_page is used to execute additional code before passing to the next blocpage (cbp is the current blocpage's name, next_cbp is the next blocpage's name)
-def bp_before_next_page(player:Player,timeout_happened:bool, cbp:str, next_cbp:str) -> None:
-    pass
-
 # bp_vars_for_template is used to to add additional variables for blocpage template (cbp is the current blocpage's name)
 def bp_vars_for_template(player:Player,cbp:str) -> Dict[str,Any]:
     return {}
@@ -68,7 +64,11 @@ def bp_vars_for_template(player:Player,cbp:str) -> Dict[str,Any]:
 def bp_js_vars(player:Player,cbp:str) -> Dict[str,Any]:
     return {}
 
-# bp_live_event is used to capture liveSend events, the data sent and returned should be in string format and be prefixed by "custom|"
+# bp_before_next_page is used to execute additional code before passing to the next blocpage (cbp is the current blocpage's name, next_cbp is the next blocpage's name)
+def bp_before_next_page(player:Player,timeout_happened:bool, cbp:str, next_cbp:str) -> None:
+    pass
+
+# bp_live_event is used to capture liveSend events, the data sent and returned should be in string format and prefixed by "custom|"
 def bp_live_event(player:Player,cbp:str,data:str) -> Union[Dict[int,Any],None]:
     return None
 
