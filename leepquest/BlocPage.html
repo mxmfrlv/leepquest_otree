@@ -25,7 +25,7 @@ var deps={{deps}};
 	<!-- <h1>{{ field.type }}, {{ field.__dict__ }}, {{ field.validators }}</h1> -->
        {{ if not field.short_name in radiotable_rows }}
 	    <input type=hidden name="beforefield_{{field.short_name}}" value=0 id="beforefield_{{field.short_name}}" />
-	    <div id='field_{{field.short_name}}'>
+	    <div class='field_container' id='field_{{field.short_name}}'>
 		{{ if not field.short_name in onlyinfo }}
 			<input type=hidden name="{{field.short_name}}_time" value=0 id="{{field.short_name}}_time" />
 		{{ endif }}
@@ -62,7 +62,7 @@ var deps={{deps}};
 			{{ if field.short_name in singleline }}<br>{{ endif }}
 		{{ elif field.short_name in radiotable_headers }}
 			<input type=hidden name="beforefield_{{field.short_name}}" value=0 id="beforefield_{{field.short_name}}" />
-			<div id='field_{{field.short_name}}'>
+			<div class='field_container' id='field_{{field.short_name}}'>
 			<table class="table radiotable" id="table_{{field.short_name}}" cellpadding=2 style='text-align:center;vertical-align:middle;' ><tr>
 			<th scope='row'>
 					&nbsp;
