@@ -92,7 +92,7 @@ function dependfunc(depended,dependon,depvals,inv) {
 		}
 		document.getElementById(depended+'_errormessage').title="required"; //$('#'+depended+'_errormessage').attr("title","required");
 		// console.log(typeof document.forms[0][depended].checkValidity)
-		if(typeof document.forms[0][depended].checkValidity === 'function') {
+		if(typeof document.forms[0][depended].checkValidity === 'function' && document.forms[0][depended].type !="checkbox") {
 			$('#id_'+depended).prop('required',true);
 			//document.forms[0][depended].setCustomValidity("Veuillez répondre à cette question");
 			// console.log('set '+'#id_'+depended+' required');
