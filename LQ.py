@@ -67,6 +67,7 @@ class LQ_C(BaseConstants):
         TRACK_BLOCPAGE_LOADS = BLOCPAGES
     else:
         if var_exists('CUSTOM_LQ_C'):
+            # an optional class CUSTOM_LQ_C should be added inside __init__.py of the app, above PlayerVariables class if there is no excel file for the parameters. The structure of the CUSTOM_LQ_C should be the same as in the else block below.
             cpdict=CUSTOM_LQ_C.__dict__
             for cpkey in cpdict:
                 locals()[cpkey]=cpdict[cpkey]
@@ -333,6 +334,10 @@ def blocpage_live_method(player, data):
        return bp_live_event(player,cbp,eventdata)
 
 
+def get_opts_by_var(cbp,varname,what = "OPTS"):
+    for i in getattr(LQ_C,cbp+"_QNUMS"):
+        if getattr(LQ_C,cbp+'_VARS')[i-1] == varname:
+            return getattr(LQ_C,cbp+'_'+what)[i-1]
 # PAGES
 class BlocPage(Page):
     form_model = 'player'
