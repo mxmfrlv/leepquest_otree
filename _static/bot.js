@@ -114,7 +114,7 @@ function botProceedInput(index) {
 							var min=0, max=100;
 							if(form_map[name][i].hasAttribute("min")) min=form_map[name][i].min;
 							if(form_map[name][i].hasAttribute("max")) max=form_map[name][i].max;
-							if(max==bot_fixedsum && min==0 && form_map[name][i].hasAttribute(bot_fixedsum_data_name) /*&& name.startsWith("noname_")*/){
+							if(max==bot_fixedsum && min==0 && form_map[name][i].hasAttribute(bot_fixedsum_data_name)){
 								let fixedsum_block_name=form_map[name][i].getAttribute(bot_fixedsum_data_name)
 								console.log(bot_fixedsum_current_data,"fixedsum_block_name=",fixedsum_block_name)
 								if(bot_fixedsum_current_data==fixedsum_block_name){
@@ -134,7 +134,7 @@ function botProceedInput(index) {
 							var choosen=parseFloat(min)+Math.floor(Math.random()*(parseFloat(max)+1-parseFloat(min)));
 							$(form_map[name][i]).val(choosen); console.log("value set",name);
 							console.log(form_map[name][i], form_map[name][i].value, choosen, min, max, 'bot_fixedsum_sum=',bot_fixedsum_sum);
-							if(max==bot_fixedsum-bot_fixedsum_sum && min==0 && form_map[name][i].hasAttribute(bot_fixedsum_data_name) /*&& name.startsWith("noname_")*/){
+							if(max==bot_fixedsum-bot_fixedsum_sum && min==0 && form_map[name][i].hasAttribute(bot_fixedsum_data_name)){
 								bot_fixedsum_sum+=choosen
 								console.log("bot_fixedsum_sum increased by ",choosen,"the result is ",bot_fixedsum_sum)
 							}
