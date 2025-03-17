@@ -3,6 +3,11 @@ var bot_hidden_types = [];
 var form_map = {};
 var bot_submit_but_name='';
 var bot_submit_index=0;
+var bot_fixedsum_index=0;
+var bot_fixedsum_sum=0;
+var bot_fixedsum_current_data='';
+var bot_fixedsum_data_name='data-fixedsum-block';
+var bot_fixedsum=100;
 var bot_submit_timeout;
 var bot_loaded=false;
 function botSubmitForm(name,i) {
@@ -10,7 +15,7 @@ function botSubmitForm(name,i) {
 	if(!bot_loaded) return
 	console.log('botSubmitForm',name,i);
 	var me = form_map[name][i];
-	$("form.otree-form").on("submit",function() {
+	$("form.otree-form,:submit").on("submit",function() {
 		clearTimeout(bot_submit_timeout);
 	});
 	var pass_even_if_temporary_hidden=true;
@@ -63,7 +68,7 @@ function botProceedInput(index) {
 				if($(form_map[name][i]).is(":button")) {
 					if($(form_map[name][i]).is(":visible")) {
 						// $(form_map[name][i]).prop("disabled",false);
-						if($(form_map[name][i]).hasClass("otree-btn-next") && bot_submit_index<=1) {
+						if(($(form_map[name][i]).hasClass("otree-btn-next") || $(form_map[name][i]).is(":submit")) && bot_submit_index<=1) {
 							bot_submit_timeout=setTimeout(function() {console.log(form_map,name,i); botSubmitForm(name,0);}, 300);
 							submit_button_found=true;
 							console.log("Timeout set",name);
@@ -109,9 +114,30 @@ function botProceedInput(index) {
 							var min=0, max=100;
 							if(form_map[name][i].hasAttribute("min")) min=form_map[name][i].min;
 							if(form_map[name][i].hasAttribute("max")) max=form_map[name][i].max;
+							if(max==bot_fixedsum && min==0 && form_map[name][i].hasAttribute(bot_fixedsum_data_name) /*&& name.startsWith("noname_")*/){
+								let fixedsum_block_name=form_map[name][i].getAttribute(bot_fixedsum_data_name)
+								console.log(bot_fixedsum_current_data,"fixedsum_block_name=",fixedsum_block_name)
+								if(bot_fixedsum_current_data==fixedsum_block_name){
+									max-=bot_fixedsum_sum;
+									console.log("max set to",max)
+								}
+								else {
+									if(index>0 && form_map[bot_name_array[index-1]][i].hasAttribute(bot_fixedsum_data_name) && form_map[bot_name_array[index-1]][i].getAttribute(bot_fixedsum_data_name) == bot_fixedsum_current_data && bot_fixedsum_sum<bot_fixedsum) {
+										$(form_map[bot_name_array[index-1]][i]).val(bot_fixedsum-bot_fixedsum_sum);
+										console.log("previous value set to ",bot_fixedsum-bot_fixedsum_sum)
+									}
+									if(index>0) console.log("bot_fixedsum_sum", bot_fixedsum_sum,"- set to 0")
+									bot_fixedsum_sum=0;
+								}
+								bot_fixedsum_current_data=fixedsum_block_name
+							}
 							var choosen=parseFloat(min)+Math.floor(Math.random()*(parseFloat(max)+1-parseFloat(min)));
 							$(form_map[name][i]).val(choosen); console.log("value set",name);
-							console.log(form_map[name][i], form_map[name][i].value, choosen, min, max);
+							console.log(form_map[name][i], form_map[name][i].value, choosen, min, max, 'bot_fixedsum_sum=',bot_fixedsum_sum);
+							if(max==bot_fixedsum-bot_fixedsum_sum && min==0 && form_map[name][i].hasAttribute(bot_fixedsum_data_name) /*&& name.startsWith("noname_")*/){
+								bot_fixedsum_sum+=choosen
+								console.log("bot_fixedsum_sum increased by ",choosen,"the result is ",bot_fixedsum_sum)
+							}
 						}
 					}
 				}
@@ -129,7 +155,7 @@ $(document).ready(function() {setTimeout(function() {if(_bot_input_forms_passed=
 	_bot_input_forms_passed++;
 	$("form#form :input")
     .each(function() {
-		// console.log(this.name);
+		//console.log(this);
 		var name = this.name;
 		if($(this).hasClass("otree-btn-next")) {
 			if(!name) name="otree-btn-next";
@@ -140,7 +166,10 @@ $(document).ready(function() {setTimeout(function() {if(_bot_input_forms_passed=
 			console.log("otree-btn-next",bot_submit_index);
 		}
 		else if (this.type!="hidden") {
-			if(!name) name="_";
+			if(!name) {
+				name="noname_"+bot_fixedsum_index;
+				bot_fixedsum_index++;
+			}
 			if(bot_name_array.indexOf(name)<0) bot_name_array.push(name);
 		}
 		else if (this.type == "hidden") {
