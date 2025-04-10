@@ -14,6 +14,7 @@ var slideropts="{{ cslideropts }}".split(";");
 var verticalsliders="{{ cvsliders }}".split(";");
 var allvars="{{ allvars }}".split(';');
 var deps={{deps}};
+var fielderrors={}
 </script>
 <div id="blocpage_content" style="visibility:hidden">
 <div id="initial_presentation">
@@ -23,6 +24,7 @@ var deps={{deps}};
     {{ for field in form }}
 	{{ if field.default != -11 and field.short_name in all_vars }}
 	<!-- <h1>{{ field.type }}, {{ field.__dict__ }}, {{ field.validators }}</h1> -->
+	 <script>fielderrors['{{field.short_name}}']='{{ formfield_errors field.name }}';</script>
        {{ if not field.short_name in radiotable_rows }}
 	    <input type=hidden name="beforefield_{{field.short_name}}" value=0 id="beforefield_{{field.short_name}}" />
 	    <div class='field_container' id='field_{{field.short_name}}'>
@@ -105,6 +107,7 @@ var deps={{deps}};
 				<span class="input-group-text">{{ for suff in suffixes }} {{ if suff.var == field.short_name }} {{ suff.val }} {{ endif }} {{ endfor }}</span>
 				</div>
 			{{ endif }}
+			{{ formfield_errors field.name }}
 			</div></div>
 		{{ elif field.short_name in onlyinfo }}
 			<input type=hidden value="1" name="{{field.short_name}}" />
@@ -120,6 +123,7 @@ var deps={{deps}};
 				<span class="input-group-text">{{ for suff in suffixes }} {{ if suff.var == field.short_name }} {{ suff.val }} {{ endif }} {{ endfor }}</span>
 				</div>
 			{{ endif }}
+			{{ formfield_errors field.name }}
 		{{ endif }}
             
 		{{ if not field.short_name in radiotable_rows }}

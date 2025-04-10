@@ -138,7 +138,7 @@ class Player(BasePlayer):
             min_index=1; max_index=0
             if getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="int" or getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="float":
                 if len(getattr(LQ_C,cbp+'_OPTS')[i-1])>1 and getattr(LQ_C,cbp+'_OPTS')[i-1][0].strip()!="" and getattr(LQ_C,cbp+'_OPTS')[i-1][1].strip()!="" :
-                    if int(getattr(LQ_C,cbp+'_OPTS')[i-1][0].strip())<int(getattr(LQ_C,cbp+'_OPTS')[i-1][1].strip()):
+                    if float(getattr(LQ_C,cbp+'_OPTS')[i-1][0].strip())<float(getattr(LQ_C,cbp+'_OPTS')[i-1][1].strip()):
                         max_index = 1; min_index = 0
             # print(getattr(LQ_C,cbp+'_TYPES')[i-1][0])
             for h in range(1,len(getattr(LQ_C,cbp+'_TYPES')[i-1])):
@@ -421,7 +421,14 @@ class BlocPage(Page):
                             cindex=int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0])-getattr(player,getattr(LQ_C,cbp+'_VARS')[i-1])
                         else:
                             cindex=getattr(player,getattr(LQ_C,cbp+'_VARS')[i-1])-int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0])
-                    cstringval=getattr(LQ_C,cbp+'_OPTS')[i-1][cindex] if getattr(player,getattr(LQ_C,cbp+'_VARS')[i-1])>0 else ""
+                    if var_exists('%s_choices'%getattr(LQ_C,cbp+'_VARS')[i-1]):
+                        choices=get_function('%s_choices'%getattr(LQ_C,cbp+'_VARS')[i-1])(player)
+                        for ch in choices:
+                            if ch[0] == cindex + 1:
+                               cstringval = ch[1]
+                               break
+                    else:
+                        cstringval=getattr(LQ_C,cbp+'_OPTS')[i-1][cindex] if getattr(player,getattr(LQ_C,cbp+'_VARS')[i-1])>0 else ""
                     setattr(player,getattr(LQ_C,cbp+'_VARS')[i-1]+"_strval",cstringval if cstringval != "" else "("+str(getattr(player,getattr(LQ_C,cbp+'_VARS')[i-1]))+")")
             if getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="checkbox":
                 # print(getattr(LQ_C,cbp+'_VARS')[i-1],":",getattr(player,getattr(LQ_C,cbp+'_VARS')[i-1]))

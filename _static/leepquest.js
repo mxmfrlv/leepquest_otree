@@ -131,6 +131,7 @@ function dependfunc(depended,dependon,depvals,inv) {
 				});
 			}
 			if(imshown) $('#field_'+depended).hide();
+			if(document.forms[0][depended].getAttribute("type") == "text") document.forms[0][depended].value="";
 			
 		}
 		// console.log("required after:",$('#id_'+depended).prop('required'));
@@ -162,12 +163,15 @@ function applydependencies(){
 				}
 				// console.log('inv field_'+depended, "by="+by, "imshown=",imshown);
 				if(imshown) setTimeout(hideField.bind(null,depended),50);
-				else $('#field_'+depended).on('show', {depended:depended}, function(event) {
+				else $('#field_'+depended).on('show', {depended:depended,dependon:dependon}, function(event) {
 				setTimeout(function() {
 					if(by == 1) $(".otree-btn-next").click();
-					else $('#field_'+event.data.depended).hide();
-				},50);				
+					else {
+						$('#field_'+event.data.depended).hide();
+					}
+				},50);
 				});
+				if((imshown || by != 1) && document.forms[0][dependon].value) setTimeout("dependfunc('"+depended+"','"+dependon+"','"+depvals+"',true)",50);
 			}
 		}
 }
