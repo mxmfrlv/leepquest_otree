@@ -44,7 +44,7 @@ var fielderrors={}
 			<br>
 			{{ formfield_errors field.name }}
 			{{if 'InputRequired' in field.validators.__str__() }} 
-				<div class="alert-warning" style="display:none" id="{{field.short_name}}_errormessage"></div>
+				<div class="alert-warning" style="display:none" id="{{field.short_name}}_errormessage" title='required'></div>
 			{{ endif }}
 		{{ elif field.short_name in radiolines }}
 			{{ if field.short_name in singleline }} <{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ qitem.tag }}{{ endif }}{{ endfor }} style='display:inline-block;{{if quest_width_px > 0 }}width:{{quest_width_px}}px;{{ endif }}'>{{ field.label }}</{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ qitem.tag }}{{ endif }}{{ endfor }}> {{ endif }}

@@ -131,7 +131,7 @@ function dependfunc(depended,dependon,depvals,inv) {
 				});
 			}
 			if(imshown) $('#field_'+depended).hide();
-			if(document.forms[0][depended].getAttribute("type") == "text") document.forms[0][depended].value="";
+			if(document.forms[0][depended].type == "text") document.forms[0][depended].value="";
 			
 		}
 		// console.log("required after:",$('#id_'+depended).prop('required'));
@@ -457,8 +457,8 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 			}
 			if(allvars[i]=="__info__") iamoptional=true;
 			// console.log("allvars[i]=",allvars[i], "iamoptional=", iamoptional);
-			var ok_pass=(document.forms[0][allvars[i]] !== undefined || allvars[i]=="__info__") && (iamoptional || (document.forms[0][allvars[i]].value!="" && typeof document.forms[0][allvars[i]].checkValidity !== 'function') || (typeof document.forms[0][allvars[i]].checkValidity === 'function' && document.forms[0][allvars[i]].checkValidity()));
-			// console.log("i=",i,"allvars[i]=",allvars[i],"ok_pass=",ok_pass,"document.forms[0][allvars[i]]=",document.forms[0][allvars[i]],"typeof checkValidity ",typeof document.forms[0][allvars[i]].checkValidity,"iamoptional=",iamoptional,document.getElementById(allvars[i]+"_validator").value); console.log(allvars[i],"checkValidity",((typeof document.forms[0][allvars[i]].checkValidity === 'function')?document.forms[0][allvars[i]].checkValidity():"not a function"),"required:",$('#id_'+allvars[i]).prop('required')); if(typeof document.forms[0][allvars[i]].checkValidity === 'function') console.log("checkValidity:",document.forms[0][allvars[i]].checkValidity());
+			var ok_pass=(document.forms[0][allvars[i]] !== undefined || allvars[i]=="__info__") && (iamoptional || (document.forms[0][allvars[i]].value!="" && typeof document.forms[0][allvars[i]].checkValidity !== 'function') || (document.forms[0][allvars[i]].value !== "" && typeof document.forms[0][allvars[i]].checkValidity === 'function' && document.forms[0][allvars[i]].checkValidity()));
+			// console.log("i=",i,"allvars[i]=",allvars[i],"ok_pass=",ok_pass,"document.forms[0][allvars[i]]=",document.forms[0][allvars[i]],"typeof checkValidity ",typeof document.forms[0][allvars[i]].checkValidity,"iamoptional=",iamoptional,document.getElementById(allvars[i]+"_validator").value); console.log(allvars[i],"checkValidity",((typeof document.forms[0][allvars[i]].checkValidity === 'function')?document.forms[0][allvars[i]].checkValidity():"not a function"),"required:",$('#id_'+allvars[i]).prop('required')); if(typeof document.forms[0][allvars[i]].checkValidity === 'function') console.log("checkValidity:",document.forms[0][allvars[i]].checkValidity(),document.forms[0][allvars[i]].checkValidity);
 			if(ok_pass && (!additional_validate(allvars[i]) || (!iamoptional && document.forms[0][allvars[i]].value=="" && $('#id_'+allvars[i]).prop('required')))) { // && slidervars.indexOf(allvars[i])>-1
 				force_prevent_default=true;
 				if(!additional_validate(allvars[i]) || slidervars.indexOf(allvars[i])<0) invalidated_vars.push(allvars[i]);
@@ -599,7 +599,8 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 					scrollTop: $("#pleasewait").offset().top
 				}, 1);
 			}
-			//e.preventDefault();
+			// console.log("nanswtot=",nanswtot,"allvars.length=",allvars.length,allvars,"varsanswered=",varsanswered, document.forms[0][allvars[0]].value);
+			// e.preventDefault();
 		}
 		if(!force_prevent_default && !screen_listing && !will_go_next) {
 			// avoiding "blue shadow" around the first option when not answered
