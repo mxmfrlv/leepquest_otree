@@ -688,7 +688,7 @@ if(js_vars.withtags.length>0) {
 	  }
    // console.log("for="+$(this).attr("for"),$( this ).html());
   });
-  // consol	e.log(proceeded);
+//   console.log(proceeded);
   if(proceeded) $("option").each(function() {
 	  var cfor =  $(this).parent().attr("name");
 	  // console.log('cfor',cfor);
@@ -700,6 +700,21 @@ if(js_vars.withtags.length>0) {
 		  $( this ).html($( this ).html().replace(/&gt;/gi,">").replace(/&lt;/gi,"<").replace(/&amp;/gi,"&"));
 	  }
 	});
+}
+if(js_vars.withouttags.length>0) {
+	// console.log(js_vars.withouttags)
+	$('input[type="radio"]').parent().find('label').each(function() {
+		var ccontent = $(this).html();
+		var cfor =  $(this).attr("for");
+		var proceed=false;
+		for(var w=0; w<js_vars.withouttags.length; w++) {
+			if(cfor.replace(js_vars.withouttags[w],'')!=cfor) proceed=true;
+		}
+		// console.log($(this).val(), cfor, proceed)
+		if(proceed) $(this).html(ccontent.replace(/&/gi,"&amp;").replace(/>/gi,"&gt;").replace(/</gi,"&lt;"));
+		
+	});
+	
 }
 
 

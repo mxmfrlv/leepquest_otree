@@ -565,6 +565,7 @@ class BlocPage(Page):
         shownumbers=[]
         fixedsum_sliders=[]
         withtags=[]
+        withouttags=[]
         if hasattr(LQ_C,cbp+"_RANDOMORDERS"):
            for ovi,ov in enumerate(getattr(LQ_C,cbp+"_RANDOMORDERS")):
             firstrandoms.append(ov[0] if isinstance(ov,list) else getattr(LQ_C,ov)[0])
@@ -586,6 +587,7 @@ class BlocPage(Page):
                 if hasattr(LQ_C,cbp+"_HASTAGS"):
                     clastval = getattr(LQ_C,cbp+"_HASTAGS")[i-1] if i <= len(getattr(LQ_C,cbp+"_HASTAGS")) else getattr(LQ_C,cbp+"_HASTAGS")[-1]
                     chastags =  not (str(clastval) == '' or 'f' in str(clastval).lower() or str(clastval) == '0' or 'n' in str(clastval).lower())
+                    if not chastags: withouttags.append(getattr(LQ_C,cbp+'_VARS')[i-1])
                     # print(getattr(LQ_C,cbp+'_VARS')[i-1],clastval,chastags,LQ_C.TAGS_IN_TEXT);
                 if chastags: withtags.append(getattr(LQ_C,cbp+'_VARS')[i-1])
         res = dict(
@@ -599,6 +601,7 @@ class BlocPage(Page):
             screentime_prefix=cbp+"_",
             fixedsum_sliders=fixedsum_sliders,
             withtags=withtags,
+            withouttags=withouttags,
             lq_lexicon = lq_lexicon,
             debug=False,
         )
