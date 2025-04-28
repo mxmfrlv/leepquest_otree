@@ -4,3 +4,7 @@ A tool for creating questionnaires in oTree using excel sheets. See examples in 
 
 ## Requirements
 [oTree](http://otree.org/) v5+, [pandas](https://pypi.org/project/pandas/), [openpyxl](https://pypi.org/project/openpyxl/) (`pip install -U otree pandas openpyxl`).
+
+
+## More information
+https://deepwiki.com/mxmfrlv/leepquest_otree/
