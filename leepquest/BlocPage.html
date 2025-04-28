@@ -35,7 +35,7 @@ var fielderrors={}
 	   {{ endif }}
 		{{ if not field.short_name in radiotable_rows and not field.short_name in singleline }} <{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ qitem.tag }}{{ endif }}{{ endfor }} style='{{if quest_width_px > 0 }}width:{{quest_width_px}}px;{{ endif }}'><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ qitem.tag }}{{ endif }}{{ endfor }}>{{ endif }}
 		{{ if field.short_name in slidervars }}
-			<em>(<span id="sliderhint_{{field.short_name}}">faites bouger le curseur ci-dessous afin de répondre</span>)</em><br><br>
+			<em>(<span id="sliderhint_{{field.short_name}}">{{lq_lexicon.move_slider_to_answer}}</span>)</em><br><br>
 			<input type=hidden id="sliderinput_{{field.short_name}}" name="{{field.short_name}}" {{if 'InputRequired' in field.validators.0.__str__() }} style="display:none" class="form-control" required{{ endif }} value="" />
 			<input type=hidden name="{{field.type}}" value=0 id="slidershown_{{field.short_name}}" />
 			{{ if not field.short_name in vsliders }} <div style="white-space:nowrap;margin-left:30px"><span id="sliderleft_{{field.short_name}}"></span><div style='width:50%;display:inline-block' id="slider_{{field.short_name}}"></div><span id="sliderright_{{field.short_name}}"></span></div>
@@ -137,10 +137,10 @@ var fielderrors={}
 </div>
 <script src="{{ static 'leepquest.js' }}"></script>
 
-<div class="alert position-fixed top-50 start-50 translate-middle" id="pleasewait">Veuillez patienter...</div>
+<div class="alert position-fixed top-50 start-50 translate-middle" id="pleasewait">{{lq_lexicon.please_wait}}</div>
 <table id="control_buttons" style="display:none"><tr><td>
 	<p>
-	<button class='btn btn-primary' disabled style="display:none" name="prev" id="prevbutton" value=1 type="button">Précédent</button>
+	<button class='btn btn-primary' disabled style="display:none" name="prev" id="prevbutton" value=1 type="button">{{lq_lexicon.previous}}</button>
 	</p>
 	</td><td>
     {{ next_button }} 

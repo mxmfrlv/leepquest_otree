@@ -87,14 +87,14 @@ function dependfunc(depended,dependon,depvals,inv) {
 	}
 	if(depok) {
 		if(document.getElementById(depended+'_errormessage') == null) {
-			$( '<div class="alert-warning" style="display:none" title="required" id="'+depended+'_errormessage">Veuillez répondre à cette question</div>' ).insertBefore( $( '#field_'+depended+'_number_placeholder' ) );
+			$( '<div class="alert-warning" style="display:none" title="required" id="'+depended+'_errormessage">'+js_vars.lq_lexicon.please_answer_question+'</div>' ).insertBefore( $( '#field_'+depended+'_number_placeholder' ) );
 			// console.log(depended,$( '#field_'+depended+'_number_placeholder' ),$('#'+depended+'_errormessage'));
 		}
 		document.getElementById(depended+'_errormessage').title="required"; //$('#'+depended+'_errormessage').attr("title","required");
 		// console.log(typeof document.forms[0][depended].checkValidity)
 		if(typeof document.forms[0][depended].checkValidity === 'function' && document.forms[0][depended].type !="checkbox") {
 			$('#id_'+depended).prop('required',true);
-			//document.forms[0][depended].setCustomValidity("Veuillez répondre à cette question");
+			//document.forms[0][depended].setCustomValidity(js_vars.lq_lexicon.please_answer_question);
 			// console.log('set '+'#id_'+depended+' required');
 		}
 		// console.log('inserted','by='+by);
@@ -264,7 +264,7 @@ function liveRecv(data) {
 var additional_validate=function(varname){
 	return true;
 };
-var additional_validate_message=(js_vars.additional_validate_message === undefined)?"Veuillez corriger les erreurs":js_vars.additional_validate_message;
+var additional_validate_message=(js_vars.additional_validate_message === undefined)?js_vars.lq_lexicon.please_correct_errors:js_vars.additional_validate_message;
 var additional_validate_invalid_action=function(varnames,alertneeded){
 	// console.log(varnames);
 	if(alertneeded === undefined) alertneeded=false;
@@ -399,7 +399,7 @@ if(sliderpresent) {
 			document.getElementById("sliderright_"+slidervars[sl]).style.marginLeft="16px";
 		}
 	}
-	if(starthidden) document.getElementById("sliderhint_"+slidervars[sl]).innerHTML="cliquez sur le champ grisé ci-dessous afin de faire apparaître un curseur et répondre";
+	if(starthidden) document.getElementById("sliderhint_"+slidervars[sl]).innerHTML=js_vars.lq_lexicon.click_grey_field_to_answer;
 	var cdecimals=0; if(cstep>0 && cstep<1) cdecimals=cstep.toString().length-2;
 	sliderbeh='tap'; //starthidden?'snap':'tap';
 	var uipips={
@@ -570,7 +570,7 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 			var scrolled=false;
 			for(i=0; i<varsshown.length; i++) if(varsshown[i]>0 && document.getElementById(allvars[i]+"_errormessage") !== null && document.forms[0][allvars[i]].value==""  && document.getElementById(allvars[i]+"_errormessage").title=="required") {
 				force_prevent_default=true;
-				document.getElementById(allvars[i]+"_errormessage").innerHTML=(js_vars.field_required_message === undefined)?"Veuillez répondre à cette question":js_vars.field_required_message;
+				document.getElementById(allvars[i]+"_errormessage").innerHTML=(js_vars.field_required_message === undefined)?js_vars.lq_lexicon.please_answer_question:js_vars.field_required_message;
 				document.getElementById(allvars[i]+"_errormessage").style.display="block";
 				if(!scrolled) {
 					$([document.documentElement, document.body]).animate({

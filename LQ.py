@@ -1,3 +1,10 @@
+import os, importlib
+from settings import LANGUAGE_CODE
+lex_name = "en"
+if os.path.exists("i18n/%s.py"%LANGUAGE_CODE.lower()):
+    lex_name = LANGUAGE_CODE.lower()
+lq_lex_module = importlib.import_module("i18n.%s"%lex_name)
+lq_lexicon = lq_lex_module.Lexicon
 
 def var_exists(smth,obj=None):
     if not obj is None:
@@ -76,22 +83,22 @@ class LQ_C(BaseConstants):
             # this is an example
             BLOCPAGES="A;B".split(';')
             TRACK_BLOCPAGE_LOADS = "A;B".split(';')
-            A_LIST = "Quel âge avez-vous ?;Quel est le diplôme le plus élevé que vous avez obtenu ?;Veuillez également répondre à la question suivante :;Quel est votre genre ?;Quel est votre pays de naissance?".split(';')
-            A_TYPES = [x.split(':') for x in "slider:int;radio;info;radio;select".split(';')]
-            A_OPTS = [x.split(':') for x in "99:18:1:17;Sans diplôme:Certificat d’études primaires:Ancien brevet BEPC:Certificat d’aptitude professionnelle (CAP):Brevet d’enseignement professionnel (BEP):BAC d’enseignement technique et professionnel:BAC d’enseignement général:BAC +2 (DUT, BTS, DEUG):Diplôme de l’enseignement supérieur (2ème ou 3ème cycles, grande école);;Homme:Femme;France:Etranger".split(';')]
-            A_VARS = "age;diplome;a_info_1;genre;pays".split(";")
+            A_LIST = "How old are you?;What is the highest degree you have obtained?;Please also answer the following question:;What is your gender?;What is your country of birth?;How many people are there in your household? ;Optional question: What percentage of your total income…;Are you a student?;If yes, what is your field of study?;If other, please specify...".split(';')
+            A_TYPES = [x.split(':') for x in "slider:int;radio;info;hradio;select;int;slider:float:optional:vertical/350px;radio;radio;stext;radio".split(';')]
+            A_OPTS = [x.split(':') for x in "99:18:1:18;No diploma:Primary education certificate:Old BEPC certificate:Vocational Training Certificate (CAP):Professional Education Certificate (BEP):Technical and Vocational High School Diploma:General High School Diploma:BAC +2 (DUT, BTS, DEUG):Higher education degree (Master’s or Grandes Écoles) ;;Man:Woman:I prefer <b><u>not</u></b> to answer;France:Abroad;:0:suff=person(s);0:100:0.1:inv:%:None at all/All income:0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100/1;Yes:No;Economics:Law:Other;".split(';')]
+            A_VARS = "age;diploma;a_info_1;genre;pays;household_size;savings_perc;student;study_domain;study_domain_other".split(";")
             A_BY=2
-            A_BY_INTRO=[""]
+            A_BY_INTRO=["Example without excel file"]
             # A_NO_SCREEN_TIME = True
             A_TITLE="Questionnaire"
-            B_ASSO_LIST="asso_gibiers;asso_neige;asso_petitsprinces;asso_armeschasse;asso_vehiculesepoque;asso_medecinsdumonde;asso_parachitistes;asso_medecinssansfrontiers;asso_industrienationale;asso_sourds;asso_ceramique;asso_yachtclub".split(";")
-            B_LIST = "Sur une échelle de 1 (pas bénéfiques) à 5 (très bénéfiques), pensez-vous que les Associations Reconnues d’Utilité Publique (ARUP) sont généralement bénéfiques pour la société ?;Association nationale des chasseurs de grands gibiers;Association nationale pour l’étude de la neige et des avalanches ;Association des petits princes;Union nationale des propriétaires d’armes de chasse et de tir;Fédération française des véhicules d’époque;Médecins du monde;Union nationale des parachutistes;Médecins sans frontières;Société d’encouragement pour l’industrie nationale;Fédération nationale des sourds de France;Société française de céramique;Yacht club de France;Je pense que je suis une personne de valeur, au moins égale à n’importe qui d’autre;Je pense que je possède un certain nombre de belles qualités;Tout bien considéré, je suis porté-e à me considérer comme un-e raté-e;Je suis capable de faire les choses aussi bien que la majorité des gens;Je sens peu de raisons d’être fier-e de moi;J’ai une attitude positive vis-à-vis moi-même;Dans l’ensemble, je suis satisfait-e de moi;J’aimerais avoir plus de respect pour moi-même;Parfois je me sens vraiment inutile;Il m’arrive de penser que je suis un-e bon-ne à rien".split(";")
-            B_TYPES = [x.split(':') for x in ["radioline:1-5"]+["checkbox:inline"]*len(B_ASSO_LIST)+"radiotable:first;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable:last".split(';')]
-            B_OPTS = [x.split(':') for x in ["(pas bénéfiques)::::(très bénéfiques)"]+["OUI:NON"]*len(B_ASSO_LIST)+["Tout à fait en désaccord:Plutôt en désaccord:Plutôt en accord:Tout à fait en accord"]*10]
-            B_VARS = ["arup_benefiques"]+B_ASSO_LIST+"self_estim_01;self_estim_02;self_estim_03;self_estim_04;self_estim_05;self_estim_06;self_estim_07;self_estim_08;self_estim_09;self_estim_10".split(";")
+            B_ACTIVITIES_LIST="job_satisfaction;volunteer_charity;community_events;sports_club;environmental_initiatives;student_organizations;nonprofit_donations;neighborhood_meetings;youth_mentoring;political_rallies;cultural_events;reading_clubs;online_activism".split(";")
+            B_LIST = "On a scale from 1 (very dissatisfied) to 5 (very satisfied), how satisfied are you with your current job?;Volunteering for local charities;Attending community events;Participating in sports clubs;Taking part in environmental initiatives;Involvement in student organizations;Regular donations to non-profit causes;Participation in neighborhood meetings;Mentoring youth programs;Attendance at political rallies;Organizing cultural events;Membership in reading clubs;Taking part in online activism;I think I am a person of worth, at least equal to anyone else.;I think I have a number of good qualities;All things considered, I am inclined to view myself as a failure;I am able to do things as well as most people;I feel little reason to be proud of myself;I have a positive attitude toward myself;Overall, I am satisfied with myself;I wish I could have more respect for myself;Sometimes I feel really useless;I sometimes think I am a good-for-nothing".split(";")
+            B_TYPES = [x.split(':') for x in ["radioline:1-5"]+["checkbox:inline"]*len(B_ACTIVITIES_LIST)+"radiotable:first;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable;radiotable:last".split(';')]
+            B_OPTS = [x.split(':') for x in ["(very dissatisfied)::::(very satisfied)"]+["YES:NO"]*len(B_ACTIVITIES_LIST)+["Strongly disagree:Somewhat disagree:Somewhat agree:Strongly agree"]*10]
+            B_VARS = ["job_satisfaction"]+B_ACTIVITIES_LIST+"self_estim_01;self_estim_02;self_estim_03;self_estim_04;self_estim_05;self_estim_06;self_estim_07;self_estim_08;self_estim_09;self_estim_10".split(";")
             B_BY = "1;12;10".split(';')
-            B_BY_INTRO = ";Lesquelles de ces associations sont selon vous des Associations Reconnues d’Utilité Publique ?;;Sur une échelle de « 1 » (jamais) à « 5 » (souvent), répondez aux affirmations suivantes :;Pour chacune des caractéristiques ou descriptions suivantes, indiquez à quel point chacune est vraie pour vous.".split(';')
-            B_RANDOMORDERS=["B_ASSO_LIST","self_estim_01;self_estim_02;self_estim_03;self_estim_04;self_estim_05;self_estim_06;self_estim_07;self_estim_08;self_estim_09;self_estim_10".split(';')]
+            B_BY_INTRO = "Example without excel file;Which of the following activities do you regularly participate in?;For each of the following characteristics or descriptions, indicate how true each one is for you.".split(';')
+            B_RANDOMORDERS=["B_ACTIVITIES_LIST","self_estim_01;self_estim_02;self_estim_03;self_estim_04;self_estim_05;self_estim_06;self_estim_07;self_estim_08;self_estim_09;self_estim_10".split(';')]
             B_RANDOMORDERS_SHOWNUMBERS=[True,False]
             # B_SAME_ORDERS_IN_ALL_ROUNDS=[False]
     for i in range(len(BLOCPAGES)):
@@ -341,7 +348,6 @@ def get_opts_by_var(cbp,varname,what = "OPTS"):
 # PAGES
 class BlocPage(Page):
     form_model = 'player'
-    # form_fields = getattr(LQ_C,cbp+'_VARS')+list(map(lambda x : x+'_time', getattr(LQ_C,cbp+'_VARS')))+list(map(lambda x : x+'_order', LQ_C.D_ASSO_LIST))+["blocD_screen"+str(i+1)+"_time" for i,v in enumerate(getattr(LQ_C,cbp+'_BY'))]
     live_method = blocpage_live_method
     @staticmethod
     def is_displayed(player):
@@ -505,7 +511,7 @@ class BlocPage(Page):
         if hasattr(LQ_C,cbp+"_DEPS"):
             for h in range(len(getattr(LQ_C,cbp+'_DEPS'))):
                 deps.append(str.join(':',getattr(LQ_C,cbp+'_DEPS')[h]))
-        mintime_text="Le bouton Suivant apparaîtra très bientôt"
+        mintime_text=lq_lexicon['next_button_will_appear_soon']
         allvars=[]
         for vi,v in enumerate(getattr(LQ_C,cbp+'_VARS')): 
             if get_function('skip_some_bp_quests')(player,cbp,vi+1,v,"vars_for_template"): continue
@@ -543,6 +549,7 @@ class BlocPage(Page):
             prefixvars=prefixvars,
             prefixes=prefixes,
             presentation_tepmplate=presentation_tepmplate,
+            lq_lexicon = lq_lexicon,
         )
         if hasattr(LQ_C,cbp+"_ANSWERS_VARS"): res['answers_vars']=';'.join(getattr(LQ_C,cbp+"_ANSWERS_VARS"))
         supfunc='bp_vars_for_template'
@@ -592,6 +599,7 @@ class BlocPage(Page):
             screentime_prefix=cbp+"_",
             fixedsum_sliders=fixedsum_sliders,
             withtags=withtags,
+            lq_lexicon = lq_lexicon,
             debug=False,
         )
         if hasattr(LQ_C,"TRACK_BLOCPAGE_LOADS") and cbp in LQ_C.TRACK_BLOCPAGE_LOADS: res['loadtimevar']=cbp+"_loadtime"
