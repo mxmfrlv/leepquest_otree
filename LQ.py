@@ -34,8 +34,8 @@ class LQ_C(BaseConstants):
         BLOCPAGES=[]
         for sheet in LQ_XLSX.sheet_names:
             if sheet[0] != '#':
-                BLOCPAGES.append(sheet)
-                sh_df=LQ_XLSX.parse(sheet.upper())
+                BLOCPAGES.append(sheet.upper())
+                sh_df=LQ_XLSX.parse(sheet)
                 for scol in list(sh_df.columns):
                     if scol[0] != '#':
                         cvarname=sheet.upper()+'_'+scol.upper()
