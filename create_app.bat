@@ -9,16 +9,29 @@ rem --- End Configuration ---
 
 rem --- Argument Check ---
 if "%~1"=="" (
-    echo WARNING: No argument provided. Please provide a name for the new folder.
-    echo Usage: %~n0 NewFolderName
-    goto :eof
+    echo No app name provided.
+    set /p arg="Please enter a name for the new app: "
+    
+    :: Check if the user input is empty
+    if "!arg!"=="" (
+        echo Warning: No value provided. Exiting script.
+        goto :eof
+    ) else (
+        :: Continue with the provided value
+        echo Using value: !arg!
+		set "targetFolderName=!arg!"
+    )
+) else (
+    :: Continue with the command line argument
+    set "targetFolderName=%~1"
 )
+
 if not "%~2"=="" (
     echo WARNING: Too many arguments provided. Please provide only one name for the new folder.
     echo Usage: %~n0 NewFolderName
     goto :eof
 )
-set "targetFolderName=%~1"
+
 set "stringToReplace=    NAME_IN_URL = '%targetFolderName%'"
 
 

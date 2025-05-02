@@ -1,14 +1,31 @@
+#!/usr/bin/env pwsh
+
 # Define the folder name
 $folderName = "leepquest"
 
 # Check if an argument is provided
 if (-not $args[0]) {
-  Write-Host "Warning: No argument provided. Please provide a new folder name."
-  exit 1
+  Write-Host "No app name provided."
+  $arg = Read-Host -Prompt "Please enter a name for the new app"
+  
+  # Check if the user input is empty
+  if ([string]::IsNullOrWhiteSpace($arg)) {
+    Write-Host "Warning: No argument provided. Please provide a new folder name."
+    exit 1
+  } else {
+    # Continue with the provided value
+    Write-Host "Using value $arg as the app's name"
+    # Assign the argument to a variable
+    $newFolderName = $arg
+  }
+} else {
+  # Continue with the command line argument
+  Write-Host "Using argument $($args[0]) as the app's name"
+  # Assign the argument to a variable
+  $newFolderName = $args[0]
 }
 
-# Assign the argument to a variable
-$newFolderName = $args[0]
+
 
 # Check if the leepquest folder exists
 if (-not (Test-Path -Path $folderName)) {

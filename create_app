@@ -3,14 +3,24 @@
 # Define the folder name
 FOLDER_NAME="leepquest"
 
-# Check if an argument is provided
+# Check if argument is provided
 if [ -z "$1" ]; then
-  echo "Warning: No argument provided. Please provide a new folder name."
-  exit 1
+  echo "No app name provided."
+  read -p "Please enter a name for the new app: " arg
+  
+  # Check if the user input is empty
+  if [ -z "$arg" ]; then
+    echo "Warning: No argument provided. Please provide a new folder name."
+    exit 1
+  else
+    # Continue with the provided value
+    echo "Using value: $arg as the app's name"
+    NEW_FOLDER_NAME="$arg"
+  fi
+else
+  # Continue with the command line argument
+  NEW_FOLDER_NAME="$1"
 fi
-
-# Assign the argument to a variable
-NEW_FOLDER_NAME="$1"
 
 # Check if the leepquest folder exists
 if [ ! -d "$FOLDER_NAME" ]; then

@@ -15,12 +15,25 @@ def main():
 
     # Check if an argument is provided
     if len(sys.argv) < 2:
-        print(f"Warning: No destination folder name provided.")
-        print(f"Usage: {os.path.basename(sys.argv[0])} destination_folder_name")
-        sys.exit(1)
+        print("No app name provided.")
+        user_input = input("Please enter a name for the new app: ")
+        
+        # Check if the user input is empty
+        if not user_input.strip():
+            print(f"Warning: No destination folder name provided.")
+            print(f"Usage: {os.path.basename(sys.argv[0])} destination_folder_name")
+            sys.exit(1)
+        else:
+            # Continue with the provided value
+            print(f"Using value {user_input} as the new app's name")
+            # Set the destination folder name from the argument
+            DEST_FOLDER = user_input.strip()
+    else:
+        # Continue with the command line argument
+        print(f"Using argument {sys.argv[1]} as the new app's name")
+        # Set the destination folder name from the argument
+        DEST_FOLDER = sys.argv[1]
 
-    # Set the destination folder name from the argument
-    DEST_FOLDER = sys.argv[1]
 
     # Check if source folder exists
     if not os.path.isdir(SOURCE_FOLDER):
