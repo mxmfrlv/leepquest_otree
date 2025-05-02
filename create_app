@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Define the folder name
+FOLDER_NAME="leepquest"
+
+# Check if an argument is provided
+if [ -z "$1" ]; then
+  echo "Warning: No argument provided. Please provide a new folder name."
+  exit 1
+fi
+
+# Assign the argument to a variable
+NEW_FOLDER_NAME="$1"
+
+# Check if the leepquest folder exists
+if [ ! -d "$FOLDER_NAME" ]; then
+  echo "Warning: The folder '$FOLDER_NAME' does not exist."
+  exit 1
+fi
+
+# Check if the __init__.py file exists and contains the NAME_IN_URL line
+INIT_FILE="$FOLDER_NAME/__init__.py"
+if [ ! -f "$INIT_FILE" ] || ! grep -q "NAME_IN_URL = '$FOLDER_NAME'" "$INIT_FILE"; then
+  echo "Warning: The file '$INIT_FILE' does not exist or does not contain the line 'NAME_IN_URL = '$FOLDER_NAME'."
+  exit 1
+fi
+
+# Copy the folder
+cp -r "$FOLDER_NAME" "$NEW_FOLDER_NAME"
+
+# Replace the NAME_IN_URL in the new __init__.py file
+sed -i "s/NAME_IN_URL = '$FOLDER_NAME'/NAME_IN_URL = '$NEW_FOLDER_NAME'/g" "$NEW_FOLDER_NAME/__init__.py"
+
+# Delete the __pycache__ folder
+rm -rf "$NEW_FOLDER_NAME/__pycache__"
+
+echo "Folder copied and updated successfully."
