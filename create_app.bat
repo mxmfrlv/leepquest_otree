@@ -69,7 +69,7 @@ if not exist "%targetInitFilePath%" (
 
 setlocal DisableDelayedExpansion
 
-echo Modifying '%targetInitFilePath%' (preserving lines)...
+echo Modifying '%targetInitFilePath%'...
 rem Create temp file
 (
     for /f "tokens=1,* delims=:" %%A in ('findstr /N "^" "%targetInitFilePath%"') do (
@@ -78,11 +78,11 @@ rem Create temp file
         
         rem Enable delayed expansion only for the comparison
         setlocal EnableDelayedExpansion
-        echo DEBUG: Comparing "[!current_line!]" with "[%stringToFind%]" > con
+        REM echo DEBUG: Comparing "[!current_line!]" with "[%stringToFind%]" > con
         
         rem Compare and decide what to output
         if "!current_line!"=="%stringToFind%" (
-            echo DEBUG: Match found! Line will be replaced. > con
+            REM echo DEBUG: Match found! Line will be replaced. > con
             endlocal
             echo(%stringToReplace%
         ) else (
