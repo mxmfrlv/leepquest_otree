@@ -26,6 +26,9 @@ if (-not (Test-Path -Path $initFile) -or (-not (Get-Content -Path $initFile | Wh
 # Copy the folder
 Copy-Item -Path $folderName -Destination $newFolderName -Recurse
 
+# Rename the excel file
+Rename-Item -Path "$newFolderName\$folderName.xlsx" -NewName "$newFolderName.xlsx"
+
 # Replace the NAME_IN_URL in the new __init__.py file
 $initFilePath = Join-Path -Path $newFolderName -ChildPath "__init__.py"
 $lines = Get-Content -Path $initFilePath

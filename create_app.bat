@@ -96,7 +96,10 @@ if exist "%targetInitFilePath%" (
     del "%targetInitFilePath%" > nul 2> nul
 )
 
-mv "%tempFilePath%" "%targetInitFilePath%"
+move /Y "%tempFilePath%" "%targetInitFilePath%" > nul
+
+rem Renaming the excel file
+move /Y "%targetFolderName%\%sourceFolderName%.xlsx" "%targetFolderName%\%targetFolderName%.xlsx" > nul
 
 echo File '%targetInitFilePath%' modified successfully.
 echo ---

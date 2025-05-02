@@ -28,6 +28,9 @@ fi
 # Copy the folder
 cp -r "$FOLDER_NAME" "$NEW_FOLDER_NAME"
 
+# Renaming the excel file
+mv "$NEW_FOLDER_NAME/$FOLDER_NAME.xlsx" "$NEW_FOLDER_NAME/$NEW_FOLDER_NAME.xlsx"
+
 # Replace the NAME_IN_URL in the new __init__.py file
 sed -i "s/NAME_IN_URL = '$FOLDER_NAME'/NAME_IN_URL = '$NEW_FOLDER_NAME'/g" "$NEW_FOLDER_NAME/__init__.py"
 

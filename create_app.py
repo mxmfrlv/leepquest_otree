@@ -69,6 +69,12 @@ def main():
     with open(dest_init_path, 'w', encoding='utf-8') as f:
         f.write(updated_content)
 
+    # Rename the excel file
+    source_path = os.path.join(DEST_FOLDER, f"{SOURCE_FOLDER}.xlsx")
+    destination_path = os.path.join(DEST_FOLDER, f"{DEST_FOLDER}.xlsx")
+    shutil.move(source_path, destination_path)
+
+
     print(f"Successfully copied and updated '{SOURCE_FOLDER}' to '{DEST_FOLDER}'.")
 
 if __name__ == "__main__":
