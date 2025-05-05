@@ -44,7 +44,7 @@ To create your own template:
     ```python
     class Group(BaseGroup):
          # test_group = models.IntegerField(initial = 1)
-    pass
+        pass
     ``` 
  - Use [special `bp` functions](https://deepwiki.com/mxmfrlv/leepquest_otree/7.1-server-api#hook-functions) defined in `__init__.py` to dynamically manage blocpages (questionnaires) and questions
 
