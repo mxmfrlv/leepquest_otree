@@ -19,7 +19,7 @@ A tool for creating questionnaires in oTree using excel sheets. See examples in 
     
      _If you are sure you'll only need one app (questionnaire) inside your project you may use the original `leepquest` folder as you app's folder. Note that the `create_app` may not work as expected once the original `leepquest` folder is modified._
 
-4. Open the Excel questionnaire definition file inside your app's folder and modify the questionnaires according to your needs (see the [corresponding wiki page for questionnaire definition](https://deepwiki.com/mxmfrlv/leepquest_otree/2-questionnaire-definition) and [for question types](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types)).
+4. Open the Excel questionnaire definition file inside your app's folder and modify the questionnaires according to your needs (use the A and B sheets in the `leepquest/leepquest.xlsx` file as example, see the wiki pages [for questionnaire definition](https://deepwiki.com/mxmfrlv/leepquest_otree/2-questionnaire-definition) and [for question types](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types)).
 5. If you keep the `B` name for one of your questionnaires make sure to delete or modify the `include_B.html` template used for example.
 
 ## Advanced usage
@@ -28,7 +28,7 @@ To create your own template:
 
 1. Create an HTML file named `include_X.html` in your app's folder, where X is your block name (sheet name inside the questionnaire definition Excel file). If found, the template is included at the top of the page, providing custom introductory content or dynamic logic (via `script` tags).
 
-2. Add your HTML content, using div IDs like initial_presentation_1, initial_presentation_2, etc. for multi-screen content. For multi-screen questionnaires, only the relevant part of the template is shown based on the current screen number. As the user navigates through screens (using next/previous buttons), different parts of the include template become visible.
+2. Add your HTML content, using div IDs like `initial_presentation_1`, `initial_presentation_2`, etc. for multi-screen content. For multi-screen questionnaires, only the relevant part of the template is shown based on the current screen number. As the user navigates through screens (using Next/Previous buttons), different parts of the include template become visible.
 
 3. The system will automatically detect and include your template when the corresponding questionnaire block is displayed.
 
@@ -49,7 +49,7 @@ To create your own template:
  - Use [special `bp` functions](https://deepwiki.com/mxmfrlv/leepquest_otree/7.1-server-api#hook-functions) defined in `__init__.py` to dynamically manage blocpages (questionnaires) and questions
 
 ### Testing with Bots
-Add `?participant_label=bot1` ( or "bot2" to "bot24", increase the maximum number or add more labels to `bot_labels` in `settings.py` ) to the _session-wide-link_ to launch a bot that answers randomly.
+Add `?participant_label=bot1` (or "bot2" to "bot24", increase the maximum number or add more labels to `bot_labels` in `settings.py`) to the _session-wide-link_ to launch a bot that answers randomly.
 
 ## More information
 https://deepwiki.com/mxmfrlv/leepquest_otree/
