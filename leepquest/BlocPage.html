@@ -19,7 +19,7 @@ var fielderrors={}
 <div id="blocpage_content" style="visibility:hidden">
 <div id="initial_presentation">
 </div>
-{{ if presentation_tepmplate != '' }} {{ include presentation_tepmplate }} {{ endif }}
+{{ if presentation_template != '' }} {{ include presentation_template }} {{ endif }}
 
     {{ for field in form }}
 	{{ if field.default != -11 and field.short_name in all_vars }}

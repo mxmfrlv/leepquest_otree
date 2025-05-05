@@ -465,8 +465,8 @@ class BlocPage(Page):
         questtags=[]
         deps=[]
         if(hasattr(LQ_C,cbp+"_TITLE")): title=getattr(LQ_C,cbp+"_TITLE")
-        presentation_tepmplate=""
-        if os.path.exists(LQ_C.APP_NAME+"/include_"+cbp+".html"): presentation_tepmplate=LQ_C.APP_NAME+"/include_"+cbp+".html"
+        presentation_template=""
+        if os.path.exists(LQ_C.APP_NAME+"/include_"+cbp+".html"): presentation_template=LQ_C.APP_NAME+"/include_"+cbp+".html"
         # print("vars_for_template")
         for i in getattr(LQ_C,cbp+"_QNUMS"):
             if get_function('skip_some_bp_quests')(player,cbp,i,getattr(LQ_C,cbp+"_VARS")[i-1],"vars_for_template"): continue
@@ -548,7 +548,7 @@ class BlocPage(Page):
             suffixes=suffixes,
             prefixvars=prefixvars,
             prefixes=prefixes,
-            presentation_tepmplate=presentation_tepmplate,
+            presentation_template=presentation_template,
             lq_lexicon = lq_lexicon,
         )
         if hasattr(LQ_C,cbp+"_ANSWERS_VARS"): res['answers_vars']=';'.join(getattr(LQ_C,cbp+"_ANSWERS_VARS"))
