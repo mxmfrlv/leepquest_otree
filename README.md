@@ -19,7 +19,7 @@ A tool for creating questionnaires in oTree using excel sheets. See examples in 
     
      _If you are sure you'll only need one app (questionnaire) inside your project you may use the original `leepquest` folder as you app's folder. Note that the `create_app` may not work as expected once the original `leepquest` folder is modified._
 
-4. Open the Excel questionnaire definition file inside your app's folder and modify the questionnaires according to your needs (see the [corresponding wiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/2-questionnaire-definition)).
+4. Open the Excel questionnaire definition file inside your app's folder and modify the questionnaires according to your needs (see the [corresponding wiki page for questionnaire definition](https://deepwiki.com/mxmfrlv/leepquest_otree/2-questionnaire-definition) and [for question types](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types)).
 5. If you keep the `B` name for one of your questionnaires make sure to delete or modify the `include_B.html` template used for example.
 
 ## Advanced usage
