@@ -13,7 +13,7 @@ A tool for creating questionnaires in oTree using excel sheets. See examples in 
    - change the NAME_IN_URL parameter inside the `__init__.py` file inside the new folder and
    - change the name of the Excel questionaire definition file (`leepquest.xlsx`) with the provided app's name [note that this is optional, if the `leepquest.xlsx` file is present inside the folder, it will be used instead]
 
-    ). _If you are sure you'll only need one app (questionnaire) inside your project you may use the original `leepquest` folder as you app's folder. Note that the `create_app` may not work as expected once the original `leepquest` folder is modyfied._
+    ). _If you are sure you'll only need one app (questionnaire) inside your project you may use the original `leepquest` folder as you app's folder. Note that the `create_app` may not work as expected once the original `leepquest` folder is modified._
 
 4. Open the Excel questionnaire definition file inside your app's folder and modify the questionnaires according to your needs (see the [corresponding wiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/2-questionnaire-definition)).
 
