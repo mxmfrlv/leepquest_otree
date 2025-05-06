@@ -36,7 +36,7 @@ These columns have one entry per question/variable:
 
 1. **LIST**: Contains the question text shown to participants. Each line correspond to a question.
 
-2. **TYPES**: Defines the question type (radio, slider, text, etc.). See See [question types table](#question-types-table) below for the available types.
+2. **TYPES**: Defines the question type (radio, slider, text, etc.). See [question types table](#question-types-table) below for the available types.
 
    The TYPES column uses a colon-separated format: `questiontype[:option1[:option2[:...]]]`. Adding an `:optional` suffix to the type makes the corresponding question non required.
    > See the [corresponding wiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types) for more information
