@@ -27,6 +27,7 @@ A tool for creating questionnaires in oTree using excel sheets. See examples in 
 5. If you keep the `B` name for one of your questionnaires make sure to delete or modify the `include_B.html` template used for example.
 
 <a id="columns-configuration"></a>
+
 ## Columns Configuration
 
 ### Columns with Number of Lines Equal to Number of Variables 
@@ -35,8 +36,26 @@ These columns have one entry per question/variable:
 
 1. **LIST**: Contains the question text shown to participants. Each line correspond to a question.
 
-2. **TYPES**: Defines the question type (radio, slider, text, etc.).
-   > See the [corresponding wiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types)
+2. **TYPES**: Defines the question type (radio, slider, text, etc.). The following types are available :
+
+    >    | Type | Description | Example Use Case |
+    >    |------|-------------|------------------|
+    >    | radio | Standard radio buttons (vertical) | Single-choice questions with few options |
+    >    | hradio | Horizontal radio buttons | Rating scales, Likert scales |
+    >    | radioline | Radio buttons in a line with labels | Numeric scales (0-5, 1-7) |
+    >    | radiotable | Radio buttons in a table | Matrix questions with same options |
+    >    | checkbox | Checkbox for boolean responses | Yes/No questions |
+    >    | select | Dropdown menus | Questions with many options |
+    >    | slider | A slider (integer `slider:int` or float `slider:float`) | Discrete numeric scales / Continuous scales  
+    >    | ltext/longstring | Multi-line text input | Open-ended questions |
+    >    | stext/string | Single-line text input | Short answers |
+    >    | int | Integer input field | Age, count numbers |
+    >    | float | Decimal number input field | Precise numeric values |
+    >    | info | Display information (no input) | Instructions, explanations |
+    >    | nothing | No rendering | Skip slots in questionnaire |
+
+   The TYPES column uses a colon-separated format: `questiontype[:option1[:option2[:...]]]`. Adding an `:optional` suffix to the type makes the corresponding question non required.
+   > See the [corresponding wiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types) for more information
 
 3. **OPTS**: Contains options for each question type (e.g., radio button choices, slider min/max values). Split by colon (**`:`**) to create choice options. Values in the OPTS column can include special prefixes like "suff=" or "pref=" to add suffixes or prefixes to inputs.
 
@@ -65,9 +84,9 @@ These columns have one entry per screen (determined by the BY parameter). Except
 All columns with custom number of lines are optional.
 
 1. **DEPS**: Dependencies between questions. Format is "`dependent_var:controlling_var:value[:inv]`". 
-    - The "`inv`" suffix makes the dependent question invisible when the condition is not met. Without this suffix the dependent variable only becomes optional when the condition is not met.
+    - The "`inv`" optional suffix makes the dependent question invisible when the condition is not met. Without this suffix the dependent variable only becomes optional when the condition is not met.
     - The number of lines in this column is equal to the number of dependencies in the questionnaire (Blocpage).
-    - 
+    - the "`value`" is the value(s) of the `controlling_var` under which the `dependent_var` becomes required [and visible when the `:inv` suffixe is present]. May contain several values separated by comma (example: `1,2`) or start with `!` which means the opposite of the following value(s) (example: "`!1,3`" means that the `dependent_var` becomes required [and visible] when the `controlling_var` is not equal to 1 or 3).
     - See the [corresponding wiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/4.3-question-dependencies) for more information.
 
 2. **RANDOMORDERS**: Lists of variables to randomize. Can reference user-defined lists or variable names themselves.
@@ -86,7 +105,7 @@ The optional user-defined lists can be referenced in RANDOMORDERS to randomize t
 
 These user-defined lists are referenced in the RANDOMORDERS column in the B sheet (blocpage).
 
-To access these lists in code, you can use the format getattr(C, blocpage + "_" + list_name) or C.{blocpage}_{list_name} where blocpage is the sheet name where the list is defined.
+To access these lists in code, you can use the format ```getattr(C, blocpage + "_" + list_name)``` or ```C.{blocpage}_{list_name}``` where blocpage is the sheet name where the list is defined.
 
 ### Other Columns 
 
@@ -99,12 +118,13 @@ To access these lists in code, you can use the format getattr(C, blocpage + "_" 
 #### Columns starting with #:
 These are comment columns and are ignored by the system.
 
-### Notes on Values
+### Notes on Column's Values
 
 - For most columns, if there are fewer values than variables, the last value is used for remaining variables.
 
 - For columns like MIN_TIMES, PREV_BUTTONS, SHOWNUMBERS and RANDOMORDERS_SHOWNUMBERS, a value of 1 means True and 0 means False.
 
+---
 
 ## Testing with Bots
 Add `?participant_label=bot1` (or "`bot2`" to "`bot24`") to the end of the _session-wide-link_ in order to launch a bot that answers randomly. 
