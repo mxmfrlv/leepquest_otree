@@ -36,23 +36,7 @@ These columns have one entry per question/variable:
 
 1. **LIST**: Contains the question text shown to participants. Each line correspond to a question.
 
-2. **TYPES**: Defines the question type (radio, slider, text, etc.). The following types are available :
-
-    >    | Type | Description | Example Use Case |
-    >    |------|-------------|------------------|
-    >    | radio | Standard radio buttons (vertical) | Single-choice questions with few options |
-    >    | hradio | Horizontal radio buttons | Rating scales, Likert scales |
-    >    | radioline | Radio buttons in a line with labels | Numeric scales (0-5, 1-7) |
-    >    | radiotable | Radio buttons in a table | Matrix questions with same options |
-    >    | checkbox | Checkbox for boolean responses | Yes/No questions |
-    >    | select | Dropdown menus | Questions with many options |
-    >    | slider | A slider (integer `slider:int` or float `slider:float`) | Discrete numeric scales / Continuous scales  
-    >    | ltext/longstring | Multi-line text input | Open-ended questions |
-    >    | stext/string | Single-line text input | Short answers |
-    >    | int | Integer input field | Age, count numbers |
-    >    | float | Decimal number input field | Precise numeric values |
-    >    | info | Display information (no input) | Instructions, explanations |
-    >    | nothing | No rendering | Skip slots in questionnaire |
+2. **TYPES**: Defines the question type (radio, slider, text, etc.). See See [question types table](#question-types-table) below for the available types.
 
    The TYPES column uses a colon-separated format: `questiontype[:option1[:option2[:...]]]`. Adding an `:optional` suffix to the type makes the corresponding question non required.
    > See the [corresponding wiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types) for more information
@@ -67,7 +51,7 @@ These columns have one entry per question/variable:
 
 7. **SHOWNUMBERS** (Optional): Whether to show question number before question text (for non randomized questions). 1 means True, 0 means False. Empty lines take last previous value if it is defined, so SHOWNUMBERS may have only one value 1 to number all questions (optionally add 0 on the line where to stop numbering)
 
-### Columns with Number of Lines Equal to Number of Screens/Pages
+#### Columns with Number of Lines Equal to Number of Screens/Pages
 
 These columns have one entry per screen (determined by the BY parameter). Except the required BY column, other columns in this list are optional:
 
@@ -79,7 +63,7 @@ These columns have one entry per screen (determined by the BY parameter). Except
 
 4. **PREV_BUTTONS**: Controls whether to show Previous buttons. 1 means True (show), 0 means False (hide).
 
-### Columns with Custom Number of Lines
+#### Columns with Custom Number of Lines
 
 All columns with custom number of lines are optional.
 
@@ -95,7 +79,7 @@ All columns with custom number of lines are optional.
 
 4. **SAME_ORDERS_IN_ALL_ROUNDS**: Whether to use the same randomization across experimental rounds. 1 means True, 0 means False.
 
-#### User-Defined Lists
+##### User-Defined Lists
 
 The optional user-defined lists can be referenced in RANDOMORDERS to randomize their presentation. For example (in leepquest/leepquest.xlsx):
 
@@ -107,24 +91,45 @@ These user-defined lists are referenced in the RANDOMORDERS column in the B shee
 
 To access these lists in code, you can use the format ```getattr(C, blocpage + "_" + list_name)``` or ```C.{blocpage}_{list_name}``` where blocpage is the sheet name where the list is defined.
 
-### Other Columns 
+#### Other Columns 
 
-#### Only one line:
+##### Only one line:
 
 1. **TITLE**: (Optional) Title displayed at the top of the blocpage.
 
 2. **NO_SCREEN_TIME**: (Optional) If set to True, disables time tracking for screens.
 
-#### Columns starting with #:
+##### Columns starting with #:
 These are comment columns and are ignored by the system.
 
-### Notes on Column's Values
+#### Notes on Column's Values
 
 - For most columns, if there are fewer values than variables, the last value is used for remaining variables.
 
 - For columns like MIN_TIMES, PREV_BUTTONS, SHOWNUMBERS and RANDOMORDERS_SHOWNUMBERS, a value of 1 means True and 0 means False.
 
+<a id="question-types-table"></a>
+
+## Question types table
+
+>    | Type | Description | Example Use Case |
+>    |------|-------------|------------------|
+>    | radio | Standard radio buttons (vertical) | Single-choice questions with few options |
+>    | hradio | Horizontal radio buttons | Rating scales, Likert scales |
+>    | radioline | Radio buttons in a line with labels | Numeric scales (0-5, 1-7) |
+>    | radiotable | Radio buttons in a table | Matrix questions with same options |
+>    | checkbox | Checkbox for boolean responses | Yes/No questions |
+>    | select | Dropdown menus | Questions with many options |
+>    | slider | A slider (integer `slider:int` or float `slider:float`) | Discrete numeric scales / Continuous scales  
+>    | ltext/longstring | Multi-line text input | Open-ended questions |
+>    | stext/string | Single-line text input | Short answers |
+>    | int | Integer input field | Age, count numbers |
+>    | float | Decimal number input field | Precise numeric values |
+>    | info | Display information (no input) | Instructions, explanations |
+>    | nothing | No rendering | Skip slots in questionnaire |
+
 ---
+
 
 ## Testing with Bots
 Add `?participant_label=bot1` (or "`bot2`" to "`bot24`") to the end of the _session-wide-link_ in order to launch a bot that answers randomly. 
