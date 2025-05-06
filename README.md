@@ -36,7 +36,7 @@ These columns have one entry per question/variable:
 1. **LIST**: Contains the question text shown to participants. Each line correspond to a question.
 
 2. **TYPES**: Defines the question type (radio, slider, text, etc.).
-   > Values are lowercase.
+   > See the [corresponding wiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types)
 
 3. **OPTS**: Contains options for each question type (e.g., radio button choices, slider min/max values). Split by colon (**`:`**) to create choice options. Values in the OPTS column can include special prefixes like "suff=" or "pref=" to add suffixes or prefixes to inputs.
 
