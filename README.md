@@ -111,22 +111,21 @@ These are comment columns and are ignored by the system.
 <a id="question-types-table"></a>
 
 ## Question types table
-
->    | Type | Description | Example Use Case |
->    |------|-------------|------------------|
->    | radio | Standard radio buttons (vertical) | Single-choice questions with few options |
->    | hradio | Horizontal radio buttons | Rating scales, Likert scales |
->    | radioline | Radio buttons in a line with labels | Numeric scales (0-5, 1-7) |
->    | radiotable | Radio buttons in a table | Matrix questions with same options |
->    | checkbox | Checkbox for boolean responses | Yes/No questions |
->    | select | Dropdown menus | Questions with many options |
->    | slider | A slider (integer `slider:int` or float `slider:float`) | Discrete numeric scales / Continuous scales  
->    | ltext/longstring | Multi-line text input | Open-ended questions |
->    | stext/string | Single-line text input | Short answers |
->    | int | Integer input field | Age, count numbers |
->    | float | Decimal number input field | Precise numeric values |
->    | info | Display information (no input) | Instructions, explanations |
->    | nothing | No rendering | Skip slots in questionnaire |
+> | Type | Description | Rendered As | Example Use Case |
+> |------|-------------|-------------|------------------|
+> | [radio](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#standard-radio-buttons-radio) | Standard radio buttons (vertical) | Vertical radio button group | Single-choice questions with few options |
+> | [hradio](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#horizontal-radio-buttons-hradio) | Horizontal radio buttons | Horizontal radio button group | Rating scales, Likert scales |
+> | [radioline](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#radio-line-radioline) | Radio buttons in a line with labels | Horizontal scale with labels | Numeric scales (0-5, 1-7) |
+> | [radiotable](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#radio-table-radiotable) | Radio buttons in a table | Table with rows as questions, columns as options | Matrix questions with same options |
+> | [checkbox](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#checkboxes-checkbox) | Checkbox for boolean responses | Checkbox input | Yes/No questions |
+> | [select](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#select-dropdown-select) | Dropdown menus | Dropdown select menu | Questions with many options |
+> | [__slider__](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#slider-question-types) | A slider (integer `slider:int` or float `slider:float`) | Interactive slider with min/max values | Discrete numeric scales / Continuous scales |
+> | [ltext/longstring](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#long-text-ltextlongstring) | Multi-line text input | Textarea for longer responses | Open-ended questions |
+> | [stext/string](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#short-text-stextstring) | Single-line text input | Text input field | Short answers |
+> | [int](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#integer-input-int) | Integer input field | Number input field with validation | Age, count numbers |
+> | [float](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#float-input-float) | Decimal number input field | Number input field with decimal support | Precise numeric values |
+> | [info](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#information-display-info) | Display information (no input) | Text display only | Instructions, explanations |
+> | [nothing](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#no-rendering-nothing) | No rendering | Not visible to participants | Skip slots in questionnaire |
 
 ---
 
