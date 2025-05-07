@@ -26,7 +26,7 @@ A tool for creating questionnaires in oTree using excel sheets. See examples in 
     - also  see the deepwiki pages [for questionnaire definition](https://deepwiki.com/mxmfrlv/leepquest_otree/2-questionnaire-definition) and [for question types](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types).
 5. If you keep the `B` name for one of your questionnaires make sure to delete or modify the `include_B.html` template used for example.
 
-<a id="columns-configuration"></a>
+<a name="columns-configuration"></a>
 
 ## Columns Configuration
 
@@ -41,9 +41,15 @@ These columns have one entry per question/variable:
    The TYPES column uses a colon-separated format: `questiontype[:option1[:option2[:...]]]`. Adding an `:optional` suffix to the type makes the corresponding question non required.
    > See the [corresponding wiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types) for more information
 
-3. **OPTS**: Contains options for each question type (e.g., radio button choices, slider min/max values). Split by colon (**`:`**) to create choice options. Values in the OPTS column can include special prefixes like "suff=" or "pref=" to add suffixes or prefixes to inputs.
+3. **OPTS**: Contains options for each question type (e.g., radio button choices, slider min/max values). Split by colon (**`:`**) to create choice options. 
+    - Values in the OPTS column can include special prefixes like "suff=" or "pref=" to add suffixes or prefixes to Integer, Float and String inputs (add them at the end of options' list, start by `:` if the OPTS' value is initially empty). 
+    - See [OPTS Format and variable values table](#opts-format-and-variable-values-table) below for OPTS format information and examples.
 
 4. **VARS**: Variable names used to store responses in the database. They become field names in the Player model.
+    - Variable names should be unique for all Blocpages (two questionnaires may not have same variable name).
+    - See [OPTS Format and variable values table](#opts-format-and-variable-values-table) below for information on variables' values for each type.
+    - For `radio`, `hradio`, `radiotable`, `radioline`, `checkbox` and `select` types an additional `{variable_name}_strval` variable registers the string representation of the answer.
+    - For all types except `info` and `nothing`, an additional `{variable_name}_time` variable registers the time spent on the question.
 
 5. **QUESTTAG**: (Optional) HTML tag to use for question text (default is `h5`).
 
@@ -108,25 +114,43 @@ These are comment columns and are ignored by the system.
 
 - For columns like MIN_TIMES, PREV_BUTTONS, SHOWNUMBERS and RANDOMORDERS_SHOWNUMBERS, a value of 1 means True and 0 means False.
 
-<a id="question-types-table"></a>
+<a name="question-types-table"></a>
 
-## Question types table
+## Question Types Table
 > | Type | Description | Rendered As | Example Use Case |
 > |------|-------------|-------------|------------------|
 > | [radio](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#standard-radio-buttons-radio) | Standard radio buttons (vertical) | Vertical radio button group | Single-choice questions with few options |
 > | [hradio](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#horizontal-radio-buttons-hradio) | Horizontal radio buttons | Horizontal radio button group | Rating scales, Likert scales |
 > | [radioline](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#radio-line-radioline) | Radio buttons in a line with labels | Horizontal scale with labels | Numeric scales (0-5, 1-7) |
 > | [radiotable](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#radio-table-radiotable) | Radio buttons in a table | Table with rows as questions, columns as options | Matrix questions with same options |
-> | [checkbox](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#checkboxes-checkbox) | Checkbox for boolean responses | Checkbox input | Yes/No questions |
 > | [select](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#select-dropdown-select) | Dropdown menus | Dropdown select menu | Questions with many options |
-> | [__slider__](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#slider-question-types) | A slider (integer `slider:int` or float `slider:float`) | Interactive slider with min/max values | Discrete numeric scales / Continuous scales |
-> | [ltext/longstring](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#long-text-ltextlongstring) | Multi-line text input | Textarea for longer responses | Open-ended questions |
-> | [stext/string](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#short-text-stextstring) | Single-line text input | Text input field | Short answers |
+> | [checkbox](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#checkboxes-checkbox) | Checkbox for boolean responses | Checkbox input | Yes/No questions |
 > | [int](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#integer-input-int) | Integer input field | Number input field with validation | Age, count numbers |
 > | [float](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#float-input-float) | Decimal number input field | Number input field with decimal support | Precise numeric values |
+> | [__slider__](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#slider-question-types) | A slider (integer `slider:int` or float `slider:float`) | Interactive slider with min/max values | Discrete numeric scales / Continuous scales |
+> | [stext/string](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#short-text-stextstring) | Single-line text input | Text input field | Short answers |
+> | [ltext/longstring](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#long-text-ltextlongstring) | Multi-line text input | Textarea for longer responses | Open-ended questions |
 > | [info](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#information-display-info) | Display information (no input) | Text display only | Instructions, explanations |
 > | [nothing](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#no-rendering-nothing) | No rendering | Not visible to participants | Skip slots in questionnaire |
 
+<a name='opts-format-and-variable-values-table'></a>
+### OPTS Format and Variable Values Table
+
+> | TYPE | OPTS Format | Example OPTS | Variable Value |
+> |------|-------------|--------------|----------------|
+> | `radio` | List of options | No diploma:Primary education:High School Diploma | __Integer__: 1-n (position of selected option) __String__: Selected option text (in varname_strval) |
+> | `hradio` | List of options | Man:Woman:I prefer not to answer | __Integer__: 1-n (position of selected option) __String__: Selected option text (in varname_strval) |
+> | `radioline` | Range labels with optional numbers | (very dissatisfied)::::(very satisfied) | __Integer__: Value from range specified in TYPE (e.g., 1-5) __String__: Selected option text (in varname_strval) |
+> | `radiotable` (`radiotable:first`, `radiotable`, `radiotable:last`) | List of column headers | Strongly disagree:Somewhat disagree:Somewhat agree:Strongly agree | __Integer__: 1-n (position of selected column) __String__: Selected column text (in varname_strval) |
+> | `select` | List of options | France:Abroad | __Integer__: 1-n (position of selected option) __String__: Selected option text (in varname_strval) |
+> | `checkbox` | YES:NO or custom labels | YES:NO | __Boolean__: True (1) if checked, False (0) if unchecked __String__: First or second option text based on state (in varname_strval) |
+> | `int` | min:max:options | :0:suff=person(s) | __Integer__: Entered integer value |
+> | `float` | min:max:step:options | 0:100:0.1:% | __Float__: Entered decimal value |
+> | `slider` (`slider:int`, `slider:float`) | min:max:step:options | 0:100:0.1:inv:%:None at all/All income | __Integer__/__Float__: Numeric value selected on slider (depends on TYPE) |
+> | `stext` (or `string`) | (No specific format) | Empty or validation hints | String: Entered text |
+> | `ltext` (or `longstring`) | (No specific format) | Empty or validation hints | String: Entered text (longer) |
+> | `info` | (No input required) | Empty | No value stored (field is just for display) |
+> | `nothing` | (Not displayed) | Empty | No variable created |
 ---
 
 
@@ -146,6 +170,12 @@ To create your own template:
 3. The system will automatically detect and include your template when the corresponding questionnaire block is displayed.
 
 ### Integration into complex projects
+- Group and Subsession variables should be defined inside the corresponding `Group` and `Subsession` classes [as usual in an oTree project](https://otree.readthedocs.io/en/latest/models.html).
+    ```python
+    class Group(BaseGroup):
+         # test_group = models.IntegerField(initial = 1)
+        pass
+    ``` 
  - Additional Player variables (that aren't defined in the Excel questionnaire definition file) should be defined in the [`PlayerVariables` class](https://deepwiki.com/mxmfrlv/leepquest_otree/3.1-player-variables):
     ```python
     class PlayerVariables:
@@ -153,13 +183,9 @@ To create your own template:
         # test = models.IntegerField(initial = 1)
         pass
     ```
-- Group and Subsession variables should be defined inside the corresponding `Group` and `Subsession` classes [as usual in an oTree project](https://otree.readthedocs.io/en/latest/models.html).
-    ```python
-    class Group(BaseGroup):
-         # test_group = models.IntegerField(initial = 1)
-        pass
-    ``` 
- - Use [special `bp` functions](https://deepwiki.com/mxmfrlv/leepquest_otree/7.1-server-api#hook-functions) defined in `__init__.py` to dynamically manage blocpages (questionnaires) and questions. In most functions, you may use the `cbp` ('current blocpage') parameter to reference the sheet name in the Excel definition file, or (in `hide_some_bp_quests` and `skip_some_bp_quests` functions) the `var` parameter to reference directly the defined variable.
+ - Use [special `bp_` functions](https://deepwiki.com/mxmfrlv/leepquest_otree/7.1-server-api#hook-functions) defined in `__init__.py` to dynamically manage blocpages (questionnaires) and questions. In most functions, you may use the `cbp` ('current blocpage') parameter to reference the sheet name in the Excel definition file, or (in `hide_some_bp_quests` and `skip_some_bp_quests` functions) the `var` parameter to reference directly the defined variable.
+
+    > See the deepwiki [Extensions table](https://deepwiki.com/mxmfrlv/leepquest_otree/1.1-system-architecture#8-extension-points) for a summary.
 
 
 
