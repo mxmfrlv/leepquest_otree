@@ -39,7 +39,7 @@ These columns have one entry per question/variable:
 2. **TYPES**: Defines the question type (radio, slider, text, etc.). See [question types table](#question-types-table) below for the available types.
 
    The TYPES column uses a colon-separated format: `questiontype[:option1[:option2[:...]]]`. Adding an `:optional` suffix to the type makes the corresponding question non required.
-   > See the [corresponding wiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types) for more information
+   > See the [corresponding deepwiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types) for more information
 
 3. **OPTS**: Contains options for each question type (e.g., radio button choices, slider min/max values). Split by colon (**`:`**) to create choice options. 
     - Values in the OPTS column can include special prefixes like "suff=" or "pref=" to add suffixes or prefixes to Integer, Float and String inputs (add them at the end of the options' list, start by `:` if the OPTS' value is initially empty). 
@@ -69,7 +69,7 @@ These columns have one entry per screen (determined by the BY parameter). Except
 
 4. **PREV_BUTTONS**: Controls whether to show Previous buttons. 1 means True (show), 0 means False (hide).
 
-> Note that and additional `{blocpage}_screen{number}_time` variable is created for each screen in order to tracks the time (in seconds) a user spends on each screen of a Blocpage (unless [NO_SCREEN_TIME column](#no-screen-time-column) is added with a value is set to 1)
+> Note that and additional `{blocpage}_screen{number}_time` variable is created for each screen in order to tracks the time (in seconds) a user spends on each screen of a Blocpage (unless [NO_SCREEN_TIME](#no-screen-time-column) column is added with a value is set to 1)
 
 #### Columns with Custom Number of Lines
 
@@ -79,7 +79,7 @@ All columns with custom number of lines are optional.
     - The "`inv`" optional suffix makes the dependent question invisible when the condition is not met. Without this suffix the dependent variable only becomes optional when the condition is not met.
     - The number of lines in this column is equal to the number of dependencies in the questionnaire (Blocpage).
     - the "`value`" is the value(s) of the `controlling_var` under which the `dependent_var` becomes required [and visible when the `:inv` suffixe is present]. May contain several values separated by comma (example: `1,2`) or start with `!` which means the opposite of the following value(s) (example: "`!1,3`" means that the `dependent_var` becomes required [and visible] when the `controlling_var` is not equal to 1 or 3).
-    > See the [corresponding wiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/4.3-question-dependencies) for more information.
+    > See the [corresponding deepwiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/4.3-question-dependencies) for more information.
 
 2. **RANDOMORDERS**: Lists of variables to randomize. Can reference user-defined lists or variable names themselves.
 

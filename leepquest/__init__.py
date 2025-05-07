@@ -68,7 +68,7 @@ def bp_js_vars(player:Player,cbp:str) -> Dict[str,Any]:
 def bp_before_next_page(player:Player,timeout_happened:bool, cbp:str, next_cbp:str) -> None:
     pass
 
-# bp_live_event is used to capture liveSend events, the data sent and returned should be in string format and prefixed by "custom|"
+# bp_live_event is used to capture liveSend events, the data sent and returned should be in string format and prefixed by "custom|". On client side, use customLiveRecv function to treat the received data.
 def bp_live_event(player:Player,cbp:str,data:str) -> Union[Dict[int,Any],None]:
     return None
 
