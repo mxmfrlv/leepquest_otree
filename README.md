@@ -71,7 +71,7 @@ All columns with custom number of lines are optional.
     - The "`inv`" optional suffix makes the dependent question invisible when the condition is not met. Without this suffix the dependent variable only becomes optional when the condition is not met.
     - The number of lines in this column is equal to the number of dependencies in the questionnaire (Blocpage).
     - the "`value`" is the value(s) of the `controlling_var` under which the `dependent_var` becomes required [and visible when the `:inv` suffixe is present]. May contain several values separated by comma (example: `1,2`) or start with `!` which means the opposite of the following value(s) (example: "`!1,3`" means that the `dependent_var` becomes required [and visible] when the `controlling_var` is not equal to 1 or 3).
-    - See the [corresponding wiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/4.3-question-dependencies) for more information.
+    > See the [corresponding wiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/4.3-question-dependencies) for more information.
 
 2. **RANDOMORDERS**: Lists of variables to randomize. Can reference user-defined lists or variable names themselves.
 
