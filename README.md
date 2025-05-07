@@ -42,14 +42,14 @@ These columns have one entry per question/variable:
    > See the [corresponding wiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types) for more information
 
 3. **OPTS**: Contains options for each question type (e.g., radio button choices, slider min/max values). Split by colon (**`:`**) to create choice options. 
-    - Values in the OPTS column can include special prefixes like "suff=" or "pref=" to add suffixes or prefixes to Integer, Float and String inputs (add them at the end of options' list, start by `:` if the OPTS' value is initially empty). 
+    - Values in the OPTS column can include special prefixes like "suff=" or "pref=" to add suffixes or prefixes to Integer, Float and String inputs (add them at the end of the options' list, start by `:` if the OPTS' value is initially empty). 
     - See [OPTS Format and variable values table](#opts-format-and-variable-values-table) below for OPTS format information and examples.
 
 4. **VARS**: Variable names used to store responses in the database. They become field names in the Player model.
     - Variable names should be unique for all Blocpages (two questionnaires may not have same variable name).
     - See [OPTS Format and variable values table](#opts-format-and-variable-values-table) below for information on variables' values for each type.
     - For `radio`, `hradio`, `radiotable`, `radioline`, `checkbox` and `select` types an additional `{variable_name}_strval` variable registers the string representation of the answer.
-    - For all types except `info` and `nothing`, an additional `{variable_name}_time` variable registers the time spent on the question.
+    - For all types except `info` and `nothing`, an additional `{variable_name}_time` variable registers the time (in seconds) spent on the question.
 
 5. **QUESTTAG**: (Optional) HTML tag to use for question text (default is `h5`).
 
@@ -68,6 +68,8 @@ These columns have one entry per screen (determined by the BY parameter). Except
 3. **MIN_TIMES**: Time in seconds to wait before showing the Next button. Values > 0 enforce waiting time. A value of 0 means no waiting time. Negative values (e.g., -2) mean absolute value minus 1 second (e.g., 1 second) with no auto-scrolling to the top of the page.
 
 4. **PREV_BUTTONS**: Controls whether to show Previous buttons. 1 means True (show), 0 means False (hide).
+
+> Note that and additional `{blocpage}_screen{number}_time` variable is created for each screen in order to tracks the time (in seconds) a user spends on each screen of a Blocpage (unless [NO_SCREEN_TIME column](#no-screen-time-column) is added with a value is set to 1)
 
 #### Columns with Custom Number of Lines
 
@@ -99,11 +101,17 @@ To access these lists in code, you can use the format ```getattr(C, blocpage + "
 
 #### Other Columns 
 
-##### Only one line:
+##### Only one line (valid for the whole Blocpage):
 
 1. **TITLE**: (Optional) Title displayed at the top of the blocpage.
 
+<a name="no-screen-time-column"></a>
+
 2. **NO_SCREEN_TIME**: (Optional) If set to True, disables time tracking for screens.
+
+> Note that the following additional variables are created for each Blocpage:
+>  - `{blocpage}_loadtime` to record how long it takes for a Blocpage to load,
+> - `{blocpage_name}_nloads` to count how many times a Blocpage has been loaded/reloaded by the user (incremented each time the page is loaded).
 
 ##### Columns starting with #:
 These are comment columns and are ignored by the system.
@@ -112,7 +120,7 @@ These are comment columns and are ignored by the system.
 
 - For most columns, if there are fewer values than variables, the last value is used for remaining variables.
 
-- For columns like MIN_TIMES, PREV_BUTTONS, SHOWNUMBERS and RANDOMORDERS_SHOWNUMBERS, a value of 1 means True and 0 means False.
+- For columns PREV_BUTTONS, SHOWNUMBERS and RANDOMORDERS_SHOWNUMBERS, HASTAGS, NO_SCREEN_TIME a value of 1 means True and 0 means False.
 
 <a name="question-types-table"></a>
 
@@ -185,7 +193,7 @@ To create your own template:
     ```
  - Use [special `bp_` functions](https://deepwiki.com/mxmfrlv/leepquest_otree/7.1-server-api#hook-functions) defined in `__init__.py` to dynamically manage blocpages (questionnaires) and questions. In most functions, you may use the `cbp` ('current blocpage') parameter to reference the sheet name in the Excel definition file, or (in `hide_some_bp_quests` and `skip_some_bp_quests` functions) the `var` parameter to reference directly the defined variable.
 
-    > See the deepwiki [Extensions table](https://deepwiki.com/mxmfrlv/leepquest_otree/1.1-system-architecture#8-extension-points) for a summary.
+    > See the deepwiki [Extension Function table](https://deepwiki.com/mxmfrlv/leepquest_otree/1.1-system-architecture#8-extension-points) for a summary.
 
 
 
