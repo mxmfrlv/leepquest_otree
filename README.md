@@ -168,6 +168,9 @@ Add `?participant_label=bot1` (or "`bot2`" to "`bot24`") to the end of the _sess
 Note that you may increase the maximum number of bots or add more labels to `bot_labels` in `settings.py` (see [bot configuration deepwiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/5-testing-with-bots#bot-configuration)).
 
 ## Advanced usage
+
+<a name=templating></a>
+
 ### Templating
 To create your own template:
 
@@ -176,6 +179,33 @@ To create your own template:
 2. Add your HTML content, using div IDs like `initial_presentation_1`, `initial_presentation_2`, etc. for multi-screen content. For multi-screen questionnaires, only the relevant part of the template is shown based on the current screen number. As the user navigates through screens (using Next/Previous buttons), different parts of the include template become visible.
 
 3. The system will automatically detect and include your template when the corresponding questionnaire block is displayed.
+
+### Custom validation and custom actions on user's input
+Inside the `script` tag of the [included template](#templating) it is possible to add custom validation by attributing a function to the `additional_validate` variable in the following way :
+```javascript
+// Example of custom validation
+additional_validate = function(varname){
+    if(varname === "email") {
+        // Custom email validation
+        var value = document.forms[0][varname].value;
+        return /^.+@.+\..+$/.test(value);
+    }
+    return true;
+};
+```` 
+By default, the `additional_validate` variable holds a function which always returns _true_. If this function returns _false_, the field corresponding to the `varname` will be marked as invalid and the user won't be able to proceed to the next screen.
+
+In order to add a custom reaction on user's input it is possible to attribute a function to the `additional_onchange` variable in the following way :
+```javascript
+// Example of a custom reaction on user's input of a specific field
+additional_onchange = function(varname){
+    // Custom logic when a field changes
+    if(varname === "specific_field") {
+        // Do something specific for this field
+    }
+};
+```` 
+This function is called whenever a form field's value changes and  receives the name of the changed field as its parameter.
 
 ### Integration into complex projects
 - Group and Subsession variables should be defined inside the corresponding `Group` and `Subsession` classes [as usual in an oTree project](https://otree.readthedocs.io/en/latest/models.html).
