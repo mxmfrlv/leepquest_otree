@@ -191,9 +191,9 @@ To create your own template:
         # test = models.IntegerField(initial = 1)
         pass
     ```
- - Use [special `bp_` functions](https://deepwiki.com/mxmfrlv/leepquest_otree/7.1-server-api#hook-functions) defined in `__init__.py` to dynamically manage blocpages (questionnaires) and questions. In most functions, you may use the `cbp` ('current blocpage') parameter to reference the sheet name in the Excel definition file, or (in `hide_some_bp_quests` and `skip_some_bp_quests` functions) the `var` parameter to reference directly the defined variable.
+ - Use [special `bp_` functions](./blob/main/leepquest/__init__.py#L36-L74) defined in [`__init__.py`](./blob/main/leepquest/__init__.py#L36-L74) to dynamically manage blocpages (questionnaires) and questions. In most functions, you may use the `cbp` ('current blocpage') parameter to reference the sheet name in the Excel definition file, or (in `hide_some_bp_quests` and `skip_some_bp_quests` functions) the `var` parameter to reference directly the defined variable.
 
-    > See the deepwiki [Extension Function table](https://deepwiki.com/mxmfrlv/leepquest_otree/1.1-system-architecture#8-extension-points) for a summary.
+    > See the deepwiki [Extension Function table](https://deepwiki.com/mxmfrlv/leepquest_otree/1.1-system-architecture#8-extension-points) for a brief summary.
 
 
 
