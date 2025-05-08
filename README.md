@@ -1,6 +1,30 @@
 # Questionnaire tool for otree by Paris Experimental Economics Lab ([LEEP](https://www.parisschoolofeconomics.eu/en/research/research-groups/economics-of-human-behavior/parisian-experimental-economics-laboratory/))
 
-A tool for creating questionnaires in oTree using excel sheets. See examples in leepquest/leepquest.xlsx
+A tool for creating questionnaires in oTree using excel sheets. 
+
+(See examples in leepquest/leepquest.xlsx)
+
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Usage](#usage)
+- [Columns Configuration](#columns-configuration)
+  - [Columns with Number of Lines Equal to Number of Variables](#columns-with-number-of-lines-equal-to-number-of-variables)
+  - [Columns with Number of Lines Equal to Number of Screens/Pages](#columns-with-number-of-lines-equal-to-number-of-screenspages)
+  - [Columns with Custom Number of Lines](#columns-with-custom-number-of-lines)
+    <!--- [User-Defined Lists](#user-defined-lists) -->
+  - [Other Columns](#other-columns)
+    - [Only one line (valid for the whole Blocpage)](#only-one-line-valid-for-the-whole-blocpage)
+    - [Columns starting with #](#columns-starting-with-)
+  - [Notes on Column's Values](#notes-on-columns-values)
+- [Question Types Table](#question-types-table)
+  - [OPTS format for each type and registered value](#opts-format-for-each-type-and-registered-value)
+- [Testing with Bots](#testing-with-bots)
+- [Advanced usage](#advanced-usage)
+  - [Templating](#templating)
+  - [Custom validation and custom actions on user's input](#custom-validation-and-custom-actions-on-users-input)
+  - [Integration into complex projects](#integration-into-complex-projects)
+- [More information](#more-information)
 
 ## Requirements
 [oTree](http://otree.org/) v5+, [pandas](https://pypi.org/project/pandas/), [openpyxl](https://pypi.org/project/openpyxl/) (`pip install -U otree pandas openpyxl`).
@@ -15,7 +39,7 @@ A tool for creating questionnaires in oTree using excel sheets. See examples in 
 
     ) and add your app to SESSION_CONFIGS in `settings.py`
         
-    - or use `add_app.py` script instead of `create_app` (`python add_app.py your_app_name`) which will also add your app to the SESSION_CONFIGS in settings.py if it does not already exist.
+    > or use `add_app.py` script instead of `create_app` (`python add_app.py your_app_name`) which will also add your app to the SESSION_CONFIGS in settings.py if it does not already exist.
     
      _If you are sure you'll only need one app (questionnaire) inside your project you may use the original `leepquest` folder as you app's folder. Note that the `create_app` (or `add_app.py`) may not work as expected once the original `leepquest` folder is modified._
 
@@ -43,11 +67,11 @@ These columns have one entry per question/variable:
 
 3. **OPTS**: Contains options for each question type (e.g., radio button choices, slider min/max values). Split by colon (**`:`**) to create choice options. 
     - Values in the OPTS column can include special prefixes like "suff=" or "pref=" to add suffixes or prefixes to Integer, Float and String inputs (add them at the end of the options' list, start by `:` if the OPTS' value is initially empty). 
-    - See [OPTS Format and variable values table](#opts-format-and-variable-values-table) below for OPTS format information and examples.
+    - See [OPTS format for each type and registered value](#opts-format-for-each-type-and-registered-value) below for OPTS format information and examples.
 
 4. **VARS**: Variable names used to store responses in the database. They become field names in the Player model.
     - Variable names should be unique for all Blocpages (two questionnaires may not have same variable name).
-    - See [OPTS Format and variable values table](#opts-format-and-variable-values-table) below for information on variables' values for each type.
+    - See [OPTS format for each type and registered value](#opts-format-for-each-type-and-registered-value) below for information on variables' values for each type.
     - For `radio`, `hradio`, `radiotable`, `radioline`, `checkbox` and `select` types an additional `{variable_name}_strval` variable registers the string representation of the answer.
     - For all types except `info` and `nothing`, an additional `{variable_name}_time` variable registers the time (in seconds) spent on the question.
 
@@ -129,7 +153,7 @@ These are comment columns and are ignored by the system.
 > |------|-------------|-------------|------------------|
 > | [radio](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#standard-radio-buttons-radio) | Standard radio buttons (vertical) | Vertical radio button group | Single-choice questions with few options |
 > | [hradio](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#horizontal-radio-buttons-hradio) | Horizontal radio buttons | Horizontal radio button group | Rating scales, Likert scales |
-> | [radioline](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#radio-line-radioline) | Radio buttons in a line with labels | Horizontal scale with labels | Numeric scales (0-5, 1-7) |
+> | [radioline](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#radio-line-radioline) | Radio buttons in an optionally numbered line with or without labels | Horizontal scale with optional labels | Numeric scales (1-5, 0-7) |
 > | [radiotable](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#radio-table-radiotable) | Radio buttons in a table | Table with rows as questions, columns as options | Matrix questions with same options |
 > | [select](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#select-dropdown-select) | Dropdown menus | Dropdown select menu | Questions with many options |
 > | [checkbox](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#checkboxes-checkbox) | Checkbox for boolean responses | Checkbox input | Yes/No questions |
@@ -141,14 +165,14 @@ These are comment columns and are ignored by the system.
 > | [info](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#information-display-info) | Display information (no input) | Text display only | Instructions, explanations |
 > | [nothing](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#no-rendering-nothing) | No rendering | Not visible to participants | Skip slots in questionnaire |
 
-<a name='opts-format-and-variable-values-table'></a>
-### OPTS Format and Variable Values Table
+<a name='opts-format-for-each-type-and-registered-value'></a>
+### OPTS format for each type and registered value
 
 > | TYPE | OPTS Format | Example OPTS | Variable Value |
 > |------|-------------|--------------|----------------|
 > | `radio` | List of options | No diploma:Primary education:High School Diploma | __Integer__: 1-n (position of selected option) __String__: Selected option text (in varname_strval) |
 > | `hradio` | List of options | Man:Woman:I prefer not to answer | __Integer__: 1-n (position of selected option) __String__: Selected option text (in varname_strval) |
-> | `radioline` | Range labels with optional numbers | (very dissatisfied)::::(very satisfied) | __Integer__: Value from range specified in TYPE (e.g., 1-5) __String__: Selected option text (in varname_strval) |
+> | `radioline` (`radioline[:min-max][:nonumbers]`) |  Labels to numbers or empty values to show only numbers (or only radio buttons if `:nonumbers` suffixe is added to the type) | (very dissatisfied)::::(very satisfied) | __Integer__: Value from range specified in TYPE (e.g., 0-5 for `radioline:0-5` or 1-n by default) __String__: Selected option text (in varname_strval) |
 > | `radiotable` (`radiotable:first`, `radiotable`, `radiotable:last`) | List of column headers | Strongly disagree:Somewhat disagree:Somewhat agree:Strongly agree | __Integer__: 1-n (position of selected column) __String__: Selected column text (in varname_strval) |
 > | `select` | List of options | France:Abroad | __Integer__: 1-n (position of selected option) __String__: Selected option text (in varname_strval) |
 > | `checkbox` | YES:NO or custom labels | YES:NO | __Boolean__: True (1) if checked, False (0) if unchecked __String__: First or second option text based on state (in varname_strval) |
