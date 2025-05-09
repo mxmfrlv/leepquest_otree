@@ -2,6 +2,8 @@
 
 A tool for creating questionnaires in oTree using excel sheets. 
 
+Integrates various question types, adapted to different devices (computers or smartphones) with a responsive design.
+
 (See examples in leepquest/leepquest.xlsx)
 
 ## Table of Contents
@@ -73,6 +75,7 @@ These columns have one entry per question/variable:
     - Variable names should be unique for all Blocpages (two questionnaires may not have same variable name).
     - See [OPTS format for each type and registered value](#opts-format-for-each-type-and-registered-value) below for information on variables' values for each type.
     - For `radio`, `hradio`, `radiotable`, `radioline`, `checkbox` and `select` types an additional `{variable_name}_strval` variable registers the string representation of the answer.
+    <a name="question-time-tracking"></a>
     - For all types except `info` and `nothing`, an additional `{variable_name}_time` variable registers the time (in seconds) spent on the question.
 
 5. **QUESTTAG**: (Optional) HTML tag to use for question text (default is `h5`).
@@ -92,7 +95,7 @@ These columns have one entry per screen (determined by the BY parameter). Except
 3. **MIN_TIMES**: Time in seconds to wait before showing the Next button. Values > 0 enforce waiting time. A value of 0 means no waiting time. Negative values (e.g., -2) mean absolute value minus 1 second (e.g., 1 second) with no auto-scrolling to the top of the page.
 
 4. **PREV_BUTTONS**: Controls whether to show Previous buttons. 1 means True (show), 0 means False (hide).
-
+<a name="screen-time-tracking"></a>
 > Note that and additional `{blocpage}_screen{number}_time` variable is created for each screen in order to tracks the time (in seconds) a user spends on each screen of a Blocpage (unless [NO_SCREEN_TIME](#no-screen-time-column) column is added with a value is set to 1)
 
 #### Columns with Custom Number of Lines
@@ -232,6 +235,9 @@ additional_onchange = function(varname){
 This function is called whenever a form field's value changes and  receives the name of the changed field as its parameter.
 
 ### Integration into complex projects
+
+A questionnaire created with the help of this tool can be seamlessly integrated in an otree project by adding the corresponding app name in the `app_sequence` of a session configuration in `SESSION_CONFIGS`. However, for [several reasons](https://deepwiki.com/search/list-me-the-reasons-why-it-wou_22aa1731-667f-4307-bb7f-35e768051f76) (like the need to use one of [included question types](#question-types-table) or integrated [time tracking for questions](#question-time-tracking) and [screens](#screen-time-tracking)) it could be interesting to use the tool itself to create complex experimental designs other than questionnaires. Note that:
+
 - Group and Subsession variables should be defined inside the corresponding `Group` and `Subsession` classes [as usual in an oTree project](https://otree.readthedocs.io/en/latest/models.html).
     ```python
     class Group(BaseGroup):
