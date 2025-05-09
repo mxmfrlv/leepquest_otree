@@ -26,7 +26,7 @@ Integrates various question types, adapted to different devices (computers or sm
   - [Templating](#templating)
   - [Custom validation and custom actions on user's input](#custom-validation-and-custom-actions-on-users-input)
   - [Integration into complex projects](#integration-into-complex-projects)
-  - [Custom questionnaire definition without excel file](#custom-questionnaire-definition-without-excel-file)
+  - [Questionnaire definition without excel file](#questionnaire-definition-without-excel-file)
 - [More information](#more-information)
 
 ## Requirements
@@ -269,7 +269,7 @@ A questionnaire created with the help of this tool can be seamlessly integrated 
     > | [bp_before_next_page](https://deepwiki.com/mxmfrlv/leepquest_otree/7.1-server-api#lifecycle-hooks). | Execute code before moving to next page | Does nothing | `player`, `timeout_happened`, `cbp`, `next_cbp` |  `next_cbp` is the next blocpage's name. |
     > | [bp_live_event](https://deepwiki.com/mxmfrlv/leepquest_otree/7.1-server-api#live-interaction) | Handle custom live events | Returns None | `player`, `cbp`, `data` | The data sent and returned should be in string format and prefixed by "custom\|". On client side, use liveSend(\`custom\|${data}\`) to send the data and [`customLiveRecv`](https://deepwiki.com/mxmfrlv/leepquest_otree/7.2-client-api#3-object-object) function to treat the received data. See [example of usage](https://deepwiki.com/mxmfrlv/leepquest_otree/7.1-server-api#handling-custom-live-events) |
 
-### Custom questionnaire definition without excel file
+### Questionnaire definition without excel file
 
 This tool normally uses an Excel file to define questionnaires, but it also provides an alternative way to define questionnaires directly in code using a `CUSTOM_LQ_C` class when you don't want to use an Excel file. To use a `CUSTOM_LQ_C` class in your `__init__.py` file, you need to:
 
