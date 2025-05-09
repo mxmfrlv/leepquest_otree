@@ -49,7 +49,7 @@ Integrates various question types, adapted to different devices (computers or sm
     - each sheet in this Excel file represents a questionnaire (which technical name is `Blocpage`),
     - inside each sheet, the questionnaire is configured in columns. See [Columns configuration](#columns-configuration) paragraph below,
     - use the A and B sheets in the `leepquest/leepquest.xlsx` file as example,
-    - also  see the deepwiki pages [for questionnaire definition](https://deepwiki.com/mxmfrlv/leepquest_otree/2-questionnaire-definition) and [for question types](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types).
+    -    > for more information use the deepwiki pages [for questionnaire definition](https://deepwiki.com/mxmfrlv/leepquest_otree/2-questionnaire-definition) and [for question types](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types).
 5. If you keep the `B` name for one of your questionnaires make sure to delete or modify the `include_B.html` template used for example.
 
 <a name="columns-configuration"></a>
