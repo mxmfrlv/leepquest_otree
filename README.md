@@ -26,6 +26,7 @@ Integrates various question types, adapted to different devices (computers or sm
   - [Templating](#templating)
   - [Custom validation and custom actions on user's input](#custom-validation-and-custom-actions-on-users-input)
   - [Integration into complex projects](#integration-into-complex-projects)
+  - [Custom questionnaire definition without excel file](#custom-questionnaire-definition-without-excel-file)
 - [More information](#more-information)
 
 ## Requirements
@@ -268,6 +269,58 @@ A questionnaire created with the help of this tool can be seamlessly integrated 
     > | [bp_before_next_page](https://deepwiki.com/mxmfrlv/leepquest_otree/7.1-server-api#lifecycle-hooks). | Execute code before moving to next page | Does nothing | `player`, `timeout_happened`, `cbp`, `next_cbp` |  `next_cbp` is the next blocpage's name. |
     > | [bp_live_event](https://deepwiki.com/mxmfrlv/leepquest_otree/7.1-server-api#live-interaction) | Handle custom live events | Returns None | `player`, `cbp`, `data` | The data sent and returned should be in string format and prefixed by "custom\|". On client side, use liveSend(\`custom\|${data}\`) to send the data and [`customLiveRecv`](https://deepwiki.com/mxmfrlv/leepquest_otree/7.2-client-api#3-object-object) function to treat the received data. See [example of usage](https://deepwiki.com/mxmfrlv/leepquest_otree/7.1-server-api#handling-custom-live-events) |
 
+### Custom questionnaire definition without excel file
+
+This tool normally uses an Excel file to define questionnaires, but it also provides an alternative way to define questionnaires directly in code using a `CUSTOM_LQ_C` class when you don't want to use an Excel file. To use a `CUSTOM_LQ_C` class in your `__init__.py` file, you need to:
+
+1. Define the `CUSTOM_LQ_C` class in your `__init__.py` file **before** the `PlayerVariables` class.
+2. Structure the class to include all the necessary attributes that would normally come from the Excel file. Add the following attributes:
+   - `BLOCPAGES`: List of blocpage names (sections of your questionnaire)
+   - `TRACK_BLOCPAGE_LOADS`: Usually the same as `BLOCPAGES`, used for tracking page loads
+   - For each blocpage, define the attributes corresponding to the [columns in excel sheets](#columns-configuration), adding to each of them a prefix of the blocpage's name followed by an underscore.  
+     E.g., for the `"X"` blocpage, you could define:
+     1. `X_LIST`: The question texts
+     2. `X_TYPES`: The question types (`radio`, `slider`, `text`, etc.)
+     3. `X_OPTS`: The options for each question
+     4. `X_VARS`: The variable names to store responses
+     5. `X_BY`: How many questions to show per screen
+     6. `X_TITLE`: The title of the blocpage
+3. Make sure the Excel file (file named `leepquest.xlsx` or `[APP_NAME].xlsx`) doesn't exist in your app directory. The system will only use your `CUSTOM_LQ_C` class if it can't find the Excel file.
+
+ Example of CUSTOM_LQ_C implementation:
+
+```python
+# Define CUSTOM_LQ_C class  
+class CUSTOM_LQ_C:  
+    BLOCPAGES = ["A", "B"]  
+    TRACK_BLOCPAGE_LOADS = ["A", "B"]  
+
+    # Blocpage A: Demographics  
+    A_LIST = ["How old are you?", "What is your gender?", "What is your country of birth?"]  
+    A_TYPES = [["slider", "int"], ["hradio"], ["select"]]  
+    A_OPTS = [["99", "18", "1", "18"], ["Man", "Woman", "Other"], ["France", "USA", "Other"]]  
+    A_VARS = ["age", "gender", "country"]  
+    A_BY = 3  
+    A_BY_INTRO = ["Demographics"]  
+    A_TITLE = "Demographics"  
+
+    # Blocpage B: Survey Questions  
+    B_LIST = [  
+        "Do you agree with statement 1?",  
+        "Do you agree with statement 2?",  
+        "Do you agree with statement 3?"  
+    ]  
+    B_TYPES = [["radio"], ["radio"], ["radio"]]  
+    B_OPTS = [  
+        ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],  
+        ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],  
+        ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"]  
+    ]  
+    B_VARS = ["q1", "q2", "q3"]  
+    B_BY = 3  
+    B_BY_INTRO = ["Survey Questions"]  
+    B_TITLE = "Survey Questions"  
+```
 
 ## More information
 https://deepwiki.com/mxmfrlv/leepquest_otree/
