@@ -283,7 +283,7 @@ This tool normally uses an Excel file to define questionnaires, but it also prov
      2. `X_TYPES`: The question types (`radio`, `slider`, `text`, etc.)
      3. `X_OPTS`: The options for each question
      4. `X_VARS`: The variable names to store responses
-     5. `X_BY`: How many questions to show per screen
+     5. `X_BY`: How many questions to show per screen (**should be a positive number only**)
      6. `X_TITLE`: The title of the blocpage
 3. Make sure the Excel file (file named `leepquest.xlsx` or `[APP_NAME].xlsx`) doesn't exist in your app directory. The system will only use your `CUSTOM_LQ_C` class if it can't find the Excel file.
 
@@ -317,7 +317,7 @@ class CUSTOM_LQ_C:
         ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"]  
     ]  
     B_VARS = ["q1", "q2", "q3"]  
-    B_BY = 3  
+    B_BY = 1  
     B_BY_INTRO = ["Survey Questions"]  
     B_TITLE = "Survey Questions"  
 ```
