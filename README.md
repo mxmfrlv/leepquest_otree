@@ -290,7 +290,7 @@ This tool normally uses an Excel file to define questionnaires, but it also prov
  Example of CUSTOM_LQ_C implementation:
 
 ```python
-# Define CUSTOM_LQ_C class  
+# Define CUSTOM_LQ_C class (just above the PlayerVariables class)
 class CUSTOM_LQ_C:  
     BLOCPAGES = ["A", "B"]  
     TRACK_BLOCPAGE_LOADS = ["A", "B"]  
@@ -310,12 +310,10 @@ class CUSTOM_LQ_C:
         "Do you agree with statement 2?",  
         "Do you agree with statement 3?"  
     ]  
-    B_TYPES = [["radio"], ["radio"], ["radio"]]  
+    B_TYPES = [["radio"]]*3
     B_OPTS = [  
-        ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],  
-        ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],  
-        ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"]  
-    ]  
+        ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],   
+    ]*3 
     B_VARS = ["q1", "q2", "q3"]  
     B_BY = 1  
     B_BY_INTRO = ["Survey Questions"]  
