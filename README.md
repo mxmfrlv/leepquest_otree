@@ -280,10 +280,10 @@ This tool normally uses an Excel file to define questionnaires, but it also prov
    - For each blocpage, define the attributes corresponding to the [columns in excel sheets](#columns-configuration), adding to each of them a prefix of the blocpage's name followed by an underscore.  
      E.g., for the `"X"` blocpage, you could define:
      1. `X_LIST`: The question texts
-     2. `X_TYPES`: The question types (`radio`, `slider`, `text`, etc.)
-     3. `X_OPTS`: The options for each question
+     2. `X_TYPES`: The [question types](#question-types-table) (`radioline`, `slider`, `select`, etc.)
+     3. `X_OPTS`: The [options](#opts-format-for-each-type-and-registered-value) for each question
      4. `X_VARS`: The variable names to store responses
-     5. `X_BY`: How many questions to show per screen (**should be a positive number only**)
+     5. `X_BY`: How many questions to show per screen (**may only be a positive number**)
      6. `X_TITLE`: The title of the blocpage
 3. Make sure the Excel file (file named `leepquest.xlsx` or `[APP_NAME].xlsx`) doesn't exist in your app directory. The system will only use your `CUSTOM_LQ_C` class if it can't find the Excel file.
 
