@@ -236,7 +236,7 @@ This function is called whenever a form field's value changes and  receives the 
 
 ### Integration into complex projects
 
-A questionnaire created with the help of this tool can be seamlessly integrated in an otree project by adding the corresponding app name in the `app_sequence` of a session configuration in `SESSION_CONFIGS`. However, for [several reasons](https://deepwiki.com/search/list-me-the-reasons-why-it-wou_22aa1731-667f-4307-bb7f-35e768051f76) (like the need to use one of [included question types](#question-types-table) or integrated [time tracking for questions](#question-time-tracking) and [screens](#screen-time-tracking)) it could be interesting to use the tool itself to create complex experimental designs other than questionnaires. Note that:
+A questionnaire created with the help of this tool can be seamlessly integrated in an otree project by adding the corresponding app name in the `app_sequence` of a session configuration in `SESSION_CONFIGS`. However, for [several reasons](https://deepwiki.com/search/list-me-the-reasons-why-it-wou_22aa1731-667f-4307-bb7f-35e768051f76) (like the need to use one of [included question types](#question-types-table) or integrated [time tracking](https://deepwiki.com/mxmfrlv/leepquest_otree/3.1-player-variables#time-tracking-variables) for [questions](#question-time-tracking) and [screens](#screen-time-tracking)) it could be interesting to use the tool itself to create complex experimental designs other than questionnaires. Note that:
 
 - Group and Subsession variables should be defined inside the corresponding `Group` and `Subsession` classes [as usual in an oTree project](https://otree.readthedocs.io/en/latest/models.html).
     ```python
