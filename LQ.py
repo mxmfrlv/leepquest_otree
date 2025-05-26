@@ -449,6 +449,7 @@ class BlocPage(Page):
         slidervars=[]
         slideropts=[]
         vsliders=[]
+        disabledsliders=[]
         vslider_height=400
         radiolines=[]
         nonumbers=[]
@@ -480,6 +481,9 @@ class BlocPage(Page):
                         vsliders.append(getattr(LQ_C,cbp+'_VARS')[i-1])
                         if len(getattr(LQ_C,cbp+'_TYPES')[i-1][h].split('/'))>1 :
                             vslider_height=getattr(LQ_C,cbp+'_TYPES')[i-1][h].split('/')[1]
+                for h in range(1,len(getattr(LQ_C,cbp+'_TYPES')[i-1])):
+                    if getattr(LQ_C,cbp+'_TYPES')[i-1][h].split('/')[0] in ["readonly", "disabled"]: 
+                        disabledsliders.append(getattr(LQ_C,cbp+'_VARS')[i-1])
             elif getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="radioline":
                 radiolines.append(getattr(LQ_C,cbp+'_VARS')[i-1])
             for h in range(1,len(getattr(LQ_C,cbp+'_TYPES')[i-1])):
@@ -524,6 +528,7 @@ class BlocPage(Page):
             radiolines=radiolines,
             nonumbers=nonumbers,
             vsliders=vsliders,
+            readonlysliders=disabledsliders,
             vslider_height=str(vslider_height)+('px' if not 'px' in str(vslider_height) else ''),
             onlyinfo=onlyinfo,
             radioline_width=getattr(LQ_C,cbp+"_RADIOLINE_WIDTH")[0] if hasattr(LQ_C,cbp+"_RADIOLINE_WIDTH") and getattr(LQ_C,cbp+"_RADIOLINE_WIDTH")[0] != '' else "120px",
@@ -540,6 +545,7 @@ class BlocPage(Page):
             cslidervars=str.join(';',slidervars),
             cslideropts=str.join(';',slideropts),
             cvsliders=str.join(';',vsliders),
+            cdisabledsliders=str.join(';',disabledsliders),
             all_vars=[v for v in allvars if v != "__info__"],
             allvars=str.join(';',allvars),
             by=str.join(',',[str(getattr(LQ_C,cbp+'_BY'))]*math.ceil(len(getattr(LQ_C,cbp+'_LIST'))/int(getattr(LQ_C,cbp+'_BY'))) if not isinstance(getattr(LQ_C,cbp+'_BY'),list) else getattr(LQ_C,cbp+'_BY')),
