@@ -6,4 +6,5 @@ Lexicon = dict(
     previous = "Précédent",
     please_answer_question = "Veuillez répondre à cette question",
     please_correct_errors = "Veuillez corriger les erreurs",
+    please_confirm_blank_questions = "Vous n'avez pas répondu à toutes les questions. Voulez-vous quand même procéder à l'écran suivant ?",
 )

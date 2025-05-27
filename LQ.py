@@ -143,7 +143,7 @@ class Player(BasePlayer):
         for i in getattr(LQ_C,cbp+"_QNUMS"):
             cblank=False
             min_index=1; max_index=0
-            if getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="int" or getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="float":
+            if getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="int" or getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="float" or (getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="slider" and len(getattr(LQ_C,cbp+'_TYPES')[i-1])>1 and getattr(LQ_C,cbp+'_TYPES')[i-1][1] in ["int","float"]):
                 if len(getattr(LQ_C,cbp+'_OPTS')[i-1])>1 and getattr(LQ_C,cbp+'_OPTS')[i-1][0].strip()!="" and getattr(LQ_C,cbp+'_OPTS')[i-1][1].strip()!="" :
                     if float(getattr(LQ_C,cbp+'_OPTS')[i-1][0].strip())<float(getattr(LQ_C,cbp+'_OPTS')[i-1][1].strip()):
                         max_index = 1; min_index = 0
@@ -179,9 +179,9 @@ class Player(BasePlayer):
                 locals()[getattr(LQ_C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(LQ_C,cbp+'_VARS')[i-1], label=getattr(LQ_C,cbp+'_LIST')[i-1],choices=[[h+1,x] for h,x in enumerate(getattr(LQ_C,cbp+'_OPTS')[i-1])], blank=cblank)
                 locals()[getattr(LQ_C,cbp+'_VARS')[i-1]+"_strval"]=models.StringField(label=getattr(LQ_C,cbp+'_LIST')[i-1],choices=getattr(LQ_C,cbp+'_OPTS')[i-1],blank=True)
             elif getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="slider" and len(getattr(LQ_C,cbp+'_TYPES')[i-1])>1 and  getattr(LQ_C,cbp+'_TYPES')[i-1][1]=="int":
-                locals()[getattr(LQ_C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(LQ_C,cbp+'_VARS')[i-1], label=getattr(LQ_C,cbp+'_LIST')[i-1], blank=cblank)
+                locals()[getattr(LQ_C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(LQ_C,cbp+'_VARS')[i-1], label=getattr(LQ_C,cbp+'_LIST')[i-1], max=int(getattr(LQ_C,cbp+'_OPTS')[i-1][max_index].strip()) if getattr(LQ_C,cbp+'_OPTS')[i-1][max_index].strip()!="" else None, min=int(getattr(LQ_C,cbp+'_OPTS')[i-1][min_index].strip()) if len(getattr(LQ_C,cbp+'_OPTS')[i-1])>1 and getattr(LQ_C,cbp+'_OPTS')[i-1][min_index].strip()!="" else None, blank=cblank)
             elif getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="slider" and (len(getattr(LQ_C,cbp+'_TYPES')[i-1])<=1 or getattr(LQ_C,cbp+'_TYPES')[i-1][1]=="float"):
-                locals()[getattr(LQ_C,cbp+'_VARS')[i-1]]=models.FloatField(variable=getattr(LQ_C,cbp+'_VARS')[i-1], label=getattr(LQ_C,cbp+'_LIST')[i-1], blank=cblank)
+                locals()[getattr(LQ_C,cbp+'_VARS')[i-1]]=models.FloatField(variable=getattr(LQ_C,cbp+'_VARS')[i-1], label=getattr(LQ_C,cbp+'_LIST')[i-1], max=float(getattr(LQ_C,cbp+'_OPTS')[i-1][max_index].strip()) if getattr(LQ_C,cbp+'_OPTS')[i-1][max_index].strip()!="" else None, min=float(getattr(LQ_C,cbp+'_OPTS')[i-1][min_index].strip()) if len(getattr(LQ_C,cbp+'_OPTS')[i-1])>1 and getattr(LQ_C,cbp+'_OPTS')[i-1][min_index].strip()!="" else None, blank=cblank)
             elif getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="ltext" or getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="longstring":
                 locals()[getattr(LQ_C,cbp+'_VARS')[i-1]]=models.LongStringField(variable=getattr(LQ_C,cbp+'_VARS')[i-1], label=getattr(LQ_C,cbp+'_LIST')[i-1], blank=cblank)
             elif getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="stext" or getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="string":
@@ -569,9 +569,16 @@ class BlocPage(Page):
         firstrandoms=[]
         randomorders=[]
         shownumbers=[]
+        confirm_empty=[]
+        optionals=[]
         fixedsum_sliders=[]
         withtags=[]
         withouttags=[]
+        for i in getattr(LQ_C,cbp+"_QNUMS"):
+            for h in range(1,len(getattr(LQ_C,cbp+'_TYPES')[i-1])):
+                if getattr(LQ_C,cbp+'_TYPES')[i-1][h]=="optional": 
+                    optionals.append(getattr(LQ_C,cbp+'_VARS')[i-1])
+                    break
         if hasattr(LQ_C,cbp+"_RANDOMORDERS"):
            for ovi,ov in enumerate(getattr(LQ_C,cbp+"_RANDOMORDERS")):
             firstrandoms.append(ov[0] if isinstance(ov,list) else getattr(LQ_C,ov)[0])
@@ -587,6 +594,13 @@ class BlocPage(Page):
                     shownumbers.append(cshownumber)
                 elif int(getattr(LQ_C,cbp+"_SHOWNUMBERS")):
                     shownumbers.append(getattr(LQ_C,cbp+"_SHOWNUMBERS"))
+        if hasattr(LQ_C,cbp+"_CONFIRM_BLANK"):
+            for i in getattr(LQ_C,cbp+"_QNUMS"):
+                if (isinstance(getattr(LQ_C,cbp+"_CONFIRM_BLANK"),list)):
+                    c_confirm_empty = getattr(LQ_C,cbp+"_CONFIRM_BLANK")[i-1] if i-1 < len(getattr(LQ_C,cbp+"_CONFIRM_BLANK")) else getattr(LQ_C,cbp+"_CONFIRM_BLANK")[-1]
+                    confirm_empty.append(c_confirm_empty)
+                elif int(getattr(LQ_C,cbp+"_CONFIRM_BLANK")):
+                    confirm_empty.append(getattr(LQ_C,cbp+"_CONFIRM_BLANK"))
         if hasattr(LQ_C,cbp+"_HASTAGS") or LQ_C.TAGS_IN_TEXT:
             for i in getattr(LQ_C,cbp+"_QNUMS"):
                 chastags = LQ_C.TAGS_IN_TEXT
@@ -601,6 +615,7 @@ class BlocPage(Page):
             bys_intro=getattr(LQ_C,cbp+"_BY_INTRO") if hasattr (LQ_C,cbp+"_BY_INTRO") else [""],
             prev_buttons=getattr(LQ_C,cbp+"_PREV_BUTTONS") if hasattr (LQ_C,cbp+"_PREV_BUTTONS") else [0],
             min_times=getattr(LQ_C,cbp+"_MIN_TIMES") if hasattr (LQ_C,cbp+"_MIN_TIMES") else [0],
+            confirm_blank=confirm_empty,
             randomorders=randomorders,
             firstrandoms=firstrandoms,
             shownumbers=shownumbers,
@@ -608,6 +623,7 @@ class BlocPage(Page):
             fixedsum_sliders=fixedsum_sliders,
             withtags=withtags,
             withouttags=withouttags,
+            optional_vars=optionals,
             lq_lexicon = lq_lexicon,
             debug=False,
         )

@@ -149,5 +149,43 @@ var fielderrors={}
 </td></tr></table>
 <em id="waitnext_text" style="display:none">{{ waitnext_text }}</em>
 
+<!-- modal alert, confirm dialog { -->
+<!-- alertModal -->
+<div class="modal fade" id="alertModal" style='display:none' tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+		<div class="modal-header"  style="background-color:buttonface"  id="alertModalHeader">
+		  <h5 class="modal-title" id="exampleModalLabel">Information</h5>
+		  <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+		</div>
+		<div class="modal-body" id="alert_body">
+		  ...
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-secondary" id="alert_ok" data-bs-dismiss="modal">OK</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+  
+  <!-- confirmModal -->
+  <div class="modal fade" style='display:none' id="modal_confirm_dialog" role="dialog" aria-labelledby="modal_confirm_dialog_label" aria-hidden="true" data-bs-backdrop="static" style="z-index: 8192">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content">
+		<div class="modal-header"  style="background-color:buttonface">
+		  <h5 class="modal-title" id="modal_confirm_dialog_label">
+		  </h5>
+		</div>
+		<div class="modal-body" style="font-size:0.9em" id="modal_confirm_dialog_body" align="center">
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirm_ok">Oui</button>
+		  <button type="button" class="btn btn-secondary" data-dismiss="modal" id="confirm_cancle">Non</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+  <!-- modal alert, confirm dialog } -->
+
 {{ include 'Bot.html' }}
 {{ endblock }}

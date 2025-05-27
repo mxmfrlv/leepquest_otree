@@ -5,6 +5,7 @@ var sliderpresent=(slidervars.length>0 && slidervars[0]!='');
 var nqanswered=0;
 var waitnext_timer_handler;
 var screen_listing=false;
+var need_confirm_empty_optional=false, empty_optional_confirmed=false;
 var starttime;
 
 var prev_button_clicked=false, next_button_clicked=false;
@@ -143,7 +144,7 @@ function applydependencies(){
 			// console.log(deps[i]);
 			var depselems=deps[i].split(':');
 			var depended=depselems[0].replace(/\s+/g,"");
-			var dependon=depselems[1].replace(/\s+/g,"");
+			var dependon=(depselems.length>1)?depselems[1].replace(/\s+/g,""):"";
 			var depvals='1'
 			if(depselems.length>2) depvals=depselems[2];
 			var inv=false;
@@ -275,6 +276,68 @@ var additional_validate_invalid_action=function(varnames,alertneeded){
 	}
 	if(alertneeded) alert(additional_validate_message);
 };
+
+var alertModalDivActive=false;
+var alert_sup_action=function(){};
+function alertModal(message,callback) {
+	if(callback == undefined) callback=function(){};
+	var alertModalDiv = new bootstrap.Modal(document.getElementById('alertModal'), {'keyboard':false, 'backdrop':'static'});
+    var newMessage = message.toString().replace(/(?:\r\n|\r|\n)/g, "<br>");
+	$("#alert_body").html(newMessage);
+	alertModalDiv.toggle();
+	alertModalDivActive=true;
+	$('#alert_ok').on("click", function() {
+		callback();
+		$('#alert_ok').off("click");
+		alertModalDivActive=false;
+		alert_sup_action();
+		alert_sup_action=function(){};
+	});
+
+}
+var confirmModalDivActive=false;
+var confirm_sup_action=function(){};
+function confirmModal(message, callback) {
+	// console.log("confirmModal_start");
+    var confirmIndex = true;
+
+    var newMessage = message.replace(/(?:\r\n|\r|\n)/g, "<br>");
+    $('#modal_confirm_dialog_body').html("" + newMessage + "");
+	//if(confirmModalDivActive) {console.log('already active'); $('#confirm_cancle').click(); $('#modal_confirm_dialog').modal('hide'); return;}
+	console.log(confirmModalDivActive);
+	var backdrop='static';
+	//if(confirmModalDivActive) $('#modal_confirm_dialog').modal('hide');
+	var confirmModalDiv = new bootstrap.Modal(document.getElementById('modal_confirm_dialog'), {'keyboard':false, 'backdrop':backdrop});
+    //$('#modal_confirm_dialog').modal('show');
+	confirmModalDiv.toggle();
+	confirmModalDivActive=true;
+	console.log($('#modal_confirm_dialog'))
+    $('#confirm_cancle').on("click", function() {
+		$('#confirm_cancle').off("click");
+		confirmModalDivActive=false;
+        if(confirmIndex) {
+            confirmIndex = false;
+            $('#modal_confirm_dialog').modal('hide');
+			callback(false);
+			confirm_sup_action();
+			confirm_sup_action=function(){};
+        }
+    });
+
+    $('#confirm_ok').on("click", function() {
+		$('#confirm_ok').off("click");
+		confirmModalDivActive=false;
+        if(confirmIndex) {
+            confirmIndex = false;
+            $('#modal_confirm_dialog').modal('hide');
+            callback(true);
+			confirm_sup_action();
+			confirm_sup_action=function(){};
+        }
+    });
+	// console.log("confirmModal_end");
+}
+
 
 $(document).ready(function() {
 $(".replacelinebreaks").each(function(){$( this ).html($( this ).html().replace(/#line#/g,"<br>"));});
@@ -464,7 +527,7 @@ if(sliderpresent) {
 
 $(".otree-btn-next").click(function(e,a_sup_param){
 	// console.log("otree-btn-next");
-	prev_button_clicked=false; next_button_clicked=true;
+	prev_button_clicked=false; next_button_clicked=true; need_confirm_empty_optional = false;
 	if(by>0 && allvars.length>0) {
 		var nanswnow=0, nanswtot=0, bynow=0;
 		var force_prevent_default=false;
@@ -473,6 +536,8 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 			bynow++;
 			var errormessage=false;
 			var iamoptional=document.getElementById(allvars[i]+"_validator") !== null && (document.getElementById(allvars[i]+"_validator").value.replace(/Optional/,"")!=document.getElementById(allvars[i]+"_validator").value);
+			iamoptional ||= js_vars.optional_vars.indexOf(allvars[i])>=0;
+			// console.log("iamoptional =",iamoptional,document.getElementById(allvars[i]+"_validator"))
 			// alert(allvars[i]+"_errormessage,"+document.getElementById(allvars[i]+"_errormessage")+","+iamoptional.toString());
 			if(iamoptional && document.getElementById(allvars[i]+"_errormessage") !== null) {
 				if(document.getElementById(allvars[i]+"_errormessage").title == 'required') { iamoptional=false; errormessage=true;}
@@ -487,6 +552,12 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 				if(!additional_validate(allvars[i]) || slidervars.indexOf(allvars[i])<0) invalidated_vars.push(allvars[i]);
 				ok_pass=false;
 			}
+			if(ok_pass && iamoptional && allvars[i]!="__info__" && document.forms[0][allvars[i]].value=="" && js_vars.confirm_blank[i] && !empty_optional_confirmed) {
+				force_prevent_default=true;
+				ok_pass=false;
+				need_confirm_empty_optional=true;
+			}
+			// console.log(ok_pass,need_confirm_empty_optional,js_vars.confirm_blank[i],js_vars.confirm_blank)
 			if(ok_pass) {
 				varsanswered[i] = 1;
 				nanswnow++;
@@ -569,7 +640,7 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 			if(!no_scroll && finished_screen_number<last_screen_number && document.getElementById("initial_presentation") !== null) $([document.documentElement, document.body]).animate({
 				scrollTop: $("#initial_presentation").offset().top
 			}, 10);
-			starttime=(new Date()).getTime(); 
+			starttime=(new Date()).getTime();
 			// console.log("starttime=",starttime);
 			if(nanswtot<allvars.length && typeof liveSend === 'function') {
 				datatosend=[];
@@ -602,6 +673,16 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 					scrolled=true;
 				}
 			}
+			if(!scrolled && need_confirm_empty_optional) {
+				console.log(js_vars.lq_lexicon)
+				confirmModal(js_vars.lq_lexicon.please_confirm_blank_questions,function(confirmed){
+					if(confirmed) {
+						empty_optional_confirmed=true;
+						$(".otree-btn-next").click();
+						empty_optional_confirmed=false;
+					}
+				});
+			}
 		}
 		// console.log("varshown=",varsshown,"varsanswered=",varsanswered,"nanswtot=",nanswtot,"bynow=",bynow,"screen_listing=",screen_listing,"allvars.length=",allvars.length,"allvars=",allvars,"force_prevent_default=",force_prevent_default)
 		var will_go_next=false;
@@ -622,7 +703,7 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 					scrollTop: $("#pleasewait").offset().top
 				}, 1);
 			}
-			// console.log("nanswtot=",nanswtot,"allvars.length=",allvars.length,allvars,"varsanswered=",varsanswered, document.forms[0][allvars[0]].value);
+			// console.log("nanswtot=",nanswtot,"allvars.length=",allvars.length,"will_go_next=",will_go_next.toString(),allvars,"varsanswered=",varsanswered, document.forms[0][allvars[0]].value);
 			// e.preventDefault();
 		}
 		if(!force_prevent_default && !screen_listing && !will_go_next) {
@@ -633,7 +714,9 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 				$(".form-check-input").removeClass("nofocus");
 				$(".form-check-input").off("focus");
 			});
+			
 		}
+		// console.log("nanswtot=",nanswtot,"allvars.length=",allvars.length,"will_go_next=",will_go_next.toString(),"force_prevent_default=",force_prevent_default.toString(),"allvars=",allvars,"varsanswered=",varsanswered, document.forms[0][allvars[0]].value);
 		//setTimeout(function() {$(".otree-btn-next").prop('disabled',false);},750);
 	}
 });
