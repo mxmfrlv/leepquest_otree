@@ -5,7 +5,7 @@ var sliderpresent=(slidervars.length>0 && slidervars[0]!='');
 var nqanswered=0;
 var waitnext_timer_handler;
 var screen_listing=false;
-var need_confirm_empty_optional=false, empty_optional_confirmed=false;
+var need_confirm_empty_optional=false, empty_optional_confirmed=false, unconfirmed_empty_vars=[];
 var starttime;
 
 var prev_button_clicked=false, next_button_clicked=false;
@@ -304,14 +304,14 @@ function confirmModal(message, callback) {
     var newMessage = message.replace(/(?:\r\n|\r|\n)/g, "<br>");
     $('#modal_confirm_dialog_body').html("" + newMessage + "");
 	//if(confirmModalDivActive) {console.log('already active'); $('#confirm_cancle').click(); $('#modal_confirm_dialog').modal('hide'); return;}
-	console.log(confirmModalDivActive);
+	// console.log(confirmModalDivActive);
 	var backdrop='static';
 	//if(confirmModalDivActive) $('#modal_confirm_dialog').modal('hide');
 	var confirmModalDiv = new bootstrap.Modal(document.getElementById('modal_confirm_dialog'), {'keyboard':false, 'backdrop':backdrop});
     //$('#modal_confirm_dialog').modal('show');
 	confirmModalDiv.toggle();
 	confirmModalDivActive=true;
-	console.log($('#modal_confirm_dialog'))
+	// console.log($('#modal_confirm_dialog'))
     $('#confirm_cancle').on("click", function() {
 		$('#confirm_cancle').off("click");
 		confirmModalDivActive=false;
@@ -552,10 +552,11 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 				if(!additional_validate(allvars[i]) || slidervars.indexOf(allvars[i])<0) invalidated_vars.push(allvars[i]);
 				ok_pass=false;
 			}
-			if(ok_pass && iamoptional && allvars[i]!="__info__" && document.forms[0][allvars[i]].value=="" && js_vars.confirm_blank[i] && !empty_optional_confirmed) {
+			if(ok_pass && iamoptional && allvars[i]!="__info__" && document.forms[0][allvars[i]].value=="" && js_vars.confirm_blank[i] && !empty_optional_confirmed && !screen_listing) {
 				force_prevent_default=true;
 				ok_pass=false;
 				need_confirm_empty_optional=true;
+				unconfirmed_empty_vars.push(allvars[i]);
 			}
 			// console.log(ok_pass,need_confirm_empty_optional,js_vars.confirm_blank[i],js_vars.confirm_blank)
 			if(ok_pass) {
@@ -673,13 +674,24 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 					scrolled=true;
 				}
 			}
-			if(!scrolled && need_confirm_empty_optional) {
-				console.log(js_vars.lq_lexicon)
+			if(!scrolled && need_confirm_empty_optional && !screen_listing) {
 				confirmModal(js_vars.lq_lexicon.please_confirm_blank_questions,function(confirmed){
 					if(confirmed) {
 						empty_optional_confirmed=true;
 						$(".otree-btn-next").click();
 						empty_optional_confirmed=false;
+					}
+					else if(unconfirmed_empty_vars.length > 0){
+						$([document.documentElement, document.body]).animate({
+							scrollTop: $("#field_"+unconfirmed_empty_vars[0]).offset().top,
+						}, 10);
+						try {
+							$("#id_"+unconfirmed_empty_vars[0]).focus();
+							
+						} catch (error) {
+							console.log(error.message);
+						}
+						unconfirmed_empty_vars=[];
 					}
 				});
 			}
