@@ -195,7 +195,7 @@ class Player(BasePlayer):
                 locals()[getattr(LQ_C,cbp+'_VARS')[i-1]]=models.BooleanField(variable=getattr(LQ_C,cbp+'_VARS')[i-1], label=getattr(LQ_C,cbp+'_LIST')[i-1], blank=True)
             elif getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="nothing":
                 pass
-            if not (not isinstance(getattr(LQ_C,cbp+'_BY'),list) and str(getattr(LQ_C,cbp+'_BY')) == '0'):
+            if not (not isinstance(getattr(LQ_C,cbp+'_BY'),list) and str(getattr(LQ_C,cbp+'_BY')) == '0') and getattr(LQ_C,cbp+'_TYPES')[i-1][0] not in ["info","nothing"]:
                 locals()[getattr(LQ_C,cbp+'_VARS')[i-1]+"_time"]=models.FloatField(blank=True, initial=-11)
             if i == len(getattr(LQ_C,cbp+"_QNUMS")): 
                 del i, cblank
