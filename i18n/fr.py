@@ -1,4 +1,5 @@
 Lexicon = dict(
+    no_yes=["Non","Oui"],
     next_button_will_appear_soon = "Le bouton Suivant apparaîtra très bientôt",
     please_wait = "Veuillez patienter...",
     move_slider_to_answer = "faites bouger le curseur ci-dessous afin de répondre",
