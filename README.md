@@ -21,6 +21,10 @@ Integrates various question types, adapted to different devices (computers or sm
   - [Notes on Column's Values](#notes-on-columns-values)
 - [Question Types Table](#question-types-table)
   - [OPTS format for each type and registered value](#opts-format-for-each-type-and-registered-value)
+  - [Slider Question Types](#slider-question-types)
+    - [Slider Definition in TYPES](#slider-definition-in-types)
+    - [Slider Configuration in OPTS](#slider-configuration-in-opts)
+    - [Examples](#examples)
 - [Testing with Bots](#testing-with-bots)
 - [Advanced usage](#advanced-usage)
   - [Templating](#templating)
@@ -168,7 +172,7 @@ These are comment columns and are ignored by the system.
 > | [checkbox](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#checkboxes-checkbox) | Checkbox for boolean responses | Checkbox input | Yes/No questions |
 > | [int](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#integer-input-int) | Integer input field | Number input field with validation | Age, count numbers |
 > | [float](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#float-input-float) | Decimal number input field | Number input field with decimal support | Precise numeric values |
-> | [__slider__](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#slider-question-types) | A slider (integer `slider:int` or float `slider:float`) | Interactive slider with min/max values | Discrete numeric scales / Continuous scales |
+> | [__slider__](#slider-question-types) | A slider (integer `slider:int` or float `slider:float`, horizontal [default] of vertical [ by adding `:vertical/HEIGHT` to the type]) | Interactive slider with min/max values | Discrete numeric scales / Continuous scales |
 > | [stext/string](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#short-text-stextstring) | Single-line text input | Text input field | Short answers |
 > | [ltext/longstring](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#long-text-ltextlongstring) | Multi-line text input | Textarea for longer responses | Open-ended questions |
 > | [info](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#information-display-info) | Display information (no input) | Text display only | Instructions, explanations |
@@ -184,14 +188,68 @@ These are comment columns and are ignored by the system.
 > | `radioline` (`radioline[:min-max][:nonumbers]`) |  Labels to numbers or empty values to show only numbers (or only radio buttons if `:nonumbers` suffixe is added to the type) | `(very dissatisfied)::::(very satisfied)` | __Integer__: Value from range specified in TYPE (e.g., 0-5 for `radioline:0-5` or 1-n by default) __String__: Selected option text (in varname_strval) |
 > | `radiotable` (`radiotable:first`, `radiotable`, `radiotable:last`) | List of column headers | `Strongly disagree:Somewhat disagree:Somewhat agree:Strongly agree` | __Integer__: 1-n (position of selected column) __String__: Selected column text (in varname_strval) |
 > | `select` | List of options | `USA:Abroad` | __Integer__: 1-n (position of selected option) __String__: Selected option text (in varname_strval) |
-> | `checkbox` | YES:NO or custom labels | `YES:NO` | __Boolean__: True (1) if checked, False (0) if unchecked __String__: First or second option text based on state (in varname_strval) |
-> | `int` | min:max:options | `:0:suff=person(s)` | __Integer__: Entered integer value |
-> | `float` | min:max:step:options | `0:100:0.1:pref=%` | __Float__: Entered decimal value |
-> | `slider` (`slider:int` or `slider:float`, with optional `:vertical/HEIGHT`, `:optional`, `:readonly`/`:disabled`) | min:max:step:options <br>`options` are `start_val` (or `inv`), `val pref / val suff` (or just `suff`), `left / right label`, `scale_values/density`, joined by `:`  | `0:100:0.1:inv:%:None at all/All income` | __Integer__/__Float__: Numeric value selected on slider (depends on TYPE) |
+> | `checkbox` | `YES:NO` or custom labels | `YES:NO` | __Boolean__: True (1) if checked, False (0) if unchecked __String__: First or second option text based on state (in varname_strval) |
+> | `int` | `max:min:options` <br>(`max` and `min` may be swapped, `options` include `suff=smth` and/or `pref=smth`) | `100:0:suff=person(s)` | __Integer__: Entered integer value |
+> | `float` | `max:min:step:options` <br>(`max` and `min` may be swapped, `options` include `suff=smth` and/or `pref=smth`) | `100:0:0.1:pref=%` | __Float__: Entered decimal value |
+> | `slider` (`slider:int` or `slider:float`, with optional `:vertical/HEIGHT`, `:optional`, `:readonly`/`:disabled`) [more info](#slider-definition-in-types)| `max:min:step:options` <br>`max` and `min` may be swapped, `options` are `start_val` (or `inv`), `val pref / val suff` (or just `suff`), `left / right label`, `scale_values/density`, joined by `:` ([more info](#slider-configuration-in-opts)) | `0:100:0.1:inv:%:None at all/All income` <br>[more examples](#examples) | __Integer__/__Float__: Numeric value selected on slider (depends on TYPE) |
 > | `stext` (or `string`) | (No specific format) | Empty or prefix/suffix `:pref=@` | String: Entered text |
 > | `ltext` (or `longstring`) | (No specific format) | Empty or prefix/suffix `:pref=Comments:suff=(optional)` | String: Entered text (longer) |
 > | `info` | (No input required) | Empty | A boolean value True (1) is stored once the field is displayed) |
 > | `nothing` | (No input required, not displayed) | Empty | No variable created |
+
+<a name='slider-question-types'></a>
+### Slider Question Types
+
+Sliders allow selection of values on a continuous scale. Sliders are implemented using the [nouislider](https://refreshless.com/nouislider/) library and configured through the `TYPES` and `OPTS` columns.
+
+---
+
+#### Slider Definition in `TYPES`
+
+**Format:**  
+`slider:type[:orientation/size][:optional]`
+
+- **`type`**: Either `int` or `float`.  
+- **`orientation/size`**: Can be `vertical/HEIGHT` (e.g., `vertical/350px`).  
+- **`optional`**: Makes the question optional.  
+
+---
+
+#### Slider Configuration in `OPTS`
+
+**Format:**  
+`max:min:step[:start_val or inv][:prefix/suffix][:left label/right label][:scale values/density]`
+
+Sliders are configured through a string in `OPTS` with parameters separated by colons. Parameters are defined as follows:
+
+| Parameter Position | Description           | Default | Remarks                                                                 |
+|--------------------|-----------------------|---------|---------------------------------------------------------------------------|
+| 1 or 2 (`max`)     | Maximum value         | `100`   | The min and max values may be swapped. |
+| 2 or 1 (`min`)     | Minimum value         | `0`     |      If `OPTS` contains only one value, it is interpreted as the maximum value, and the slider starts at `0`.                                                                      |
+| 3 (`step`)         | Step size             | `1`     |                                                                           |
+| 4 (`start_val` or `inv`) | Start value/visibility | `(max+min)/2` | A numeric value sets the slider's start position. Use `inv` to hide the handle initially. It is also possible to indicate the initial position of the hidden handle: `inv,min` (default, the handle appears from the left upon the first click), `inv,max` (on the right), `inv,mid` or `inv,avg` (in the middle). |
+| 5 (`prefix/suffix`) | Prefix/suffix         | Empty   | Prefix and suffix separated by slash (`prefix/suffix`). Without slash, interpreted as suffix. |
+| 6 (`left label/right label`) | Left/right labels | Empty   | Text labels for either side of the slider. Underscores are converted to non-breaking spaces. |
+| 7 (`scale values/density`) | Custom scale values/pip density | None | Custom values shown on the slider's scale. Optional density after slash (`/`) controls pip spacing (higher value = more space). |
+
+
+#### Examples
+
+1. **Question (`LIST`):**  "What percentage of your income do you save?"  
+   - **`TYPES`:** `slider:float:optional:vertical/350px`  
+   - **`OPTS`:** `0:100:0.1:%:None at all/All:income:0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100/2.5`  
+
+   **Result:**  
+   A vertical slider (`350px` height) with values from `0` (bottom) to `100`, step precision `0.1`, and `%` suffix. Labels: "None at all" (left) and "All" (right). Custom scale values every `5` with pip density `2.5`.
+
+2. **Question (`LIST`):** "Do you agree with the sentence above?"  
+   - **`TYPES`:** `slider:int`  
+   - **`OPTS`:** `100:0:5:inv,mid:$/:Strongly_Disagree/Strongly_Agree`  
+
+   **Result:**  
+   A horizontal slider from `0` to `100`, step size `5`, initially hidden handle at midpoint. Values prefixed with `$`. Labels: "Strongly Disagree" (left) and "Strongly Agree" (right).
+
+---
 ---
 
 
@@ -209,7 +267,7 @@ To create your own template:
 
 1. Create an HTML file named `include_X.html` in your app's folder, where X is your block name (sheet name inside the questionnaire definition Excel file). If found, the template is included at the top of the page, providing custom introductory content or dynamic logic (via `script` tags).
 
-2. Add your HTML content, using div IDs like `initial_presentation_1`, `initial_presentation_2`, etc. for multi-screen content. For multi-screen questionnaires, only the relevant part of the template is shown based on the current screen number. As the user navigates through screens (using Next/Previous buttons), different parts of the include template become visible.
+2. Add your HTML content, use div's ID (or class names) `initial_presentation_1`, `initial_presentation_2`, etc. for multi-screen content. For multi-screen questionnaires, only the relevant part of the template is shown based on the current screen number.  A class name `not_initial_presentation_N` may be used to hide the content for the screen `N` only. As the user navigates through screens (using Next/Previous buttons), different parts of the include template become visible.
 
 3. The system will automatically detect and include your template when the corresponding questionnaire block is displayed.
 
