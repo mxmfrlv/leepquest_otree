@@ -289,10 +289,10 @@ By default, the `additional_validate` variable holds a function which always ret
 In order to add a custom reaction on user's input it is possible to attribute a function to the `additional_onchange` variable in the following way :
 ```javascript
 // Example of a custom reaction on user's input of a specific field
-additional_onchange = function(varname){
+additional_onchange = function(varname, varvalue){
     // Custom logic when a field changes
     if(varname === "specific_field") {
-        // Do something specific for this field
+        // Do something specific for this field using it's current value (varvalue) if necessary
     }
 };
 ```` 

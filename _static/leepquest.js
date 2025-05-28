@@ -23,7 +23,7 @@ function bindSliderUpdate(slider,sl,starthidden,cdecimals) {
 		else {
 		 var resultval=values[handle]; if(cdecimals==0) resultval=Math.round(resultval);
 		 $("#sliderinput_"+slidervars[sl]).val(resultval).change();
-		 //additional_onchange(slidervars[sl]);
+		 //additional_onchange(slidervars[sl],resultval); //already called in change event
 		 if(js_vars.fixedsum_sliders !== undefined) {
 			 var my_i=-1; var my_vars=[];
 			 for(var i in js_vars.fixedsum_sliders) {
@@ -61,7 +61,7 @@ function bindSliderUpdate(slider,sl,starthidden,cdecimals) {
 		}
 	});
 }
-additional_onchange=function(varname){};
+additional_onchange=function(varname,varvalue){};
 function bindOnChangeForTime(field) {
 	if(field === null) return;
 	// console.log(field.name,field.type);
@@ -69,7 +69,7 @@ function bindOnChangeForTime(field) {
 		var timenow_ch=(new Date()).getTime();
 		if(document.getElementById(field.name+"_time")!==null) $("#"+field.name+"_time").val((timenow_ch-starttime)/1000);
 		if(document.getElementById(field.name+"_errormessage")!==null) $("#"+field.name+"_errormessage").hide();
-		additional_onchange(field.name);
+		additional_onchange(field.name, field.value);
 		// console.log("field.name: ",field.name, field.value);
 		// console.log("starttime:",starttime,"timenow: ",timenow_ch,"field.name: ",field.name, $("#"+field.name+"_time").val());
 	}
@@ -519,7 +519,7 @@ if(sliderpresent) {
 		slider.noUiSlider.disable(0);
 		$("#slider_"+slidervars[sl]+" .noUi-tooltip").show();
 		if(!starthidden) document.forms[0][slidervars[sl]].value = cstart;
-		additional_onchange(slidervars[sl])
+		additional_onchange(slidervars[sl], document.forms[0][slidervars[sl]].value);
 	}
 	else bindSliderUpdate(slider,sl,starthidden,cdecimals);
  }
