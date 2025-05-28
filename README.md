@@ -63,7 +63,7 @@ These columns have one entry per question/variable:
 
 1. **LIST**: Contains the question text shown to participants. Each line correspond to a question.
 
-2. **TYPES**: Defines the question type (radio, slider, text, etc.). See [question types table](#question-types-table) below for the available types.
+2. **TYPES**: Defines the question type (radio, slider, text, etc.). Required for each question. See [question types table](#question-types-table) below for the available types.
 
    The TYPES column uses a colon-separated format: `questiontype[:option1[:option2[:...]]]`. Adding an `:optional` suffix to the type makes the corresponding question non required.
    > See the [corresponding deepwiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types) for more information
@@ -78,12 +78,17 @@ These columns have one entry per question/variable:
     - For `radio`, `hradio`, `radiotable`, `radioline`, `checkbox` and `select` types an additional `{variable_name}_strval` variable registers the string representation of the answer.
     <a name="question-time-tracking"></a>
     - For all types except `info` and `nothing`, an additional `{variable_name}_time` variable registers the time (in seconds) spent on the question.
+    >Note that a variable name is required for each question in LIST, even for `info` and `nothing` types (for the last one the variable name may not be unique and is not store in the data).
 
 5. **QUESTTAG**: (Optional) HTML tag to use for question text (default is `h5`).
 
 6. **HASTAGS**: (Optional) Controls whether HTML tags are allowed to format text in questions and options. 1 means True, 0 means False. By default, tags are allowed. In order to show tags « as is » (\<b\>bold\</b\> instead of **bold**), uncomment the column as set the value to 0. If not specified, the last value (or 1 if no values at all) is used
 
 7. **SHOWNUMBERS** (Optional): Whether to show question number before question text (for non randomized questions). 1 means True, 0 means False. Empty lines take last previous value if it is defined, so SHOWNUMBERS may have only one value 1 to number all questions (optionally add 0 on the line where to stop numbering)
+
+8. **CONFIRM_BLANK** (Optional): Whether optional questions need a confirmation dialog when leaved empty ("You have not answered all questions. Are you sure to proceed?"). 1 means True, 0 means False. If not specified, the last value (or 0 if no values at all) is used, thus the column may contain only one line with a value of 1 in order to activate confirmation dialog for all optional questions in the questionnaire.
+
+
 
 #### Columns with Number of Lines Equal to Number of Screens/Pages
 
@@ -174,19 +179,19 @@ These are comment columns and are ignored by the system.
 
 > | TYPE | OPTS Format | Example OPTS | Variable Value |
 > |------|-------------|--------------|----------------|
-> | `radio` | List of options | No diploma:Primary education:High School Diploma | __Integer__: 1-n (position of selected option) __String__: Selected option text (in varname_strval) |
-> | `hradio` | List of options | Man:Woman:I prefer not to answer | __Integer__: 1-n (position of selected option) __String__: Selected option text (in varname_strval) |
-> | `radioline` (`radioline[:min-max][:nonumbers]`) |  Labels to numbers or empty values to show only numbers (or only radio buttons if `:nonumbers` suffixe is added to the type) | (very dissatisfied)::::(very satisfied) | __Integer__: Value from range specified in TYPE (e.g., 0-5 for `radioline:0-5` or 1-n by default) __String__: Selected option text (in varname_strval) |
-> | `radiotable` (`radiotable:first`, `radiotable`, `radiotable:last`) | List of column headers | Strongly disagree:Somewhat disagree:Somewhat agree:Strongly agree | __Integer__: 1-n (position of selected column) __String__: Selected column text (in varname_strval) |
-> | `select` | List of options | France:Abroad | __Integer__: 1-n (position of selected option) __String__: Selected option text (in varname_strval) |
-> | `checkbox` | YES:NO or custom labels | YES:NO | __Boolean__: True (1) if checked, False (0) if unchecked __String__: First or second option text based on state (in varname_strval) |
-> | `int` | min:max:options | :0:suff=person(s) | __Integer__: Entered integer value |
-> | `float` | min:max:step:options | 0:100:0.1:% | __Float__: Entered decimal value |
-> | `slider` (`slider:int[:disabled]`, `slider:float[:disabled]`) | min:max:step:options | 0:100:0.1:inv:%:None at all/All income | __Integer__/__Float__: Numeric value selected on slider (depends on TYPE) |
-> | `stext` (or `string`) | (No specific format) | Empty or validation hints | String: Entered text |
-> | `ltext` (or `longstring`) | (No specific format) | Empty or validation hints | String: Entered text (longer) |
-> | `info` | (No input required) | Empty | No value stored (field is just for display) |
-> | `nothing` | (Not displayed) | Empty | No variable created |
+> | `radio` | List of options | `No diploma:Primary education:High School Diploma` | __Integer__: 1-n (position of selected option) __String__: Selected option text (in varname_strval) |
+> | `hradio` | List of options | `Man:Woman:I prefer not to answer` | __Integer__: 1-n (position of selected option) __String__: Selected option text (in varname_strval) |
+> | `radioline` (`radioline[:min-max][:nonumbers]`) |  Labels to numbers or empty values to show only numbers (or only radio buttons if `:nonumbers` suffixe is added to the type) | `(very dissatisfied)::::(very satisfied)` | __Integer__: Value from range specified in TYPE (e.g., 0-5 for `radioline:0-5` or 1-n by default) __String__: Selected option text (in varname_strval) |
+> | `radiotable` (`radiotable:first`, `radiotable`, `radiotable:last`) | List of column headers | `Strongly disagree:Somewhat disagree:Somewhat agree:Strongly agree` | __Integer__: 1-n (position of selected column) __String__: Selected column text (in varname_strval) |
+> | `select` | List of options | `USA:Abroad` | __Integer__: 1-n (position of selected option) __String__: Selected option text (in varname_strval) |
+> | `checkbox` | YES:NO or custom labels | `YES:NO` | __Boolean__: True (1) if checked, False (0) if unchecked __String__: First or second option text based on state (in varname_strval) |
+> | `int` | min:max:options | `:0:suff=person(s)` | __Integer__: Entered integer value |
+> | `float` | min:max:step:options | `0:100:0.1:pref=%` | __Float__: Entered decimal value |
+> | `slider` (`slider:int` or `slider:float`, with optional `:vertical/HEIGHT`, `:optional`, `:readonly`/`:disabled`) | min:max:step:options <br>`options` are `start_val` (or `inv`), `val pref / val suff` (or just `suff`), `left / right label`, `scale_values/density`, joined by `:`  | `0:100:0.1:inv:%:None at all/All income` | __Integer__/__Float__: Numeric value selected on slider (depends on TYPE) |
+> | `stext` (or `string`) | (No specific format) | Empty or prefix/suffix `:pref=@` | String: Entered text |
+> | `ltext` (or `longstring`) | (No specific format) | Empty or prefix/suffix `:pref=Comments:suff=(optional)` | String: Entered text (longer) |
+> | `info` | (No input required) | Empty | A boolean value True (1) is stored once the field is displayed) |
+> | `nothing` | (No input required, not displayed) | Empty | No variable created |
 ---
 
 
