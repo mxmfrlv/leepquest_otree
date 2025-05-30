@@ -210,7 +210,7 @@ Sliders allow selection of values on a continuous scale. Sliders are implemented
 `slider:type[:orientation/size][:optional]`
 
 - **`type`**: Either `int` or `float`.  
-- **`orientation/size`**: Can be `vertical/HEIGHT` (e.g., `vertical/350px`).  
+- **`orientation/size`**: Can be `vertical/HEIGHT` (e.g., `vertical/350px`) or `horizontal:WIDTH`  (e.g., `horizontal/700px`). The default is `horizontal/50%`.  
 - **`optional`**: Makes the question optional.  
 
 ---
