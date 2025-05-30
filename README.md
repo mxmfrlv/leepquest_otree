@@ -86,7 +86,7 @@ These columns have one entry per question/variable:
 
 5. **QUESTTAG**: (Optional) HTML tag to use for question text (default is `h5`).
 
-6. **HASTAGS**: (Optional) Controls whether HTML tags are allowed to format text in questions and options. 1 means True, 0 means False. By default, tags are allowed. In order to show tags « as is » (\<b\>bold\</b\> instead of **bold**), uncomment the column as set the value to 0. If not specified, the last value (or 1 if no values at all) is used
+6. **HASTAGS**: (Optional) Controls whether HTML tags are allowed to format text in questions and options. 1 means True, 0 means False. By default, tags are allowed. In order to show tags « as is » (\<b\>bold\</b\> instead of **bold**), uncomment the column and set the value to 0. If not specified, the last value (or 1 if no values at all) is used
 
 7. **SHOWNUMBERS** (Optional): Whether to show question number before question text (for non randomized questions). 1 means True, 0 means False. Empty lines take last previous value if it is defined, so SHOWNUMBERS may have only one value 1 to number all questions (optionally add 0 on the line where to stop numbering)
 
