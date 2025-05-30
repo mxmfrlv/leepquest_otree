@@ -46,8 +46,9 @@ var fielderrors={}
 			<br>
 			{{ formfield_errors field.name }}
 			{{if 'InputRequired' in field.validators.__str__() }} 
-				<div class="alert-warning" style="display:none" id="{{field.short_name}}_errormessage" title='required'></div>
+				<div class="alert-warning" style="display:none" id="{{field.short_name}}_errormessage" title='required' data-lq-type="slider"></div>
 			{{ endif }}
+			<div class="field_end_sup_info" id="field_end_sup_info_{{field.short_name}}" style="display: none;"></div>
 		{{ elif field.short_name in radiolines }}
 			{{ if field.short_name in singleline }} <{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ qitem.tag }}{{ endif }}{{ endfor }} style='display:inline-block;{{if quest_width_px > 0 }}width:{{quest_width_px}}px;{{ endif }}'>{{ field.label }}</{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ qitem.tag }}{{ endif }}{{ endfor }}> {{ endif }}
 			<table cellpadding=5 style='text-align:center;vertical-align:middle;{{ if field.short_name in singleline }}display:inline-block;{{ endif }}'><tr>
@@ -63,6 +64,7 @@ var fielderrors={}
 			</tr>
 			{{ endif }}
 			</table>
+			<span class="field_end_sup_info" id="field_end_sup_info_{{field.short_name}}" style="display: none;" data-lq-type="radioline"></span>
 			{{ if field.short_name in singleline }}<br>{{ endif }}
 		{{ elif field.short_name in radiotable_headers }}
 			<input type=hidden name="beforefield_{{field.short_name}}" value=0 id="beforefield_{{field.short_name}}" />
@@ -75,6 +77,7 @@ var fielderrors={}
 			</th>{{ for choice in field }} <td scope='col'> {{ if choice_label_tag != '' }}<{{choice_label_tag}}>{{ endif }}{{ choice.label }}{{ if choice_label_tag != '' }}</{{choice_label_tag}}>{{ endif }} </td> {{ endfor }}
 			</tr><tr id="tr_{{field.short_name}}">
 			<{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ if qitem.tag == 'td' or qitem.tag == 'th' }}{{qitem.tag}}{{else}}td scope='row' style='text-align:left;'><{{qitem.tag}}{{endif}}{{ endif }}{{ endfor }} scope='row' style='text-align:left;'><span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}</{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ if qitem.tag == 'td' or qitem.tag == 'th' }}{{qitem.tag}}{{else}}{{qitem.tag}}></td{{endif}}{{ endif }}{{ endfor }}>{{ for choice in field }} <td> <span data-toggle="tooltip" data-html="true" title='{{ if choice_label_tag != '' }}<{{choice_label_tag}}>{{ endif }}{{ choice.label }}{{ if choice_label_tag != '' }}</{{choice_label_tag}}>{{ endif }}'>{{ choice }}</span> </td> {{ endfor }}
+			<td class="field_end_sup_info" id="field_end_sup_info_{{field.short_name}}" style="display: none;" data-lq-type="radiotable"></td>
 			</tr>
 		{{ elif field.short_name in radiotable_bottoms }}
 			<tr id="tr_{{field.short_name}}">
@@ -84,6 +87,7 @@ var fielderrors={}
 				<span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}
 			</{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ if qitem.tag == 'td' or qitem.tag == 'th' }}{{qitem.tag}}{{else}}{{qitem.tag}}></td{{endif}}{{ endif }}{{ endfor }}>
 			{{ for choice in field }} <td> <span data-toggle="tooltip" data-html="true" title='{{ if choice_label_tag != '' }}<{{choice_label_tag}}>{{ endif }}{{ choice.label }}{{ if choice_label_tag != '' }}</{{choice_label_tag}}>{{ endif }}'>{{ choice }}</span> </td> {{ endfor }}
+			<td class="field_end_sup_info" id="field_end_sup_info_{{field.short_name}}" style="display: none;" data-lq-type="radiotable"></td>
 			</tr></table></div>
 		{{ elif field.short_name in radiotable_rows }}
 			<tr id="tr_{{field.short_name}}">
@@ -93,6 +97,7 @@ var fielderrors={}
 				<span id="field_{{field.short_name}}_number_placeholder"></span>{{ field.label }}
 			</{{ for qitem in questtags  }}{{ if field.short_name == qitem.var }}{{ if qitem.tag == 'td' or qitem.tag == 'th' }}{{qitem.tag}}{{else}}{{qitem.tag}}></td{{endif}}{{ endif }}{{ endfor }}>
 			{{ for choice in field }} <td> <span data-toggle="tooltip" data-html="true" title='{{ if choice_label_tag != '' }}<{{choice_label_tag}}>{{ endif }}{{ choice.label }}{{ if choice_label_tag != '' }}</{{choice_label_tag}}>{{ endif }}'>{{ choice }}</span> </td> {{ endfor }}
+			<td class="field_end_sup_info" id="field_end_sup_info_{{field.short_name}}" style="display: none;" data-lq-type="radiotable"></td>
 			</tr>
 			
 		{{ elif field.short_name in singleline }}
@@ -109,10 +114,12 @@ var fielderrors={}
 				<span class="input-group-text">{{ for suff in suffixes }} {{ if suff.var == field.short_name }} {{ suff.val }} {{ endif }} {{ endfor }}</span>
 				</div>
 			{{ endif }}
+			<span class="field_end_sup_info" id="field_end_sup_info_{{field.short_name}}" style="display: none;" data-lq-type="singleline"></span>
 			{{ formfield_errors field.name }}
 			</div></div>
 		{{ elif field.short_name in onlyinfo }}
 			<input type=hidden value="1" name="{{field.short_name}}" />
+			<div class="field_end_sup_info" id="field_end_sup_info_{{field.short_name}}" style="display: none;" data-lq-type="onlyinfo"></div>
 		{{ else }}
 			{{ if field.short_name in suffixvars or field.short_name in prefixvars }}
 				<div class="input-group">
@@ -125,6 +132,7 @@ var fielderrors={}
 				<span class="input-group-text">{{ for suff in suffixes }} {{ if suff.var == field.short_name }} {{ suff.val }} {{ endif }} {{ endfor }}</span>
 				</div>
 			{{ endif }}
+			<div class="field_end_sup_info" id="field_end_sup_info_{{field.short_name}}" style="display: none;" data-lq-type="other"></div>
 			{{ formfield_errors field.name }}
 		{{ endif }}
             
