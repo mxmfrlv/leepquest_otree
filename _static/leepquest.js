@@ -448,9 +448,9 @@ if(sliderpresent) {
 		}
 		else cstart=parseFloat(copts[3]);
 	}
-	if(typeof js_vars.slider_starts == 'object') {
-		if(typeof js_vars.slider_starts[slidervars[sl]] !== 'undefined') {
-			cstart=parseFloat(js_vars.slider_starts[slidervars[sl]]);
+	if(typeof js_vars.start_values == 'object') {
+		if(typeof js_vars.start_values[slidervars[sl]] !== 'undefined') {
+			cstart=parseFloat(js_vars.start_values[slidervars[sl]]);
 		}
 	}
 	var pref='',suff='';
