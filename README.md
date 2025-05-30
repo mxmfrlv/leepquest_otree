@@ -226,7 +226,7 @@ Sliders are configured through a string in `OPTS` with parameters separated by c
 |--------------------|-----------------------|---------|---------------------------------------------------------------------------|
 | 1 or 2 (`max`)     | Maximum value         | `100`   | The min and max values may be swapped. |
 | 2 or 1 (`min`)     | Minimum value         | `0`     |      If `OPTS` contains only one value, it is interpreted as the maximum value, and the slider starts at `0`.                                                                      |
-| 3 (`step`)         | Step size             | `1`     |                                                                           |
+| 3 (`step`)         | Step size             | `1`     | For small values (e.g. <1 for float types) the feasible step depends on the slider's size.                                                                         |
 | 4 (`start_val` or `inv`) | Start value/visibility | `(max+min)/2` | A numeric value sets the slider's start position. Use `inv` to hide the handle initially. Optionally indicate the initial position of the hidden handle: `inv,min` (default, the handle appears from the left upon the first click), `inv,max` (from the right), `inv,mid` or `inv,avg` (from the middle).  <blockquote>Advanced: use [bp_jsvars](#dynamically_set_slider_start_value) to dynamically set the start value</blockquote> |
 | 5 (`prefix/suffix`) | Prefix/suffix         | Empty   | Prefix and suffix separated by slash (`prefix/suffix`). Without slash, interpreted as suffix. |
 | 6 (`left label/right label`) | Left/right labels | Empty   | Text labels for either side of the slider. Underscores are converted to non-breaking spaces. |
