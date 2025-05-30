@@ -82,7 +82,7 @@ These columns have one entry per question/variable:
     - For `radio`, `hradio`, `radiotable`, `radioline`, `checkbox` and `select` types an additional `{variable_name}_strval` variable registers the string representation of the answer.
     <a name="question-time-tracking"></a>
     - For all types except `info` and `nothing`, an additional `{variable_name}_time` variable registers the time (in seconds) spent on the question.
-    >Note that a variable name is required for each question in LIST, even for `info` and `nothing` types (for the last one the variable name may not be unique and is not store in the data).
+    >Note that a variable name is required for each question in LIST, even for `info` and `nothing` types (for the last one the variable name may not be unique and is not stored in the data).
 
 5. **QUESTTAG**: (Optional) HTML tag to use for question text (default is `h5`).
 
