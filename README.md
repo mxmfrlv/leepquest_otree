@@ -379,7 +379,7 @@ class CUSTOM_LQ_C:
     ]*3 
     B_VARS = ["q1", "q2", "q3"]  
     B_BY = 1  
-    B_BY_INTRO = ["Survey Questions"]  
+    B_BY_INTRO = ["Please answer the following question"]  
     B_TITLE = "Survey Questions"  
 ```
 
