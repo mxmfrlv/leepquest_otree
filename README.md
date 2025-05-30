@@ -157,7 +157,7 @@ These are comment columns and are ignored by the system.
 
 - For most columns, if there are fewer values than variables, the last value is used for remaining variables.
 
-- For columns PREV_BUTTONS, SHOWNUMBERS and RANDOMORDERS_SHOWNUMBERS, HASTAGS, NO_SCREEN_TIME a value of 1 means True and 0 means False.
+- For columns PREV_BUTTONS, SHOWNUMBERS and RANDOMORDERS_SHOWNUMBERS, HASTAGS, CONFIRM_BLANK, NO_SCREEN_TIME a value of 1 means True and 0 means False.
 
 <a name="question-types-table"></a>
 
