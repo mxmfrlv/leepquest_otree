@@ -451,6 +451,7 @@ class BlocPage(Page):
         vsliders=[]
         disabledsliders=[]
         vslider_height=400
+        hslider_width='50%'
         radiolines=[]
         nonumbers=[]
         radiotable_headers=[]
@@ -481,6 +482,8 @@ class BlocPage(Page):
                         vsliders.append(getattr(LQ_C,cbp+'_VARS')[i-1])
                         if len(getattr(LQ_C,cbp+'_TYPES')[i-1][h].split('/'))>1 :
                             vslider_height=getattr(LQ_C,cbp+'_TYPES')[i-1][h].split('/')[1]
+                    elif getattr(LQ_C,cbp+'_TYPES')[i-1][h].split('/')[0].startswith("hor") and len(getattr(LQ_C,cbp+'_TYPES')[i-1][h].split('/'))>1:
+                        hslider_width=getattr(LQ_C,cbp+'_TYPES')[i-1][h].split('/')[1]
                 for h in range(1,len(getattr(LQ_C,cbp+'_TYPES')[i-1])):
                     if getattr(LQ_C,cbp+'_TYPES')[i-1][h].split('/')[0] in ["readonly", "disabled"]: 
                         disabledsliders.append(getattr(LQ_C,cbp+'_VARS')[i-1])
@@ -529,7 +532,8 @@ class BlocPage(Page):
             nonumbers=nonumbers,
             vsliders=vsliders,
             readonlysliders=disabledsliders,
-            vslider_height=str(vslider_height)+('px' if not 'px' in str(vslider_height) else ''),
+            vslider_height=str(vslider_height)+('px' if not any(sub in str(vslider_height) for sub in ('px', '%')) else ''),
+            hslider_width=str(hslider_width)+('px' if not any(sub in str(hslider_width) for sub in ('px', '%')) else ''),
             onlyinfo=onlyinfo,
             radioline_width=getattr(LQ_C,cbp+"_RADIOLINE_WIDTH")[0] if hasattr(LQ_C,cbp+"_RADIOLINE_WIDTH") and getattr(LQ_C,cbp+"_RADIOLINE_WIDTH")[0] != '' else "120px",
             radioline_width_nonumbers=getattr(LQ_C,cbp+"_RADIOLINE_WIDTH_NONUMBERS")[0] if hasattr(LQ_C,cbp+"_RADIOLINE_WIDTH_NONUMBERS") and getattr(LQ_C,cbp+"_RADIOLINE_WIDTH_NONUMBERS")[0] != '' else getattr(LQ_C,cbp+"_RADIOLINE_WIDTH")[0] if hasattr(LQ_C,cbp+"_RADIOLINE_WIDTH") and getattr(LQ_C,cbp+"_RADIOLINE_WIDTH")[0] != '' else "50px",
