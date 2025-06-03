@@ -69,7 +69,7 @@ These columns have one entry per question/variable:
 
 2. **TYPES**: Defines the question type (radio, slider, text, etc.). Required for each question. See [question types table](#question-types-table) below for the available types.
 
-   The TYPES column uses a colon-separated format: `questiontype[:option1[:option2[:...]]]`. Adding an `:optional` suffix to the type makes the corresponding question non required.
+   The TYPES column uses a colon-separated format: `questiontype[:option1[:option2[:...]]]`. Adding an `:optional` suffix to the type makes the corresponding question non required. Adding an `:inline` suffix to the type makes the corresponding input appear on the same line with the question's text.
    > See the [corresponding deepwiki page](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types) for more information
 
 3. **OPTS**: Contains options for each question type (e.g., radio button choices, slider min/max values). Split by colon (**`:`**) to create choice options. 
@@ -169,7 +169,7 @@ These are comment columns and are ignored by the system.
 > | [radioline](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#radio-line-radioline) | Radio buttons in an optionally numbered line with or without labels | Horizontal scale with optional labels | Numeric scales (1-5, 0-7) |
 > | [radiotable](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#radio-table-radiotable) | Radio buttons in a table | Table with rows as questions, columns as options | Matrix questions with same options |
 > | [select](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#select-dropdown-select) | Dropdown menus | Dropdown select menu | Questions with many options |
-> | [checkbox](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#checkboxes-checkbox) | Checkbox for boolean responses | Checkbox input | Yes/No questions |
+> | [checkbox](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#checkboxes-checkbox) | Checkbox for boolean responses (`checkbox:inline` for inline display) | Checkbox input | Yes/No questions |
 > | [int](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#integer-input-int) | Integer input field | Number input field with validation | Age, count numbers |
 > | [float](https://deepwiki.com/mxmfrlv/leepquest_otree/2.1-question-types#float-input-float) | Decimal number input field | Number input field with decimal support | Precise numeric values |
 > | [__slider__](#slider-question-types) | A slider (integer `slider:int` or float `slider:float`, horizontal [default] of vertical [ by adding `:vertical/HEIGHT` to the type]) | Interactive slider with min/max values | Discrete numeric scales / Continuous scales |
@@ -188,7 +188,7 @@ These are comment columns and are ignored by the system.
 > | `radioline` (`radioline[:min-max][:nonumbers]`) |  Labels to numbers or empty values to show only numbers (or only radio buttons if `:nonumbers` suffixe is added to the type) | `(very dissatisfied)::::(very satisfied)` | __Integer__: Value from range specified in TYPE (e.g., 0-5 for `radioline:0-5` or 1-n by default) __String__: Selected option text (in varname_strval) |
 > | `radiotable` (`radiotable:first`, `radiotable`, `radiotable:last`) | List of column headers | `Strongly disagree:Somewhat disagree:Somewhat agree:Strongly agree` | __Integer__: 1-n (position of selected column) __String__: Selected column text (in varname_strval) |
 > | `select` | List of options | `France:Abroad` | __Integer__: 1-n (position of selected option) __String__: Selected option text (in varname_strval) |
-> | `checkbox` | `YES:NO` or custom labels | `YES:NO` | __Boolean__: True (1) if checked, False (0) if unchecked __String__: First or second option text based on state (in varname_strval) |
+> | `checkbox` (`checkbox:inline`) | `YES:NO` or custom labels | `YES:NO` | __Boolean__: True (1) if checked, False (0) if unchecked __String__: First or second option text based on state (in varname_strval) |
 > | `int` | `max:min:options` <br>(`max` and `min` may be swapped, `options` include `suff=smth` and/or `pref=smth`) | `100:0:suff=person(s)` | __Integer__: Entered integer value |
 > | `float` | `max:min:step:options` <br>(`max` and `min` may be swapped, `options` include `suff=smth` and/or `pref=smth`) | `100:0:0.1:pref=%` | __Float__: Entered decimal value |
 > | `slider` (`slider:int` or `slider:float`, with optional `:vertical/HEIGHT`, `:optional`, `:readonly`/`:disabled`) [more info](#slider-definition-in-types)| `max:min:step:options` <br>`max` and `min` may be swapped, `options` are `start_val` (or `inv`), `val pref / val suff` (or just `suff`), `left / right label`, `scale_values/density`, joined by `:` ([more info](#slider-configuration-in-opts)) | `0:100:0.1:inv:%:None at all/All income` <br>[more examples](#examples) | __Integer__/__Float__: Numeric value selected on slider (depends on TYPE) |
