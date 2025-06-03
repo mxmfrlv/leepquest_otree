@@ -149,7 +149,7 @@ class Player(BasePlayer):
                         max_index = 1; min_index = 0
             # print(getattr(LQ_C,cbp+'_TYPES')[i-1][0])
             for h in range(1,len(getattr(LQ_C,cbp+'_TYPES')[i-1])):
-                if getattr(LQ_C,cbp+'_TYPES')[i-1][h]=="optional": cblank = True
+                if getattr(LQ_C,cbp+'_TYPES')[i-1][h] in ["optional", "readonly", "disabled"]: cblank = True
                 if h==len(getattr(LQ_C,cbp+'_TYPES')[i-1])-1: del h
             if not cblank and hasattr(LQ_C,cbp+"_DEPS"):
                 for h in range(len(getattr(LQ_C,cbp+'_DEPS'))):
@@ -575,13 +575,16 @@ class BlocPage(Page):
         shownumbers=[]
         confirm_empty=[]
         optionals=[]
+        disabledvars=[]
         fixedsum_sliders=[]
         withtags=[]
         withouttags=[]
         for i in getattr(LQ_C,cbp+"_QNUMS"):
             for h in range(1,len(getattr(LQ_C,cbp+'_TYPES')[i-1])):
-                if getattr(LQ_C,cbp+'_TYPES')[i-1][h]=="optional": 
+                if getattr(LQ_C,cbp+'_TYPES')[i-1][h] in ["optional", "readonly", "disabled"]: 
                     optionals.append(getattr(LQ_C,cbp+'_VARS')[i-1])
+                    if getattr(LQ_C,cbp+'_TYPES')[i-1][h] in ["readonly", "disabled"]:
+                        disabledvars.append(getattr(LQ_C,cbp+'_VARS')[i-1])
                     break
         if hasattr(LQ_C,cbp+"_RANDOMORDERS"):
            for ovi,ov in enumerate(getattr(LQ_C,cbp+"_RANDOMORDERS")):
@@ -628,6 +631,7 @@ class BlocPage(Page):
             withtags=withtags,
             withouttags=withouttags,
             optional_vars=optionals,
+            disabled_vars=disabledvars,
             lq_lexicon = lq_lexicon,
             debug=False,
         )

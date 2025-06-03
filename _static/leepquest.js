@@ -566,13 +566,13 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 				if(!additional_validate(allvars[i]) || slidervars.indexOf(allvars[i])<0) invalidated_vars.push(allvars[i]);
 				ok_pass=false;
 			}
-			if(ok_pass && iamoptional && allvars[i]!="__info__" && document.forms[0][allvars[i]].value=="" && js_vars.confirm_blank[i] && !empty_optional_confirmed && !screen_listing) {
+			if(ok_pass && iamoptional && allvars[i]!="__info__" && document.forms[0][allvars[i]].value=="" && !!parseInt(js_vars.confirm_blank[i]) && js_vars.disabled_vars.indexOf(allvars[i])<0 && !empty_optional_confirmed && !screen_listing) {
 				force_prevent_default=true;
 				ok_pass=false;
 				need_confirm_empty_optional=true;
 				unconfirmed_empty_vars.push(allvars[i]);
 			}
-			// console.log(ok_pass,need_confirm_empty_optional,js_vars.confirm_blank[i],js_vars.confirm_blank)
+			// console.log(i, allvars[i], "ok_pass:",ok_pass,"need_conf_empty:",need_confirm_empty_optional,"js_vars_confirm_blank:",!!parseInt(js_vars.confirm_blank[i]),"already_confirmed:",empty_optional_confirmed, "iamoptional:",iamoptional,"screen_listing:",screen_listing,"value:",document.forms[0][allvars[i]].value,js_vars.confirm_blank)
 			if(ok_pass) {
 				varsanswered[i] = 1;
 				nanswnow++;
