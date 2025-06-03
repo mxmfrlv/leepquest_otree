@@ -430,6 +430,7 @@ if(sliderpresent) {
 	var slider = document.getElementById("slider_"+slidervars[sl]);
 	// console.log(slider, slidervars[sl]);
 	var starthidden=false;
+	var nostartvalue=false;
 	var copts=slideropts[sl].split(':');
 	var cmaxval=100, cminval=0, cstep=1;
 	if(copts.length>0 && copts[0].replace(/\s+/g,"")!='') cmaxval=parseFloat(copts[0]);
@@ -452,6 +453,10 @@ if(sliderpresent) {
 		if(typeof js_vars.start_values[slidervars[sl]] !== 'undefined') {
 			cstart=parseFloat(js_vars.start_values[slidervars[sl]]);
 		}
+	}
+	if(isNaN(cstart)) {
+		cstart=(cmaxval+cminval)/2;
+		nostartvalue=true;
 	}
 	var pref='',suff='';
 	if(copts.length>4) {
@@ -517,9 +522,16 @@ if(sliderpresent) {
 	noUiSlider.create(slider, cslideroptions);
 	if(readonlysliders.indexOf(slidervars[sl])>-1) {
 		slider.noUiSlider.disable(0);
-		$("#slider_"+slidervars[sl]+" .noUi-tooltip").show();
-		if(!starthidden) document.forms[0][slidervars[sl]].value = cstart;
+		if(starthidden && nostartvalue) $("#slider_"+slidervars[sl]+" .noUi-handle").hide();
+		if(nostartvalue) $("#slider_"+slidervars[sl]+" .noUi-tooltip").hide();
+		else {
+			$("#slider_"+slidervars[sl]+" .noUi-tooltip").show();
+			document.forms[0][slidervars[sl]].value = cstart;
+			
+		}
 		additional_onchange(slidervars[sl], document.forms[0][slidervars[sl]].value);
+		
+		// console.log("readonly slider",slidervars[sl],"cstart:",cstart,"value:",document.forms[0][slidervars[sl]].value,"starthidden:",starthidden, "nostartvalue:",nostartvalue,"cdecimals:",cdecimals);
 	}
 	else bindSliderUpdate(slider,sl,starthidden,cdecimals);
  }
