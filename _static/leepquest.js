@@ -335,6 +335,8 @@ function confirmModal(message, callback) {
 			confirm_sup_action=function(){};
         }
     });
+	$('input, textarea, select, button').blur();
+	$('body').focus();
 	// console.log("confirmModal_end");
 }
 
