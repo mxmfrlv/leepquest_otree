@@ -10,6 +10,8 @@ var starttime;
 
 var prev_button_clicked=false, next_button_clicked=false;
 
+var on_new_page_scroll_to_this="#initial_presentation";
+
 if(window.bys === undefined && by >0) window.bys = Array(allvars.length/by).fill(by);
 // console.log(allvars);
 function bindSliderUpdate(slider,sl,starthidden,cdecimals) {
@@ -685,7 +687,7 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 				varsshown[i] = 1;
 			}
 			if(!no_scroll && finished_screen_number<last_screen_number && document.getElementById("initial_presentation") !== null) $([document.documentElement, document.body]).animate({
-				scrollTop: $("#initial_presentation").offset().top
+				scrollTop: $(on_new_page_scroll_to_this).offset().top
 			}, 10);
 			starttime=(new Date()).getTime();
 			// console.log("starttime=",starttime);
@@ -831,7 +833,7 @@ $("#prevbutton").click(function(e){
 			varsshown[i] = 1;
 		}
 		if(finished_screen_number<last_screen_number && document.getElementById("initial_presentation") !== null) $([document.documentElement, document.body]).animate({
-			scrollTop: $("#initial_presentation").offset().top
+			scrollTop: $(on_new_page_scroll_to_this).offset().top
 		}, 10);
 		starttime=(new Date()).getTime(); 
 	}
