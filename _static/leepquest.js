@@ -75,8 +75,10 @@ function bindOnChangeForTime(field) {
 	}
 }
 ///dependencies
-function dependfunc(depended,dependon,depvals,inv) {
-	// console.log(document.forms[0][dependon].value,',by='+by,dependon,depended,depvals,inv);
+var depended_on_dict={};
+function get_depok(depended,dependon,depvals,local_depended_on_list) {
+	// console.log("get_depok", depended,dependon,depvals,local_depended_on_dict);
+	if(local_depended_on_list === undefined) local_depended_on_list=(depended in depended_on_dict)?depended_on_dict[depended]:[];
 	var negform=false;
 	if(depvals.substr(0,1)=='!') {
 		negform=true; depvals=depvals.substr(1);
@@ -87,6 +89,24 @@ function dependfunc(depended,dependon,depvals,inv) {
 		if(adepvals[i]==document.forms[0][dependon].value || (document.forms[0][dependon].type=="checkbox" && document.forms[0][dependon].checked)) depok=!negform;
 		// console.log("dependon;",dependon,"value",document.forms[0][dependon].value,"check_equals_to",adepvals[i],"depended:",depended,"depended elem:",document.forms[0][depended],"dependon elem:",document.forms[0][dependon]);
 	}
+	if(!depok && local_depended_on_list.length>1) {
+		let new_depended_on_list=[];
+		for(var i2=0; i2<local_depended_on_list.length; i2++) {
+			if(local_depended_on_list[i2].dependon!=dependon) {
+				new_depended_on_list.push(local_depended_on_list[i2]);
+			}
+		}
+		if(new_depended_on_list.length>0) {
+			depok=get_depok(depended,new_depended_on_list[0].dependon,new_depended_on_list[0].depvals,new_depended_on_list);
+		}
+		// console.log("get_depok: next dependency for", depended, "dependon:", new_depended_on_list[0].dependon, "depvals:", new_depended_on_list[0].depvals, "depok:", depok);
+	}
+	// else console.log("get_depok: no more dependencies for", depended, "dependon:", dependon, "depvals:", depvals, "depok:", depok, "local_depended_on_list:", local_depended_on_list, "depended_on_dict:", depended_on_dict,"depended in depended_on_dict:", (depended in depended_on_dict));	
+	return depok;
+}
+function dependfunc(depended,dependon,depvals,inv) {
+	// console.log(document.forms[0][dependon].value,',by='+by,dependon,depended,depvals,inv);
+	var depok=get_depok(depended,dependon,depvals);
 	if(depok) {
 		if(document.getElementById(depended+'_errormessage') == null) {
 			$( '<div class="alert-warning" style="display:none" title="required" id="'+depended+'_errormessage">'+js_vars.lq_lexicon.please_answer_question+'</div>' ).insertBefore( $( '#field_'+depended+'_number_placeholder' ) );
@@ -149,6 +169,8 @@ function applydependencies(){
 			if(depselems.length>2) depvals=depselems[2];
 			var inv=false;
 			if(depselems.length>3 && depselems[3].substr(0,3).toLowerCase()=="inv") inv=true;
+			if(!(depended in depended_on_dict)) depended_on_dict[depended]=[];
+			depended_on_dict[depended].push({dependon:dependon, depvals:depvals, inv:inv});
 			$('#field_'+dependon).on('change', {depended:depended,dependon:dependon,depvals:depvals,inv:inv}, function(event) {
 				setTimeout("dependfunc('"+event.data.depended+"','"+event.data.dependon+"','"+event.data.depvals+"',"+(event.data.inv?'true':'false')+")",50);		  
 			});
