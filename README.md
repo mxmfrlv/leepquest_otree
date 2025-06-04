@@ -272,8 +272,10 @@ To create your own template:
 3. The system will automatically detect and include your template when the corresponding questionnaire block is displayed.
 
 ### Custom validation and custom actions on user's input
-Inside the `script` tag of the [included template](#templating) it is possible to add custom validation by attributing a function to the `additional_validate` variable in the following way :
+Inside the `script` tag of the [included template](#templating) it is possible to add custom validation by attributing a function to the `additional_validate` variable (once the document is ready) in the following way :
 ```javascript
+$(document).ready(function() {
+
 // Example of custom validation
 additional_validate = function(varname){
     if(varname === "email") {
@@ -283,11 +285,15 @@ additional_validate = function(varname){
     }
     return true;
 };
+
+});
 ```` 
 By default, the `additional_validate` variable holds a function which always returns _true_. If this function returns _false_, the field corresponding to the `varname` will be marked as invalid and the user won't be able to proceed to the next screen.
 
-In order to add a custom reaction on user's input it is possible to attribute a function to the `additional_onchange` variable in the following way :
+In order to add a custom reaction on user's input it is possible to attribute a function to the `additional_onchange` variable (once the document is ready) in the following way :
 ```javascript
+$(document).ready(function() {
+    
 // Example of a custom reaction on user's input of a specific field
 additional_onchange = function(varname, varvalue){
     // Custom logic when a field changes
@@ -295,6 +301,8 @@ additional_onchange = function(varname, varvalue){
         // Do something specific for this field using it's current value (varvalue) if necessary
     }
 };
+
+});
 ```` 
 This function is called whenever a form field's value changes and  receives the name of the changed field as its parameter.
 
