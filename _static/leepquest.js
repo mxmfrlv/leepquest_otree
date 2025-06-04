@@ -293,10 +293,15 @@ var additional_validate_invalid_action=function(varnames,alertneeded){
 	// console.log(varnames);
 	if(alertneeded === undefined) alertneeded=false;
 	for(var i=0; i<varnames.length; i++) {
-		$('label[for="id_'+varnames[i]+'"]').css({'color':'red'});
+		$('label[for="id_'+varnames[i]+'"]').css({'color':'red'}).attr('data-validate_alert', 'true');
 		// console.log(i,$('label[for="id_'+varnames[i]+'"]'));
 	}
-	if(alertneeded) alert(additional_validate_message);
+	if(alertneeded) alertModal(additional_validate_message, function(){
+		$([document.documentElement, document.body]).animate({
+			scrollTop: $("#field_"+varnames[0]).offset().top,
+		}, 10);
+		$("#id_"+varnames[0]).focus();
+	});
 };
 
 var alertModalDivActive=false;
@@ -315,6 +320,8 @@ function alertModal(message,callback) {
 		alert_sup_action();
 		alert_sup_action=function(){};
 	});
+	$('input, textarea, select, button').blur();
+	$('body').focus();
 
 }
 var confirmModalDivActive=false;
@@ -562,12 +569,13 @@ if(sliderpresent) {
 }
 
 $(".otree-btn-next").click(function(e,a_sup_param){
-	// console.log("otree-btn-next");
+	// console.log("otree-btn-next", by, allvars.length); 
 	prev_button_clicked=false; next_button_clicked=true; need_confirm_empty_optional = false;
 	if(by>0 && allvars.length>0) {
 		var nanswnow=0, nanswtot=0, bynow=0;
 		var force_prevent_default=false;
 		var invalidated_vars=[];
+		var ok_pass=true;
 		for(i=0; i<varsshown.length; i++) if(varsshown[i]>0 && allvars[i]!="") {
 			bynow++;
 			var errormessage=false;
@@ -581,13 +589,14 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 			}
 			if(allvars[i]=="__info__") iamoptional=true;
 			// console.log("allvars[i]=",allvars[i], "iamoptional=", iamoptional);
-			var ok_pass=(document.forms[0][allvars[i]] !== undefined || allvars[i]=="__info__") && (iamoptional || (document.forms[0][allvars[i]].value!="" && typeof document.forms[0][allvars[i]].checkValidity !== 'function') || (document.forms[0][allvars[i]].value !== "" && typeof document.forms[0][allvars[i]].checkValidity === 'function' && document.forms[0][allvars[i]].checkValidity()));
+			ok_pass=(document.forms[0][allvars[i]] !== undefined || allvars[i]=="__info__") && (iamoptional || (document.forms[0][allvars[i]].value!="" && typeof document.forms[0][allvars[i]].checkValidity !== 'function') || (document.forms[0][allvars[i]].value !== "" && typeof document.forms[0][allvars[i]].checkValidity === 'function' && document.forms[0][allvars[i]].checkValidity()));
 			// console.log("i=",i,"allvars[i]=",allvars[i],"ok_pass=",ok_pass,"document.forms[0][allvars[i]]=",document.forms[0][allvars[i]],"typeof checkValidity ",typeof document.forms[0][allvars[i]].checkValidity,"iamoptional=",iamoptional,document.getElementById(allvars[i]+"_validator").value); console.log(allvars[i],"checkValidity",((typeof document.forms[0][allvars[i]].checkValidity === 'function')?document.forms[0][allvars[i]].checkValidity():"not a function"),"required:",$('#id_'+allvars[i]).prop('required')); if(typeof document.forms[0][allvars[i]].checkValidity === 'function') console.log("checkValidity:",document.forms[0][allvars[i]].checkValidity(),document.forms[0][allvars[i]].checkValidity);
 			if(ok_pass && (!additional_validate(allvars[i]) || (!iamoptional && document.forms[0][allvars[i]].value=="" && $('#id_'+allvars[i]).prop('required')))) { // && slidervars.indexOf(allvars[i])>-1
 				force_prevent_default=true;
 				if(!additional_validate(allvars[i]) || slidervars.indexOf(allvars[i])<0) invalidated_vars.push(allvars[i]);
 				ok_pass=false;
 			}
+			// console.log("i=",i,"allvars[i]=",allvars[i],"ok_pass=",ok_pass, "iamoptional=", iamoptional, "additional_validate=",additional_validate(allvars[i]), "value=",document.forms[0][allvars[i]].value, "required:",$('#id_'+allvars[i]).prop('required'),"invalidated_vars:",invalidated_vars);
 			if(ok_pass && iamoptional && allvars[i]!="__info__" && document.forms[0][allvars[i]].value=="" && !!parseInt(js_vars.confirm_blank[i]) && js_vars.disabled_vars.indexOf(allvars[i])<0 && !empty_optional_confirmed && !screen_listing) {
 				force_prevent_default=true;
 				ok_pass=false;
@@ -600,8 +609,9 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 				nanswnow++;
 			}
 		}
+		$('[data-validate_alert="true"]').css('color', '').removeData('validate_alert');
 		if(invalidated_vars.length>0) {
-			additional_validate_invalid_action(invalidated_vars);
+			additional_validate_invalid_action(invalidated_vars,!need_confirm_empty_optional);
 		}
 		// console.log("bynow=",bynow, "nanswnow=", nanswnow);
 		if(nanswnow == bynow) {
