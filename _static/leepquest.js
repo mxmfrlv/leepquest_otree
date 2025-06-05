@@ -691,7 +691,7 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 					$([document.documentElement, document.body]).animate({
 						scrollTop: $(on_new_page_scroll_to_this).offset().top
 					}, 100);
-					console.log("scrolled to",on_new_page_scroll_to_this);
+					// console.log("scrolled to",on_new_page_scroll_to_this);
 				}, 10); // scroll to the on_new_page_scroll_to_this element position
 			}
 			starttime=(new Date()).getTime();
