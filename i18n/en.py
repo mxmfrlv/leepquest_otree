@@ -7,5 +7,7 @@ Lexicon = dict(
     previous = "Previous",
     please_answer_question = "Please answer this question",
     please_correct_errors = "Please correct the errors",
+    value_should_not_be_less_than = "The value should not be less than",
+    value_should_not_be_greater_than = "The value should not be greater than",
     please_confirm_blank_questions = "You have not answered all questions. Are you sure to proceed?",
 )

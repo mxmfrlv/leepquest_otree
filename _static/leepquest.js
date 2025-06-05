@@ -605,6 +605,20 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 				need_confirm_empty_optional=true;
 				unconfirmed_empty_vars.push(allvars[i]);
 			}
+			let min_attr = $(`#id_${allvars[i]}`).attr('min'), max_attr = $(`#id_${allvars[i]}`).attr('max');
+			// console.log("min_attr:",min_attr, "value:",document.forms[0][allvars[i]].value);
+			if(ok_pass && iamoptional && allvars[i]!="__info__" && document.forms[0][allvars[i]].value!="" && typeof min_attr !== 'undefined' && min_attr !== false && parseFloat(document.forms[0][allvars[i]].value) < parseFloat(min_attr)) {
+				force_prevent_default=true;
+				ok_pass=false;
+				invalidated_vars.push(allvars[i]);
+				additional_validate_message += "\r\n"+js_vars.lq_lexicon.value_should_not_be_less_than+" "+min_attr;
+			}
+			if(ok_pass && iamoptional && allvars[i]!="__info__" && document.forms[0][allvars[i]].value!="" && typeof max_attr !== 'undefined' && max_attr !== false && parseFloat(document.forms[0][allvars[i]].value) > parseFloat(max_attr)) {
+				force_prevent_default=true;
+				ok_pass=false;
+				invalidated_vars.push(allvars[i]);
+				additional_validate_message += "\r\n"+js_vars.lq_lexicon.value_should_not_be_greater_than+" "+max_attr;
+			}
 			// console.log(i, allvars[i], "ok_pass:",ok_pass,"need_conf_empty:",need_confirm_empty_optional,"js_vars_confirm_blank:",!!parseInt(js_vars.confirm_blank[i]),"already_confirmed:",empty_optional_confirmed, "iamoptional:",iamoptional,"screen_listing:",screen_listing,"value:",document.forms[0][allvars[i]].value,js_vars.confirm_blank)
 			if(ok_pass) {
 				varsanswered[i] = 1;
@@ -731,6 +745,10 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 				confirmModal(js_vars.lq_lexicon.please_confirm_blank_questions,function(confirmed){
 					if(confirmed) {
 						empty_optional_confirmed=true;
+						for(let cvar of unconfirmed_empty_vars) {
+							// console.log("cvar=",cvar, "document.forms[0][cvar].value=",document.forms[0][cvar].value, "type=",document.forms[0][cvar].type, "jquery value=",$("#id_"+cvar).val(), "jquery text=",$("#id_"+cvar).text(), "jquery html=",$("#id_"+cvar).html(), "jquery=", $("#id_"+cvar), "outerHTML=", $("#id_"+cvar)[0].outerHTML);
+							if(document.forms[0][cvar].type == "number") document.forms[0][cvar].value="";
+						}
 						$(".otree-btn-next").click();
 						empty_optional_confirmed=false;
 					}
