@@ -686,9 +686,14 @@ $(".otree-btn-next").click(function(e,a_sup_param){
 				//console.log("allvars_i=",allvars[i],"i=",i,"nanswtot+by=",nanswtot+by);
 				varsshown[i] = 1;
 			}
-			if(!no_scroll && finished_screen_number<last_screen_number && document.getElementById("initial_presentation") !== null) $([document.documentElement, document.body]).animate({
-				scrollTop: $(on_new_page_scroll_to_this).offset().top
-			}, 10);
+			if(!no_scroll && finished_screen_number<last_screen_number && document.getElementById("initial_presentation") !== null) {
+				setTimeout(function() {
+					$([document.documentElement, document.body]).animate({
+						scrollTop: $(on_new_page_scroll_to_this).offset().top
+					}, 100);
+					console.log("scrolled to",on_new_page_scroll_to_this);
+				}, 10); // scroll to the on_new_page_scroll_to_this element position
+			}
 			starttime=(new Date()).getTime();
 			// console.log("starttime=",starttime);
 			if(nanswtot<allvars.length && typeof liveSend === 'function') {
