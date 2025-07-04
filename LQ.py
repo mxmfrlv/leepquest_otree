@@ -164,11 +164,11 @@ class Player(BasePlayer):
                 locals()[getattr(LQ_C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(LQ_C,cbp+'_VARS')[i-1], label=getattr(LQ_C,cbp+'_LIST')[i-1],choices=[[h+1,x] for h,x in enumerate(getattr(LQ_C,cbp+'_OPTS')[i-1])],widget=widgets.RadioSelectHorizontal, blank=cblank)
                 locals()[getattr(LQ_C,cbp+'_VARS')[i-1]+"_strval"]=models.StringField(label=getattr(LQ_C,cbp+'_LIST')[i-1],choices=getattr(LQ_C,cbp+'_OPTS')[i-1],widget=widgets.RadioSelectHorizontal,blank=True)
             elif getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="radioline":
-                suph=1 if len(getattr(LQ_C,cbp+'_TYPES')[i-1]) == 1 else int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0])
+                suph=1 if len(getattr(LQ_C,cbp+'_TYPES')[i-1]) == 1 else int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0]) if getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0].strip() != '' else -int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[1])
                 ctypesvals=[]
-                cstep=1 if len(getattr(LQ_C,cbp+'_TYPES')[i-1]) ==1 or len(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')) == 1 or int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0])<=int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[1]) else -1
-                # print(cstep,getattr(LQ_C,cbp+'_TYPES')[i-1][1],len(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')),getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0],getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[1],len(getattr(LQ_C,cbp+'_TYPES')[i-1]) or len(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')) == 1 or int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0])<=int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[1]))
-                for h in range(0,len(getattr(LQ_C,cbp+'_OPTS')[i-1])): ctypesvals.append([(str(h*cstep+suph)+"#line#" if not 'nonumbers' in getattr(LQ_C,cbp+'_TYPES')[i-1] and (len(getattr(LQ_C,cbp+'_TYPES')[i-1]) ==1 or len(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')) == 1 or (h*cstep+suph>=min([int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0]),int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[1])]) and h*cstep+suph<=max([int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0]),int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[1])]))) else '')+getattr(LQ_C,cbp+'_OPTS')[i-1][h],suph,cstep])
+                cstep=1 if len(getattr(LQ_C,cbp+'_TYPES')[i-1]) ==1 or len(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')) == 1 or int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[1 if suph<0 else 0])<=int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[-1]) else -1
+                for h in range(0,len(getattr(LQ_C,cbp+'_OPTS')[i-1])): ctypesvals.append([(str(h*cstep+suph)+"#line#" if not 'nonumbers' in getattr(LQ_C,cbp+'_TYPES')[i-1] and (len(getattr(LQ_C,cbp+'_TYPES')[i-1]) ==1 or len(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')) == 1 or (h*cstep+suph>=min([suph,int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[-1])]) and h*cstep+suph<=max([suph,int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[-1])]))) else '')+getattr(LQ_C,cbp+'_OPTS')[i-1][h],suph,cstep])
+                # print("ctypesvals = ",ctypesvals)
                 locals()[getattr(LQ_C,cbp+'_VARS')[i-1]]=models.IntegerField(variable=getattr(LQ_C,cbp+'_VARS')[i-1], label=getattr(LQ_C,cbp+'_LIST')[i-1],choices=[[x[2]*h+x[1],x[0]] for h,x in enumerate(ctypesvals)],widget=widgets.RadioSelectHorizontal, blank=cblank)
                 locals()[getattr(LQ_C,cbp+'_VARS')[i-1]+"_strval"]=models.StringField(label=getattr(LQ_C,cbp+'_LIST')[i-1],choices=getattr(LQ_C,cbp+'_OPTS')[i-1],widget=widgets.RadioSelectHorizontal,blank=True)
                 del suph,ctypesvals,cstep,h
@@ -422,11 +422,13 @@ class BlocPage(Page):
                 if not player.field_maybe_none(getattr(LQ_C,cbp+'_VARS')[i-1]) is None:
                     # print(i,getattr(LQ_C,cbp+'_VARS')[i-1],getattr(player,getattr(LQ_C,cbp+'_VARS')[i-1]));
                     cindex=getattr(player,getattr(LQ_C,cbp+'_VARS')[i-1])-1
-                    if getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="radioline" and len(getattr(LQ_C,cbp+'_TYPES')[i-1])>1 and  len(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-'))>1:
-                        if int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0])>int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[1]):
-                            cindex=int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0])-getattr(player,getattr(LQ_C,cbp+'_VARS')[i-1])
+                    if getattr(LQ_C,cbp+'_TYPES')[i-1][0]=="radioline" and len(getattr(LQ_C,cbp+'_TYPES')[i-1])>1 and len(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-'))>1:
+                        firstrlval = int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0]) if getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0].strip() != '' else -int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[1])
+                        lastrlval = int(getattr(LQ_C,cbp+'_TYPES')[i-1][-1].split('-')[-1])
+                        if firstrlval>lastrlval:
+                            cindex=lastval-getattr(player,getattr(LQ_C,cbp+'_VARS')[i-1])
                         else:
-                            cindex=getattr(player,getattr(LQ_C,cbp+'_VARS')[i-1])-int(getattr(LQ_C,cbp+'_TYPES')[i-1][1].split('-')[0])
+                            cindex=getattr(player,getattr(LQ_C,cbp+'_VARS')[i-1])-firstrlval
                     if var_exists('%s_choices'%getattr(LQ_C,cbp+'_VARS')[i-1]):
                         choices=get_function('%s_choices'%getattr(LQ_C,cbp+'_VARS')[i-1])(player)
                         for ch in choices:
